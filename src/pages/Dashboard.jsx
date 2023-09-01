@@ -299,9 +299,13 @@ const Dashboard = () => {
         return (
          
           <div >
-            <div className='bg-white border-2 rounded-lg p-20 '>
-         <Setting/>
-         </div>
+           <div className='bg-white border-2 rounded-lg p-20 h-Setting relative'>
+  <Setting />
+  <button className='absolute bottom-0 right-0 mb-4 mr-4 bg-sky-600 px-4 py-1 rounded-md text-white'>
+    Save
+  </button>
+</div>
+
           </div>
         );
       default:
