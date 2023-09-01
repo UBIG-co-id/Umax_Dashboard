@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useTable, useGlobalFilter } from 'react-table';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faEdit, faPlus, faSearch  } from '@fortawesome/free-solid-svg-icons'; 
 import data from './data';
+import { BsTrash3, BsPlus } from 'react-icons/bs';
+import { CiSearch } from 'react-icons/ci';
 
 
 function DataTable() {
@@ -51,13 +51,13 @@ function DataTable() {
               onClick={() => handleEdit(row.original.id)}
               className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 rounded"
             >
-              <FontAwesomeIcon icon={faEdit} />
+              <BsTrash3 />
             </button>
             <button
               onClick={() => handleDelete(row.original.id)}
               className="bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded"
             >
-              <FontAwesomeIcon icon={faTrash} />
+              <BsTrash3 />
             </button>
           </div>
         ),
@@ -109,7 +109,7 @@ function DataTable() {
           className="p-2 pl-8 border-2 rounded-lg sm:w-32"
         />
         <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-          <FontAwesomeIcon icon={faSearch} style={{ color: '#9BA0A8' }} />
+          <CiSearch style={{ color: '#9BA0A8' }} />
         </span>
       </div>
 
@@ -118,10 +118,12 @@ function DataTable() {
         data-te-ripple-init
         data-te-ripple-color="light"
         data-te-ripple-centered="true"
-        className="inline-flex items-center border-2  rounded-lg bg-white px-6 pb-2.5 pt-2 text-xs font-medium leading-normal text-gray-800 hover:bg-gray-100"
+        className=" inline-flex items-center border-2 h-9 w-28 rounded-md bg-white px-6  pb-2.5 pt-2 text-xs font-medium leading-normal text-gray-800 hover:bg-gray-100"
       >
-        <FontAwesomeIcon icon={faPlus} className="mr-2" />
-        <span>Add</span>
+
+        <BsPlus className="relative right-5 font-medium text-lg" />
+        <span className='relative right-4'>Add</span>
+
       </button>
       </div>
       <div className="w-full bg-white overflow-x-auto">
