@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTable, useGlobalFilter } from 'react-table';
-import data from './data';
+import data from './DataAccount';
 import { BsTrash3, BsPlus } from 'react-icons/bs';
 import { CiSearch } from 'react-icons/ci';
 import { AiOutlineEdit, AiOutlineFilePdf } from 'react-icons/ai';
@@ -11,7 +11,7 @@ import 'jspdf-autotable';
 import '../styles.css';
 
 
-function DataTable() {
+function AccountTable() {
   const [tableData, setTableData] = useState(data);
   const [selectedPlatform, setSelectedPlatform] = useState('');
   const tableRef = useRef(null);
@@ -34,16 +34,8 @@ function DataTable() {
         accessor: 'platform',
       },
       {
-        Header: 'Account',
-        accessor: 'account',
-      },
-      {
-        Header: 'Objective',
-        accessor: 'objective',
-      },
-      {
-        Header: 'StartDate',
-        accessor: 'startdate',
+        Header: 'Email',
+        accessor: 'email',
       },
       {
         Header: 'Status',
@@ -174,24 +166,37 @@ const handleAddData = () => {
               value={selectedPlatform}
               onChange={(e) => setSelectedPlatform(e.target.value)}
             >
-              <option hidden>Platform</option>
-              <option value="Facebook">Facebook</option>
-              <option value="Instagram">Instagram</option>
-              <option value="Google">Google</option>
+              <option hidden>Client</option>
+              <option value="Facebook">PT.Makmur</option>
+              <option value="Instagram">Pondok Nurul Huda</option>
+              <option value="Google">PT Haji Umar Barokah</option>
             </select>
           </div>
 
-          {/* bagian objective */}
+          {/* bagian Platform */}
           <div className="relative">
             <select
               className="p-2 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg sm:w-48"
               value={selectedPlatform}
               onChange={(e) => setSelectedPlatform(e.target.value)}
             >
-              <option hidden>Objective</option>
-              <option value="Facebook">Awareness</option>
-              <option value="Instagram">Conversion</option>
-              <option value="Google">Consideration</option>
+              <option hidden>Platform</option>
+              <option value="Facebook">Facebook</option>
+              <option value="Instagram">Instagram</option>
+              <option value="Google">Google</option>
+            </select>
+          </div>
+          {/* bagian status */}
+          <div className="relative">
+            <select
+              className="p-2 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg sm:w-48"
+              value={selectedPlatform}
+              onChange={(e) => setSelectedPlatform(e.target.value)}
+            >
+              <option hidden>Status</option>
+              <option value="Facebook">Active</option>
+              <option value="Instagram">DeActive</option>
+              <option value="Google">Google</option>
             </select>
           </div>
           {/* End */}
@@ -326,4 +331,4 @@ const handleAddData = () => {
   );
 }
 
-export default DataTable;
+export default AccountTable;

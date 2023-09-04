@@ -1,6 +1,6 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
-import CampaignTable from '../components/CampaignTable';
+import ClientsTable from '../components/ClientsTable';
 
   
 
@@ -10,8 +10,8 @@ const Campaigns = () => {
         <div>
         <Navbar />
         <div className='bg-white h-screen w-auto m-2 border rounded-lg'>
-          <span className='p-10 relative top-4 text-gray-600 font-medium text-2xl'>Campaigns</span>
-        <CampaignTable />
+          <span className='p-10 relative top-4 text-gray-600 font-medium text-2xl'>Clients</span>
+        <ClientsTable />
 
         </div>
 

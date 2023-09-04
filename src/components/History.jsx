@@ -13,6 +13,8 @@ import { classNames } from 'primereact/utils';
 import 'primereact/resources/themes/saga-blue/theme.css'; 
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
+import '../styles.css';
+
 
 export default function App() {
   const itemsPerPage = 5;
