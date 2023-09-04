@@ -10,9 +10,10 @@ import { users } from "./DataHistory";
 import { Ripple } from 'primereact/ripple';
 import { Divider } from 'primereact/divider';
 import { classNames } from 'primereact/utils';
-import 'primereact/resources/themes/saga-blue/theme.css'; 
-import 'primereact/resources/primereact.min.css';
+import 'primereact/resources/themes/saga-blue/theme.css'; // You may need to import a PrimeReact theme
+import 'primereact/resources/primereact.min.css'; // Import PrimeReact CSS
 import 'primeicons/primeicons.css';
+import { VirtualScroller } from 'primereact/virtualscroller';
 
 export default function App() {
   const itemsPerPage = 5;
@@ -81,6 +82,8 @@ export default function App() {
       );
     },
   };
+  
+  
 
   return (
     <div className="relative rounded-lg">
@@ -107,7 +110,7 @@ export default function App() {
             <div className="mb-4 flex space-x-4 justify-between">
               <div className="w-full flex flex-col gap-5 justify-between" ref={componentPDF} style={{ width: '100%' }}>
                 <div ref={tableRef}>
-                  <DataTable value={visibleUsers} className="table1">
+                  <DataTable value={visibleUsers} className="">
                     <Column field="update" header="Last Update" sortable style={{ width: '25%' }} />
                     <Column field="amount" header="Amount Spent" sortable style={{ width: '25%' }} />
                     <Column field="reach" header="Reach" sortable style={{ width: '25%' }} />
