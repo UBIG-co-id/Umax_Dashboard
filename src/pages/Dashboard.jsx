@@ -8,6 +8,7 @@ import Chart from '../components/Chart';
 import Card from '../components/Card';
 import Setting from '../components/Setting';
 import Metrics from '../components/Metrics';
+import History from '../components/History';
 import { FiAlertTriangle } from 'react-icons/fi';
 import { AiOutlineInfoCircle } from 'react-icons/ai';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
@@ -293,7 +294,17 @@ const Dashboard = () => {
       case 'history':
         return (
           <div>
-      </div>
+            <div className='flex justify-end'>
+              <div className='flex gap-5 items-center'>
+                <select name="" id="" className='focus:outline-none p-2 px-5 border border-gray-300 text-gray-500 rounded-md'>
+                  <option value="">Today</option>
+                </select>
+
+              </div>
+            </div>
+
+            <History />
+          </div>
         );
       case 'setting':
         return (

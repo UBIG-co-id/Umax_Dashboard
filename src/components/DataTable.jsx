@@ -141,12 +141,9 @@ function DataTable() {
 };
 
 const handleAddData = () => {
-  // Lakukan validasi data baru di sini jika diperlukan
-  // Misalnya, pastikan semua field yang diperlukan diisi
-  // Jika validasi sukses, tambahkan data baru ke tabel
   const updatedData = [...tableData, newData];
   setTableData(updatedData);
-  toggleAddPopup(); // Tutup popup setelah menambahkan data
+  toggleAddPopup(); 
 };
 
   return (
