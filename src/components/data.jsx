@@ -7,6 +7,6 @@ const data = [
     { name: 'Retarget CA Web Visitor', client: 'PT.Makmur',platform: 'Facebook', account: 'M Rizky', objective: 'Awareness ', startdate: '16 Jun 2023, 12:10', status: 'Active', action: '' },
     { name: 'Billingual - 15/10', client: 'PT Haji Umar Barokah',platform: 'Instagram', account: 'Mahardika', objective: 'Conversion ', startdate: '31 Jun 2023, 12:10', status: 'Active', action: '' },
   ];
-  
+    
   export default data;
   
