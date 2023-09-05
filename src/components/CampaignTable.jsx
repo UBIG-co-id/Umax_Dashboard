@@ -8,6 +8,7 @@ import { RiFileExcel2Line } from 'react-icons/ri';
 import '../styles.css';
 
 
+
 function DataTable() {
   const [tableData, setTableData] = useState(data);
   const [selectedPlatform, setSelectedPlatform] = useState('');
@@ -37,7 +38,7 @@ function DataTable() {
         accessor: 'objective',
       },
       {
-        Header: 'StartDate',
+        Header: 'Start Date',
         accessor: 'startdate',
       },
       {
@@ -116,9 +117,9 @@ const handleAddData = () => {
   return (
     <div className="border-2 border-slate-200 bg-white p-5 m-10 rounded-lg relative">
       <div className="container mx-auto px-0 p-4">
-        <div className="mb-4 -mt-4 flex space-x-4 justify-start">
+        <div className="mb-4 -mt-4 flex flex-col lg:flex-row space-x-3 justify-start">
           {/* Search bar */}
-          <div className="relative">
+          <div className="relative  mediaquery ">
             <input
               type="text"
               value={globalFilter}
@@ -135,7 +136,8 @@ const handleAddData = () => {
           {/* Seleksi filter Platform dan objective */}
 
           {/* bagian platform */}
-          <div className="relative">
+          <div className='flex space-x-3'>
+          <div className="relative ">
             <select
               className="p-2 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg sm:w-48"
               value={selectedPlatform}
@@ -149,7 +151,7 @@ const handleAddData = () => {
           </div>
 
           {/* bagian objective */}
-          <div className="relative">
+          <div className="relative ">
             <select
               className="p-2 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg sm:w-48"
               value={selectedPlatform}
@@ -161,19 +163,21 @@ const handleAddData = () => {
               <option value="Google">Consideration</option>
             </select>
           </div>
+          </div>
           {/* End */}
         </div>
 
-        <div className="mb-4 -mt-14 flex space-x-1 justify-end">
+        <div className="mb-4 -mt-14 flex  space-x-3 justify-end">
           {/* Button add data */}
-          <button
-            type="button"
-            data-te-ripple-init
-            data-te-ripple-color="light"
-            data-te-ripple-centered="true"
-            className="inline-flex items-center border border-slate-300 h-9 w-28 rounded-md bg-white px-6 pb-2.5 pt-2 text-xs font-medium leading-normal text-gray-800 hover:bg-gray-50"
-            onClick={toggleAddPopup} // Memanggil fungsi toggleAddPopup saat tombol "Add" diklik
-         >
+                        <button
+                type="button"
+                data-te-ripple-init
+                data-te-ripple-color="light"
+                data-te-ripple-centered="true"
+                className="inline-flex items-center border border-slate-300 h-9 w-28 rounded-md bg-white px-6 pb-2.5 pt-2 text-xs font-medium leading-normal text-gray-800 hover:bg-gray-50"
+                onClick={toggleAddPopup} 
+              >
+
             <BsPlus className="relative right-5 font-medium text-lg" />
             <span className="relative right-4">Add</span>
           </button>
@@ -181,52 +185,132 @@ const handleAddData = () => {
            {/* menu add data */}
     {/* Pop-up menu */}
       {showAddPopup && (
-              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                <div className="bg-white p-5 rounded-lg shadow-lg">
-                  <h2 className="text-xl  font-semibold mb-4">Campaign</h2>
+              <div className="fixed z-50 inset-0 flex items-center justify-center">
+                    <div className="fixed -z-10 inset-0 bg-black bg-opacity-50"></div>
+                <div className=" bg-white p-5 rounded-lg shadow-lg">
+                  <h2 className="text-xl font-semibold mb-4">Campaign</h2>
                   <div className="flex space-x-12 mb-4">
                     <div className="flex flex-col">
-                      <label htmlFor="">Name</label>
+                      <label className='pb-2 text-sm ' htmlFor="">Name</label>
                       <input
                         type="text"
                         className="p-2 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
                       />
                     </div>
                     <div className="flex flex-col">
-                      <label htmlFor="">Objective</label>
+                      <label className='pb-2 text-sm ' htmlFor="">Objective</label>
                       <select
-                        className="p-2 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                        className="px-3 text-slate-500 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md select-custom-width"
                       >
                         <option value="option1">Awareness</option>
                         <option value="option2">Conversion</option>
                         <option value="option3">Consideration</option>
                       </select>
                     </div>
-
                   </div>
 
-                  <div className="mb-4">
-                    <label htmlFor="">Name</label>
-                    <input
-                      type="text"
-                      className="p-2 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
-                    />
+                  <div className="flex space-x-12 mb-4">
+                        <div className="flex flex-col">
+                      <label className='pb-2 text-sm ' htmlFor="">Client</label>
+                      <select
+                        className="px-3 text-slate-500 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md select-custom-width"
+                      >
+                        <option value="option1">Client1</option>
+                        <option value="option2">Client2</option>
+                        <option value="option3">Client3</option>
+                      </select>
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className='pb-2 text-sm ' htmlFor="">Account</label>
+                      <select
+                        className="px-3 text-slate-500 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md select-custom-width"
+                      >
+                        <option value="option1">Account1</option>
+                        <option value="option2">Account2</option>
+                        <option value="option3">Account3</option>
+                      </select>
+                    </div>
                   </div>
-                  {/* Tambahkan field lain sesuai kebutuhan */}
+
+                  <div className="flex space-x-12 mb-4">
+                  <div className="flex flex-col">
+                      <label className='pb-2 text-sm ' htmlFor="">Platform</label>
+                      <select
+                        className="px-3 text-slate-500 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md select-custom-width"
+                      >
+                        <option value="option1">Facebook Ads</option>
+                        <option value="option2">Google Ads</option>
+                        <option value="option3">Instagram Ads</option>
+                      </select>
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className='pb-2 text-sm' htmlFor="">Campaign ID</label>
+                      <input
+                        type="number"
+                        className="p-2 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex space-x-12 mb-4">
+                    <div className="flex flex-col">
+                      <label className='pb-2 text-sm ' htmlFor="">Start Date</label>
+                      <input
+                        type="date"
+                        className="p-2 h-9 select-custom-width text-slate-500 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <label className='pb-2 text-sm ' htmlFor="">End Date</label>
+                      <input
+                        type="date"
+                        className="p-2 h-9 select-custom-width text-slate-500 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex space-x-12 mb-4">
+                  <div className="flex flex-col">
+                  <label className='pb-2 text-sm ' htmlFor="">Notes</label>
+                  <textarea
+                    className="p-2 max-h-md select-custom-width text-slate-500 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                    ></textarea>
+                  </div>
+
+
+                    <div className="flex flex-col">
+                      <label className='pb-2 text-sm ' htmlFor="">Status</label>
+                      <select
+                        className="px-3 text-slate-500 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md select-custom-width"
+                      >
+                        <option value="option1">All</option>
+                        <option value="option2">Draft</option>
+                        <option value="option3">Active</option>
+                        <option value="option3">Completed</option>
+                      </select>
+                    </div>
+                  </div>
+         
+
+                  <div className="flex justify-end">
+                {/* Tombol Save */}
+                <button
+                  type="button"
+                  onClick={toggleAddPopup}
+                  className=" text-gray-500 mr-4"
+                >
+                  Cancel
+                </button>
                   <button
                     type="button"
-                    onClick={handleAddData}
-                    className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+                  onClick={handleAddData}
+                    className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
                   >
                     Save
                   </button>
-                  <button
-                    type="button"
-                    onClick={toggleAddPopup}
-                    className="ml-2 text-gray-600 hover:text-gray-800"
-                  >
-                    Cancel
-                  </button>
+                </div>
                 </div>
               </div>
             )}
@@ -237,7 +321,7 @@ const handleAddData = () => {
           {/* Button export excel */}
           <button
             type="button"
-            className="items-center border border-slate-300 h-9 rounded-md bg-white px-3 hover:bg-gray-50"
+            className="items-center border  border-slate-300 h-9 rounded-md bg-white px-3 hover:bg-gray-50"
           >
             <RiFileExcel2Line className="relative font-medium text-lg" />
           </button>
@@ -260,35 +344,46 @@ const handleAddData = () => {
             className="table-auto border-collapse border w-full"
           >
             <thead>
-              {headerGroups.map((headerGroup) => (
+              {headerGroups.map((headerGroup) => (  
                 <tr {...headerGroup.getHeaderGroupProps()}>
                   {headerGroup.headers.map((column) => (
-                    <th
-                      {...column.getHeaderProps()}
-                      className="p-2 border-slate-300 border"
-                    >
-                      {column.render('Header')}
-                    </th>
+                 <th
+                 {...column.getHeaderProps()}
+                 className={`p-2 text-white bg-sky-700 font-normal border-slate-300 border ${
+                   column.id === 'status' || column.id === 'action'
+                     ? ''
+                     : 'text-left' 
+                 }`}
+               >
+                 {column.render('Header')}
+               </th>
                   ))}
                 </tr>
               ))}
             </thead>
             <tbody {...getTableBodyProps()}>
-              {rows.map((row) => {
+              {rows.map((row , rowIndex) => {
                 prepareRow(row);
                 return (
                   <tr
                     {...row.getRowProps()}
-                    className="border border-slate-300 text-gray-600 hover:bg-gray-200 hover:text-blue-600"
+                    className={`border border-slate-300 text-gray-600 hover:bg-gray-200 hover:text-blue-600 ${
+                      rowIndex % 2 === 0 ? 'bg-gray-100' : 'bg-white' // Memberikan latar belakang selang-seling
+                    }`}
+
                   >
                     {row.cells.map((cell) => {
                       return (
                         <td
-                          {...cell.getCellProps()}
-                          className="p-2 border border-slate-300"
-                        >
-                          {cell.render('Cell')}
-                        </td>
+                        {...cell.getCellProps()}
+                        className={`p-2 border border-slate-300 ${
+                          cell.column.id === 'status' || cell.column.id === 'action'
+                            ? 'text-center' 
+                            : 'text-left' 
+                        }`}
+                      >
+                        {cell.render('Cell')}
+                      </td>
                       );
                     })}
                   </tr>

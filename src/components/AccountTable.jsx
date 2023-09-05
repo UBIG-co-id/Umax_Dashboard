@@ -3,12 +3,13 @@ import { useTable, useGlobalFilter } from 'react-table';
 import data from './DataAccount';
 import { BsTrash3, BsPlus } from 'react-icons/bs';
 import { CiSearch } from 'react-icons/ci';
-import { AiOutlineEdit, AiOutlineFilePdf } from 'react-icons/ai';
+import { AiOutlineEdit, AiOutlineFilePdf, AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { RiFileExcel2Line } from 'react-icons/ri';
 import { DownloadTableExcel } from 'react-export-table-to-excel';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import '../styles.css';
+
 
 
 function AccountTable() {
@@ -17,7 +18,14 @@ function AccountTable() {
   const tableRef = useRef(null);
   const [showAddPopup, setShowAddPopup] = useState(false); // State untuk menampilkan popup
   const [newData, setNewData] = useState({}); // State untuk data baru
+  const [password, setPassword] = useState(''); // State untuk kata sandi
+  const [showPassword, setShowPassword] = useState(false); // State untuk menampilkan atau menyembunyikan kata sandi
 
+  
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+  
 
   const columns = React.useMemo(
     () => [
@@ -217,40 +225,150 @@ const handleAddData = () => {
           </button>
 
            {/* menu add data */}
-    {/* Pop-up menu */}
-    {showAddPopup && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-              <div className="bg-white p-5 rounded-lg shadow-lg">
-                {/* Isi popup menu di sini */}
-                {/* Misalnya, form untuk mengisi data baru */}
-                <h2 className="text-xl font-semibold mb-4">Add Data</h2>
-                <div className="mb-4">
-                  <input
-                    type="text"
-                    placeholder="Name"
-                    value={newData.name || ''}
-                    onChange={(e) => setNewData({ ...newData, name: e.target.value })}
-                    className="p-2 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
-                  />
-                </div>
-                {/* Tambahkan field lain sesuai kebutuhan */}
-                <button
-                  type="button"
-                  onClick={handleAddData}
-                  className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
-                >
-                  Add
-                </button>
+   {/* Pop-up menu */}
+   {showAddPopup && (
+              <div className="fixed z-50 inset-0 flex items-center justify-center">
+                    <div className="fixed -z-10 inset-0 bg-black bg-opacity-50"></div>
+                <div className=" bg-white p-5 rounded-lg shadow-lg">
+                  <h2 className="text-xl font-semibold mb-4">Account</h2>
+                  <div className="flex space-x-12 mb-4">
+                    <div className="flex flex-col">
+                      <label className='pb-2 text-sm ' htmlFor="">Name</label>
+                      <input
+                        type="text"
+                        className="p-2 h-9 w-56 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <label className='pb-2 text-sm ' htmlFor="">Client</label>
+                      <select
+                        className="px-3 text-slate-500 h-9 w-56 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                      >
+                         <option value="option1">Client1</option>
+                        <option value="option2">Client2</option>
+                        <option value="option3">Client3</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="flex space-x-12 mb-4">
+                        <div className="flex flex-col">
+                      <label className='pb-2 text-sm ' htmlFor="">Platform</label>
+                      <select
+                        className="px-3 text-slate-500 h-9 w-56 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md "
+                      >
+                       <option value="option1">Facebook Ads</option>
+                        <option value="option2">Google Ads</option>
+                        <option value="option3">Instagram Ads</option>
+                      </select>
+                    </div>
+
+                    <div className='flex' >
+                    <div className="flex flex-col">
+                      <label className='pb-2 text-sm ' htmlFor="">Email</label>
+                        <input type="email" 
+                        className="px-3 text-slate-500 rounded-s-md w-36 h-9 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 "
+                        />
+                       
+                    </div>
+
+                        <input type="email"
+                        disabled
+                        placeholder='gmail.com' 
+                        className=" text-center text-sm relative top-7 rounded-e-md w-20 h-9 border bg-slate-300 border-slate-300 "
+                        />
+
+                    </div>
+
+                  </div>
+
+                  
+
+                  <div className="flex space-x-12 mb-4">
+                     <div className="flex flex-col">
+      <label className="pb-2 text-sm" htmlFor="">
+        Password
+      </label>
+      <div className="relative">
+        <input
+          type={showPassword ? 'text' : 'password'}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="p-2 h-9 w-56 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md pr-10"
+        />
+        <div
+          className="absolute top-3 right-2  cursor-pointer"
+          onClick={togglePasswordVisibility}
+        >
+          {showPassword ? (
+            <AiOutlineEyeInvisible size={15} />
+          ) : (
+            <AiOutlineEye size={15} />
+          )}
+        </div>
+      </div>
+    </div>
+
+
+
+                    <div className="flex flex-col">
+                      <label className='pb-2 text-sm' htmlFor="">Status</label>
+                      <select
+                        className="px-3 text-slate-500 h-9 w-56 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md "
+                      >
+                      <option value="option1">All</option>
+                        <option value="option2">Draft</option>
+                        <option value="option3">Active</option>
+                        <option value="option3">Completed</option>
+                      </select>
+                    </div>
+                  </div>
+
+                
+
+                  <div className="flex space-x-12 mb-4">
+                  <div className="flex flex-col">
+                  <label className='pb-2 text-sm ' htmlFor="">Notes</label>
+                  <textarea
+                    className="p-2 max-h-md w-56 text-slate-500 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                    ></textarea>
+                  </div>
+
+
+                    <div className="flex flex-col">
+                      <label className='pb-2 text-sm ' htmlFor="">Status</label>
+                      <select
+                        className="px-3 text-slate-500 h-9 w-56 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md "
+                      >
+                        <option value="option1">All</option>
+                        <option value="option2">Draft</option>
+                        <option value="option3">Active</option>
+                        <option value="option3">Completed</option>
+                      </select>
+                    </div>
+                  </div>
+         
+
+                  <div className="flex justify-end">
+                {/* Tombol Save */}
                 <button
                   type="button"
                   onClick={toggleAddPopup}
-                  className="ml-2 text-gray-600 hover:text-gray-800"
+                  className=" text-gray-500 mr-4"
                 >
                   Cancel
                 </button>
+                  <button
+                    type="button"
+                  onClick={handleAddData}
+                    className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
+                  >
+                    Save
+                  </button>
+                </div>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
 
            {/* end */}
@@ -293,31 +411,40 @@ const handleAddData = () => {
                 <tr {...headerGroup.getHeaderGroupProps()}>
                   {headerGroup.headers.map((column) => (
                     <th
-                      {...column.getHeaderProps()}
-                      className="p-2 border-slate-300 border"
-                    >
-                      {column.render('Header')}
-                    </th>
+                    {...column.getHeaderProps()}
+                    className={`p-2 text-white bg-sky-700 font-medium border-slate-300 border ${
+                      column.id === 'status' || column.id === 'action'
+                        ? 'text-center' //  untuk rata tengah
+                        : 'text-left' //  untuk kolom lainnya
+                    }`}
+                  >
+                    {column.render('Header')}
+                  </th>
                   ))}
                 </tr>
               ))}
             </thead>
             <tbody {...getTableBodyProps()}>
-              {rows.map((row) => {
+              {rows.map((row, rowIndex) => {
                 prepareRow(row);
                 return (
                   <tr
                     {...row.getRowProps()}
-                    className="border border-slate-300 text-gray-600 hover:bg-gray-200 hover:text-blue-600"
-                  >
+                    className={`border border-slate-300 text-gray-600 hover:bg-gray-200 hover:text-blue-600 ${
+                      rowIndex % 2 === 0 ? 'bg-gray-100' : 'bg-white' // Memberikan latar belakang selang-seling
+                    }`}                   >
                     {row.cells.map((cell) => {
                       return (
                         <td
-                          {...cell.getCellProps()}
-                          className="p-2 border border-slate-300"
-                        >
-                          {cell.render('Cell')}
-                        </td>
+                        {...cell.getCellProps()}
+                        className={`p-2 border border-slate-300 ${
+                          cell.column.id === 'status' || cell.column.id === 'action'
+                            ? 'text-center' //  untuk rata tengah
+                            : 'text-left' //  untuk sel lainnya
+                        }`}
+                      >
+                        {cell.render('Cell')}
+                      </td>
                       );
                     })}
                   </tr>

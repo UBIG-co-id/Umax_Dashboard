@@ -1,4 +1,30 @@
-//===== pop up animasi add data campaigns =====//
+/* CSS untuk header "Action" */
+.action-column {
+  text-align: center; /* Mengatur teks menjadi rata tengah */
+}
+
+.header.action-column {
+  /* CSS tambahan untuk header kolom "Action" */
+  text-align: center; /* Mengatur teks header menjadi rata tengah */
+}
+
+
+.action-column {
+  text-align: center; /* Ini akan membuat isi kolom "Action" menjadi rata tengah */
+}
+
+.action-column .header {
+  text-align: center; /* Ini akan membuat header kolom "Action" menjadi rata tengah */
+}
+
+.action-header {
+  text-align: center; /* Ini akan membuat header "Action" menjadi rata tengah */
+}
+
+.action-cell {
+  text-align: center; /* Ini akan membuat sel dalam kolom "Action" menjadi rata tengah */
+}
+
 
 /* CSS untuk animasi popup */
 .popup-container {
@@ -77,7 +103,7 @@
   width: 17.5rem;
 }
 .bayangan{
-  box-shadow: 10px 0 15px rgba(0, 0, 0, 0.1);
+  filter: drop-shadow(2px 0px 2px rgba(17, 18, 22, 0.10));
 }
 .pembatas{
   position: relative;
@@ -137,8 +163,9 @@
 }
 
 .table-container {
+  white-space: nowrap;
   overflow-x: auto;
-  max-width: 100%; /* Adjust as needed */
+  max-width: 100%;
 }
 
 .table {
@@ -211,32 +238,6 @@ th svg.desc{
   transform: rotate(180deg);
 }
 
-/* .table1 {
-  font-family: sans-serif;
-  color: #444;
-  border-collapse: collapse;
-  width: 100%;
-  border: 1px solid #f2f5f7;
-}
-
-.table1 tr th{
-  background: #35A9DB;
-  color: #fff;
-  font-weight: normal;
-}
-
-.table1, th, td {
-  padding: 8px 20px;
-  text-align: center;
-}
-
-.table1 tr:hover {
-  background-color: #f5f5f5;
-}
-
-.table1 tr:nth-child(even) {
-  background-color: #f2f2f2;
-} */
 
 
 .pagination-container {
@@ -312,4 +313,29 @@ th svg.desc{
 .table1 tr:nth-child(even) {
   background-color: #f2f2f2;
 } 
+
+.modalsd{
+  box-shadow: 0px 0px 20px 0px rgba(18, 21, 27, 0.08);
+}
+
+/* CSS tambahan jika Anda ingin mengatur lebar elemen <select> */
+.select-custom-width {
+  width: 200px; /* Sesuaikan lebar sesuai kebutuhan Anda */
+}
+
+/* responsive table */
+.mediaquery{
+  @media screen and (max-width: 1023px ){
+    display: flex;
+    flex-direction: column;
+
+  }
+}
+
+/* TableStyles.css */
+.text-left {
+  text-align: left;
+}
+
+
 
