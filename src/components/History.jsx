@@ -115,7 +115,7 @@ export default function App() {
             <div className="mb-4 flex space-x-4 justify-between">
               <div className="w-full flex flex-col gap-5 justify-between" ref={componentPDF} style={{ width: '100%' }}>
                 <div ref={tableRef}>
-                  <DataTable value={visibleUsers} className="">
+                  <DataTable value={visibleUsers} >
                     <Column field="update" header="Last Update" sortable style={{ width: '25%' }} />
                     <Column field="amount" header="Amount Spent" sortable style={{ width: '25%' }} />
                     <Column field="reach" header="Reach" sortable style={{ width: '25%' }} />

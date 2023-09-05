@@ -15,8 +15,8 @@ function ClientsTable() {
   const [tableData, setTableData] = useState(data);
   const [selectedPlatform, setSelectedPlatform] = useState('');
   const tableRef = useRef(null);
-  const [showAddPopup, setShowAddPopup] = useState(false); // State untuk menampilkan popup
-  const [newData, setNewData] = useState({}); // State untuk data baru
+  const [showAddPopup, setShowAddPopup] = useState(false); 
+  const [newData, setNewData] = useState({}); 
 
 
   const columns = React.useMemo(
@@ -40,8 +40,9 @@ function ClientsTable() {
       {
         Header: 'Action',
         accessor: 'id',
+
         Cell: ({ row }) => (
-          <div className="flex space-x-2">
+          <div className="flex space-x-2  justify-center">
             <button
               onClick={() => handleEdit(row.original.id)}
               className="bg-red-200 hover:bg-red-300 text-red-600 py-1 px-1 rounded"
@@ -56,6 +57,8 @@ function ClientsTable() {
             </button>
           </div>
         ),
+        headerClassName: 'action-column header', // Tambahkan kelas CSS khusus
+      className: 'action-column', // Tambahkan kelas CSS khusus
       },
     ],
     []
@@ -155,17 +158,16 @@ const handleAddData = () => {
           
           {/* Seleksi filter Platform dan objective */}
 
-          {/* bagian platform */}
+          {/* bagian status */}
           <div className="relative">
             <select
               className="p-2 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg sm:w-48"
               value={selectedPlatform}
               onChange={(e) => setSelectedPlatform(e.target.value)}
             >
-              <option hidden>Platform</option>
-              <option value="Facebook">Facebook</option>
-              <option value="Instagram">Instagram</option>
-              <option value="Google">Google</option>
+              <option hidden>Status</option>
+              <option value="Active">Active</option>
+              <option value="Deactive">Deactive</option>
             </select>
           </div>
 
@@ -188,40 +190,85 @@ const handleAddData = () => {
           </button>
 
            {/* menu add data */}
-    {/* Pop-up menu */}
-    {showAddPopup && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-              <div className="bg-white p-5 rounded-lg shadow-lg">
-                {/* Isi popup menu di sini */}
-                {/* Misalnya, form untuk mengisi data baru */}
-                <h2 className="text-xl font-semibold mb-4">Add Data</h2>
-                <div className="mb-4">
-                  <input
-                    type="text"
-                    placeholder="Name"
-                    value={newData.name || ''}
-                    onChange={(e) => setNewData({ ...newData, name: e.target.value })}
-                    className="p-2 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
-                  />
-                </div>
-                {/* Tambahkan field lain sesuai kebutuhan */}
-                <button
-                  type="button"
-                  onClick={handleAddData}
-                  className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
-                >
-                  Add
-                </button>
+   {/* Pop-up menu */}
+   {showAddPopup && (
+              <div className="fixed z-50 inset-0 flex items-center justify-center">
+                    <div className="fixed -z-10 inset-0 bg-black bg-opacity-50"></div>
+                <div className=" bg-white p-5 rounded-lg shadow-lg">
+                  <h2 className="text-xl font-semibold mb-4">Client</h2>
+                  <div className="flex space-x-12 mb-4">
+                    <div className="flex flex-col">
+                      <label className='pb-2 text-sm ' htmlFor="">Name</label>
+                      <input
+                        type="text"
+                        className="p-2 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <label className='pb-2 text-sm ' htmlFor="">Address</label>
+                      <input
+                        type="text"
+                        className="p-2 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex space-x-12 mb-4">
+                        <div className="flex flex-col">
+                      <label className='pb-2 text-sm ' htmlFor="">Contact</label>
+                      <input
+                        type="number"
+                        className="p-2 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                      />
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className='pb-2 text-sm ' htmlFor="">Status</label>
+                      <select
+                        className="px-3 text-slate-500 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md select-custom-width"
+                      >
+                        <option value="option1">Active</option>
+                        <option value="option2">Deactive</option>
+                      </select>
+                    </div>
+                  </div>
+
+                
+
+
+                  <div className="flex space-x-12 mb-4">
+                  <div className="flex flex-col">
+                  <label className='pb-2 text-sm ' htmlFor="">Notes</label>
+                  <textarea
+                    className="p-2 max-h-md select-custom-width text-slate-500 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                    ></textarea>
+                  </div>
+
+
+                  
+                  </div>
+         
+
+                  <div className="flex justify-end">
+                {/* Tombol Save */}
                 <button
                   type="button"
                   onClick={toggleAddPopup}
-                  className="ml-2 text-gray-600 hover:text-gray-800"
+                  className=" text-gray-500 mr-4"
                 >
                   Cancel
                 </button>
+                  <button
+                    type="button"
+                  onClick={handleAddData}
+                    className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
+                  >
+                    Save
+                  </button>
+                </div>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
 
            {/* end */}
@@ -264,31 +311,46 @@ const handleAddData = () => {
                 <tr {...headerGroup.getHeaderGroupProps()}>
                   {headerGroup.headers.map((column) => (
                     <th
-                      {...column.getHeaderProps()}
-                      className="p-2 border-slate-300 border"
-                    >
-                      {column.render('Header')}
-                    </th>
+                    {...column.getHeaderProps()}
+                    className={`p-2 text-white bg-sky-700 font-medium border-slate-300 border ${
+                      column.id === 'action' || column.id === 'status'
+                        ? 'text-center' // Untuk rata tengah
+                        : 'text-left' // Untuk kolom lainnya
+                    }`}
+                  >
+                    {column.render('Header')}
+                  </th>
+                  
+                  
+                   
                   ))}
                 </tr>
               ))}
             </thead>
             <tbody {...getTableBodyProps()}>
-              {rows.map((row) => {
+              {rows.map((row, rowIndex) => {
                 prepareRow(row);
                 return (
                   <tr
                     {...row.getRowProps()}
-                    className="border border-slate-300 text-gray-600 hover:bg-gray-200 hover:text-blue-600"
-                  >
+                    className={`border border-slate-300 text-gray-600 hover:bg-gray-200 hover:text-blue-600 ${
+                      rowIndex % 2 === 0 ? 'bg-gray-100' : 'bg-white' // Memberikan latar belakang selang-seling
+                    }`}                  >
                     {row.cells.map((cell) => {
                       return (
                         <td
-                          {...cell.getCellProps()}
-                          className="p-2 border border-slate-300"
-                        >
-                          {cell.render('Cell')}
-                        </td>
+  {...cell.getCellProps()}
+  className={`p-2 border border-slate-300 ${
+    cell.column.id === 'status' || cell.column.id === 'action'
+      ? 'text-center action-column' // Terapkan kelas CSS khusus
+      : 'text-left'
+  }`}
+>
+  {cell.render('Cell')}
+</td>
+
+
+                      
                       );
                     })}
                   </tr>
