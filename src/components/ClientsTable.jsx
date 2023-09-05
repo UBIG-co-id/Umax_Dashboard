@@ -339,7 +339,11 @@ const handleAddData = () => {
                     {row.cells.map((cell) => {
                       return (
                         <td
+
                    {...cell.getCellProps()}
+
+  {...cell.getCellProps()}
+
   className={`p-2 border border-slate-300 ${
     cell.column.id === 'status' || cell.column.id === 'action'
       ? 'text-center action-column' // Terapkan kelas CSS khusus
