@@ -1,6 +1,7 @@
   import React, { useState } from 'react';
   import '../styles.css';
   import { google, facebook, tiktok } from "../assets";
+  import { BiSearch } from 'react-icons/bi';
 
 
   const Sidebar = () => {
@@ -32,22 +33,22 @@
 
     const tabStyle = {
       all: {
-        backgroundColor: activeTab === 'all' ? '#CDCDCD' : '#EBECF0',
+        backgroundColor: activeTab === 'all' ? '#ffff' : '#EBECF000',
         color: activeTab === 'all' ? '#494949' : '#6b7280',
         circleColor: activeTab === 'all' ? '#000' : '#00FF00',
       },
       draft: {
-        backgroundColor: activeTab === 'draft' ? '#CDCDCD' : '#EBECF0',
+        backgroundColor: activeTab === 'draft' ? '#ffff' : '#EBECF000',
         color: activeTab === 'draft' ? '#494949' : '#6b7280',
         circleColor: activeTab === 'draft' ? '#8F8F8F' : '#8F8F8F',
       },
       active: {
-        backgroundColor: activeTab === 'active' ? '#CDCDCD' : '#EBECF0',
+        backgroundColor: activeTab === 'active' ? '#ffff' : '#EBECF000',
         color: activeTab === 'active' ? '#494949' : '#6b7280',
         circleColor: activeTab === 'active' ? '#00FF00' : '#00FF00',
       },
       completed: {
-        backgroundColor: activeTab === 'completed' ? '#CDCDCD' : '#EBECF0',
+        backgroundColor: activeTab === 'completed' ? '#ffff' : '#EBECF000',
         color: activeTab === 'completed' ? '#494949' : '#6b7280',
         circleColor: activeTab === 'completed' ? '#FF8A00' : '#FF8A00',
       },
@@ -154,31 +155,31 @@
         </button>
         <div className={`relative top-5 -left-1 w-72 tinggiCard bg-white bayangan rounded-t-xl max-sm:left-0 text-slate-700 p-4 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out`}>
 
-        <div className="flex justify-center mb-4 ">
+        <div className=" bg-gray-200 mx-1 p-1 rounded-lg flex justify-center mb-4 ">
             <button
             style={tabStyle.all}
-            className="px-2 py-1 rounded-s"
+            className="px-2  py-1 rounded-md"
             onClick={() => handleTabChange('all')}
             >
             All
             </button>
             <button
               style={tabStyle.draft}
-              className="px-2 py-1 "
+              className="px-2 py-1 rounded-md"
               onClick={() => handleTabChange('draft')}
             >
               Draft
             </button>
             <button
               style={tabStyle.active}
-              className="px-2 py-1 "
+              className="px-2 py-1 rounded-md"
               onClick={() => handleTabChange('active')}
             >
               Active
             </button>
             <button
               style={tabStyle.completed}
-              className="px-2 py-1 rounded-e"
+              className="px-2 py-1 rounded-md"
               onClick={() => handleTabChange('completed')}
             >
               Completed
@@ -186,19 +187,20 @@
           </div>
 
 
-        {/* Search Bar */}
-        <div>
+                {/* Search Bar */}
+        <div className="relative">
+          <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400">
+            <BiSearch  />
+          </span>
           <input
             type="text"
             placeholder="Search..."
-            className="w-full px-2 py-1 bg-white border-searc text-slate-600 rounded"
+            className="w-full pl-8 px-2 py-1 bg-white border-searc text-slate-600 rounded"
             value={searchText}
             onChange={handleSearchChange}
           />
         </div>
 
-
-        {/* List Items */}
 
 
 

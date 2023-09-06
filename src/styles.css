@@ -323,19 +323,22 @@ th svg.desc{
   width: 200px; /* Sesuaikan lebar sesuai kebutuhan Anda */
 }
 
+//=warna tab=//
+
+
 /* responsive table */
 .mediaquery{
   @media screen and (max-width: 1023px ){
     display: flex;
     flex-direction: column;
 
-  }
-}
+ }}
+
+
 
 /* TableStyles.css */
 .text-left {
   text-align: left;
 }
-
 
 

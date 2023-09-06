@@ -140,9 +140,9 @@ const handleAddData = () => {
   return (
     <div className="border-2 border-slate-200 bg-white p-5 m-10 rounded-lg relative">
       <div className="container mx-auto px-0 p-4">
-        <div className="mb-4 -mt-4 flex space-x-4 justify-start">
+        <div className="grid grid-cols-12 gap-4 px-5 -mt-4 mb-4 ">
           {/* Search bar */}
-          <div className="relative">
+          <div className="relative  mediaquery col-span-12 lg:col-span-3">
             <input
               type="text"
               value={globalFilter}
@@ -310,16 +310,16 @@ const handleAddData = () => {
               {headerGroups.map((headerGroup) => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
                   {headerGroup.headers.map((column) => (
-                    <th
-                    {...column.getHeaderProps()}
-                    className={`p-2 text-white bg-sky-700 font-medium border-slate-300 border ${
-                      column.id === 'action' || column.id === 'status'
-                        ? 'text-center' // Untuk rata tengah
-                        : 'text-left' // Untuk kolom lainnya
-                    }`}
-                  >
-                    {column.render('Header')}
-                  </th>
+                     <th
+                     {...column.getHeaderProps()}
+                     className={`p-2 text-white bg-sky-700 font-normal border-slate-300 border ${
+                       column.id === "status" || column.id === "id"
+                         ? "place-items-center"
+                         : "text-left"
+                     }`}
+                   >
+                     {column.render("Header")}
+                   </th>
                   
                   
                    

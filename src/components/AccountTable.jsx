@@ -53,7 +53,7 @@ function AccountTable() {
         Header: 'Action',
         accessor: 'id',
         Cell: ({ row }) => (
-          <div className="flex space-x-2">
+          <div className="flex space-x-2 justify-center">
             <button
               onClick={() => handleEdit(row.original.id)}
               className="bg-red-200 hover:bg-red-300 text-red-600 py-1 px-1 rounded"
@@ -410,16 +410,16 @@ const handleAddData = () => {
               {headerGroups.map((headerGroup) => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
                   {headerGroup.headers.map((column) => (
-                    <th
-                    {...column.getHeaderProps()}
-                    className={`p-2 text-white bg-sky-700 font-medium border-slate-300 border ${
-                      column.id === 'status' || column.id === 'action'
-                        ? 'text-center' //  untuk rata tengah
-                        : 'text-left' //  untuk kolom lainnya
-                    }`}
-                  >
-                    {column.render('Header')}
-                  </th>
+                     <th
+                     {...column.getHeaderProps()}
+                     className={`p-2 text-white bg-sky-700 font-normal border-slate-300 border ${
+                       column.id === "status" || column.id === "id"
+                         ? "place-items-center"
+                         : "text-left"
+                     }`}
+                   >
+                     {column.render("Header")}
+                   </th>
                   ))}
                 </tr>
               ))}
