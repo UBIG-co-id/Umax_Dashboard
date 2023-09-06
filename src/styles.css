@@ -83,7 +83,7 @@
   border: 2px solid #409DF9 ;
 }
 .border-searc{
-  border: 1px solid #727272;
+  border: 2px solid #EEF1FF;
 }
 .aside__container-list_information {
   position: relative;
@@ -112,7 +112,7 @@
   left: -17px;
 }
 .tinggiCard{
-  height: 60rem;
+  height: 57.3rem;
 }
 
 /* animasi untuk pop up card */
@@ -342,3 +342,20 @@ th svg.desc{
 }
 
 
+/* Gaya scroll bar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #606f7b;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #505f6b;
+}

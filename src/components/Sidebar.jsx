@@ -153,7 +153,7 @@
             </svg>
           </div>
         </button>
-        <div className={`relative top-5 -left-1 w-72 tinggiCard bg-white bayangan rounded-t-xl max-sm:left-0 text-slate-700 p-4 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out`}>
+        <div className={`relative top-5 -left-1  w-72 tinggiCard bg-white   bayangan rounded-t-xl  max-sm:left-0 text-slate-700 p-4 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out`}>
 
         <div className=" bg-gray-200 mx-1 p-1 rounded-lg flex justify-center mb-4 ">
             <button
@@ -195,7 +195,7 @@
           <input
             type="text"
             placeholder="Search..."
-            className="w-full pl-8 px-2 py-1 bg-white border-searc text-slate-600 rounded"
+            className="w-full pl-8 px-2 py-1 bg-white border-searc text-slate-600 rounded-lg"
             value={searchText}
             onChange={handleSearchChange}
           />
@@ -205,20 +205,21 @@
 
 
 
-        <div className="relative lebar-list -left-2  border-slate-500 pt-1">
-          <ul className=" mt-5">
+        <div className="relative lebar-list -left-2 border-slate-500 pt-2 overflow-y-scroll max-h-[calc(150vh-85px)]">
+          <ul className="  mt-5">
           {activeTab === 'all' && (
             <>
             <hr className="border-gray-500 mb-5" />
             {renderItems([
-
-            { title: 'Retarget VV 50-95% Tahfidz',  icon: google ,amountSpent:'Rp. 2.000.000', reach: '100.000', startDate: 'May 21, 14:00' },
-            { title: 'Campaign Tahfidz FB IG EN...', icon: google ,amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
-            { title: 'Retarget CA Web Visitor', icon: google ,amountSpent: 'Rp. 4.000.000', reach: '97.000', startDate: 'Apr 12, 12:36' },
-            { title: 'Campaign Tahfidz', icon: facebook ,amountSpent: 'Rp. 3.000.000', reach: '250.000', startDate: 'Apr 12, 14:50' },
-            { title: 'Program Tahfidz', icon: tiktok ,amountSpent: 'Rp. 4.000.000', reach: '120.000', startDate: 'Feb 4, 12:36' },
-            { title: 'Program Tahfidz', icon: google ,amountSpent: 'Rp. 4.000.000', reach: '120.000', startDate: 'Feb 4, 12:36' },
-            { title: 'Program Tahfidz', icon: facebook ,amountSpent: 'Rp. 4.000.000', reach: '120.000', startDate: 'Feb 4, 12:36' },
+              { title: 'Program Bimbingan Karir...', icon: tiktok ,amountSpent: 'Rp. 3.000.000', reach: '220.000', startDate: 'Sep 4, 14:09' },
+              { title: 'Santri Berwirausaha', icon: google ,amountSpent: 'Rp. 2.000.000', reach: '97.000', startDate: 'Mart 1, 12:36' },
+              { title: 'Program Tahfidz', icon: facebook ,amountSpent: 'Rp. 4.000.000', reach: '120.000', startDate: 'Feb 4, 12:36' },
+              { title: 'Campaign Tahfidz', icon: google ,amountSpent: 'Rp. 3.000.000', reach: '250.000', startDate: 'Apr 12, 14:00' },
+              { title: 'Tahfidz Ramadhan', icon: facebook ,amountSpent: 'Rp. 1.000.000', reach: '10.000', startDate: 'Agust 25, 11:19' },
+              { title: 'Bilingual - 15/10',  icon: google ,amountSpent:'Rp. 2.000.000', reach: '100.000', startDate: 'May 21, 14:00' },
+              { title: 'Peduli Pangan', icon: google ,amountSpent: 'Rp. 1.000.000', reach: '97.000', startDate: 'Apr 12, 12:36' },
+              { title: 'Retarget CA Web Visitor', icon: tiktok ,amountSpent: 'Rp. 5.000.000', reach: '100.000', startDate: 'Mei 24, 09:36' },
+              { title: 'Campaign Tahfidz FB IG EN...', icon: google ,amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
             ])}
             </>
             )}
@@ -231,11 +232,13 @@
                 
                   { title: 'Retarget VV 50-95% Tahfidz',  icon: google ,amountSpent:'Rp. 2.000.000', reach: '100.000', startDate: 'May 21, 14:00' },
                   { title: 'Campaign Tahfidz FB IG EN...', icon: google ,amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
-                  { title: 'Retarget CA Web Visitor', icon: google ,amountSpent: 'Rp. 4.000.000', reach: '97.000', startDate: 'Apr 12, 12:36' },
-                  { title: 'Campaign Tahfidz', icon: facebook ,amountSpent: 'Rp. 3.000.000', reach: '250.000', startDate: 'Apr 12, 14:50' },
-                  { title: 'Program Tahfidz', icon: tiktok ,amountSpent: 'Rp. 4.000.000', reach: '120.000', startDate: 'Feb 4, 12:36' },
-                  { title: 'Program Tahfidz', icon: google ,amountSpent: 'Rp. 4.000.000', reach: '120.000', startDate: 'Feb 4, 12:36' },
-                  { title: 'Program Tahfidz', icon: facebook ,amountSpent: 'Rp. 4.000.000', reach: '120.000', startDate: 'Feb 4, 12:36' },
+                  { title: 'Retarget CA Web Visitor', icon: google ,amountSpent: 'Rp. 4.000.000', reach: '97.000', startDate: 'Desc 22, 13:06' },
+                  { title: 'Campaign Tahfidz', icon: facebook ,amountSpent: 'Rp. 3.000.000', reach: '250.000', startDate: 'Apr 12, 14:00' },
+                  { title: 'Program Tahfidz', icon: tiktok ,amountSpent: 'Rp. 4.000.000', reach: '120.000', startDate: 'Feb 4, 02:12' },
+                  { title: 'Kampung Pesantren Berkah', icon: google ,amountSpent: 'Rp. 7.000.000', reach: '120.000', startDate: 'Feb 4, 07:26' },
+                  { title: 'Tahfidz Ramadhan', icon: facebook ,amountSpent: 'Rp. 1.000.000', reach: '10.000', startDate: 'Agust 25, 11:19' },
+                  { title: 'Program Bimbingan Karir...', icon: tiktok ,amountSpent: 'Rp. 3.000.000', reach: '220.000', startDate: 'Sep 4, 14:09' },
+                  { title: 'Santri Berwirausaha', icon: google ,amountSpent: 'Rp. 2.000.000', reach: '97.000', startDate: 'Mart 1, 12:36' },
                   
                 ])}
               </>
@@ -260,7 +263,8 @@
             {renderItems([
               { title: 'Retarget VV 50-95% Tahfidz',  icon: facebook ,amountSpent:'Rp. 2.000.000', reach: '100.000', startDate: 'May 21, 14:00' },
               { title: 'Campaign Tahfidz FB IG EN...', icon: google ,amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
-              { title: 'Retarget CA Web Visitor', icon: google ,amountSpent: 'Rp. 4.000.000', reach: '97.000', startDate: 'Apr 12, 12:36' },
+              { title: 'Retarget CA Web Visitor', icon: tiktok ,amountSpent: 'Rp. 5.000.000', reach: '100.000', startDate: 'Mei 24, 09:36' },
+              { title: 'Peduli Pangan', icon: google ,amountSpent: 'Rp. 1.000.000', reach: '97.000', startDate: 'Apr 12, 12:36' },
             
             ])}
           </>
