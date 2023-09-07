@@ -5,9 +5,7 @@ import { BsTrash3, BsPlus } from 'react-icons/bs';
 import { CiSearch } from 'react-icons/ci';
 import { AiOutlineEdit, AiOutlineFilePdf } from 'react-icons/ai';
 import { RiFileExcel2Line } from 'react-icons/ri';
-import { DownloadTableExcel } from 'react-export-table-to-excel';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { useDownloadExcel } from "react-export-table-to-excel";
 import '../styles.css';
 
 
@@ -93,49 +91,41 @@ function ClientsTable() {
 
   useEffect(() => {
     const filteredData = data.filter((row) => {
-      return selectedPlatform === '' || row.platform === selectedPlatform;
+      return selectedPlatform === "" || row.platform === selectedPlatform;
     });
     setTableData(filteredData);
   }, [selectedPlatform]);
 
-  // bgian export ke pdf
-  const exportToPDF = () => {
-    const doc = new jsPDF();
-    const pdfColumns = columns.map((column) => column.Header);
-
-    const table = tableRef.current.getTableProps().instance;
-
-    const tableRows = [];
-    table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-      const rowData = [];
-      const rowNode = this.node();
-      const cells = rowNode.querySelectorAll('td');
-      cells.forEach((cell) => {
-        rowData.push(cell.textContent);
-      });
-      tableRows.push(rowData);
-    });
-
-    doc.autoTable({
-      head: [pdfColumns],
-      body: tableRows,
-      didDrawPage: function (data) {},
-    });
-
-    doc.save('Data_Campaigns.pdf');
+  const toggleAddPopup = () => {
+    setShowAddPopup(!showAddPopup);
   };
-  // End
 
-// pop up add data
- const toggleAddPopup = () => {
-  setShowAddPopup(!showAddPopup);
-};
+  const handleAddData = () => {
+    toggleAddPopup();
+  };
 
-const handleAddData = () => {
-  const updatedData = [...tableData, newData];
-  setTableData(updatedData);
-  toggleAddPopup(); 
-};
+  useEffect(() => {
+    const closePopupOnEscape = (e) => {
+      if (e.key === "Escape") {
+        toggleAddPopup();
+      }
+    };
+
+    if (showAddPopup) {
+      window.addEventListener("keydown", closePopupOnEscape);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", closePopupOnEscape);
+    };
+  }, [showAddPopup]);
+
+      //export table ke excel
+      const { onDownload } = useDownloadExcel({
+        currentTableRef: tableRef.current,
+        filename: "DataClients",
+        sheet: "DataClients",
+      });
 
   return (
     <div className="border-2 border-slate-200 bg-white p-0 lg:p-5 m-2 lg:m-10 mt-10 rounded-lg relative">
@@ -165,8 +155,7 @@ const handleAddData = () => {
             >
               <option hidden>Status</option>
               <option value="Facebook">Active</option>
-              <option value="Instagram">DeActive</option>
-              <option value="Google">Google</option>
+              <option value="Instagram">Deactive</option>
             </select>
           </div>
           {/* End */}
@@ -180,7 +169,7 @@ const handleAddData = () => {
             data-te-ripple-init
             data-te-ripple-color="light"
             data-te-ripple-centered="true"
-            className="col-span-8 lg:col-span-2 flex items-center gap-2 border border-slate-300 h-9 rounded-md bg-white p-2 text-xs font-medium leading-normal text-gray-800 hover:bg-gray-50"
+            className="col-span-8 lg:col-span-2 flex items-center gap-2 border border-slate-300 h-9 rounded-md focus:border-gray-500 focus:outline-none focus:ring-0 bg-white p-2 text-xs font-medium leading-normal text-gray-800 hover:bg-gray-50"
             onClick={toggleAddPopup} // Memanggil fungsi toggleAddPopup saat tombol "Add" diklik
           >
             <BsPlus className="font-medium text-lg" />
@@ -192,38 +181,38 @@ const handleAddData = () => {
    {showAddPopup && (
               <div className="fixed z-50 inset-0 flex items-center justify-center">
                     <div className="fixed -z-10 inset-0 bg-black bg-opacity-50"></div>
-                <div className=" bg-white p-5 rounded-lg shadow-lg">
+                <div className=" bg-white p-5 rounded-lg shadow-lg  max-h-[80vh] overflow-y-auto">
                   <h2 className="text-xl font-semibold mb-4">Client</h2>
-                  <div className="flex space-x-12 mb-4">
+                  <div className="flex flex-col md:flex-row gap-4 mb-4">
                     <div className="flex flex-col">
                       <label className='pb-2 text-sm ' htmlFor="">Name</label>
                       <input
                         type="text"
-                        className="p-2 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                        className="p-2 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                       />
                     </div>
                     <div className="flex flex-col">
                       <label className='pb-2 text-sm ' htmlFor="">Address</label>
                       <input
                         type="text"
-                        className="p-2 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                        className="p-2 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                       />
                     </div>
                   </div>
 
-                  <div className="flex space-x-12 mb-4">
+                  <div className="flex flex-col md:flex-row gap-4 mb-4">
                         <div className="flex flex-col">
                       <label className='pb-2 text-sm ' htmlFor="">Contact</label>
                       <input
                         type="number"
-                        className="p-2 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                        className="p-2 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                       />
                     </div>
 
                     <div className="flex flex-col">
                       <label className='pb-2 text-sm ' htmlFor="">Status</label>
                       <select
-                        className="px-3 text-slate-500 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md select-custom-width"
+                        className="px-3 text-slate-500 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
                       >
                         <option value="option1">Active</option>
                         <option value="option2">Deactive</option>
@@ -234,11 +223,11 @@ const handleAddData = () => {
                 
 
 
-                  <div className="flex space-x-12 mb-4">
+                  <div className="flex flex-col md:flex-row gap-4 mb-4">
                   <div className="flex flex-col">
                   <label className='pb-2 text-sm ' htmlFor="">Notes</label>
                   <textarea
-                    className="p-2 max-h-md select-custom-width text-slate-500 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                    className="p-2 max-h-md select-custom-width text-slate-500 border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                     ></textarea>
                   </div>
 
@@ -275,8 +264,8 @@ const handleAddData = () => {
             <button
               type="button"
               className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
-              onClick={() => tableRef.current.exportToExcel()}
-            >
+              onClick={onDownload}
+          >
               <RiFileExcel2Line className="relative font-medium text-lg" />
             </button>
             {/* End */}
@@ -285,7 +274,6 @@ const handleAddData = () => {
             <button
               type="button"
               className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
-              onClick={exportToPDF}
             >
               <AiOutlineFilePdf className="relative font-medium text-lg" />
             </button>

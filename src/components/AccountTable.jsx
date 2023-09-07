@@ -5,10 +5,10 @@ import { BsTrash3, BsPlus } from 'react-icons/bs';
 import { CiSearch } from 'react-icons/ci';
 import { AiOutlineEdit, AiOutlineFilePdf, AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { RiFileExcel2Line } from 'react-icons/ri';
-import { DownloadTableExcel } from 'react-export-table-to-excel';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { useDownloadExcel } from "react-export-table-to-excel";
 import '../styles.css';
+import Select from 'react-select';
+
 
 
 
@@ -16,16 +16,13 @@ function AccountTable() {
   const [tableData, setTableData] = useState(data);
   const [selectedPlatform, setSelectedPlatform] = useState('');
   const tableRef = useRef(null);
-  const [showAddPopup, setShowAddPopup] = useState(false); // State untuk menampilkan popup
-  const [newData, setNewData] = useState({}); // State untuk data baru
-  const [password, setPassword] = useState(''); // State untuk kata sandi
-  const [showPassword, setShowPassword] = useState(false); // State untuk menampilkan atau menyembunyikan kata sandi
-
+  const [showAddPopup, setShowAddPopup] = useState(false);
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); 
   
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  
 
   const columns = React.useMemo(
     () => [
@@ -53,7 +50,7 @@ function AccountTable() {
         Header: 'Action',
         accessor: 'action',
         Cell: ({ row }) => (
-          <div className="flex space-x-2">
+          <div className="flex space-x-2 justify-center">
             <button
               onClick={() => handleEdit(row.original.id)}
               className="bg-red-200 hover:bg-red-300 text-red-600 py-1 px-1 rounded"
@@ -102,48 +99,66 @@ function AccountTable() {
 
   useEffect(() => {
     const filteredData = data.filter((row) => {
-      return selectedPlatform === '' || row.platform === selectedPlatform;
+      return selectedPlatform === "" || row.platform === selectedPlatform;
     });
     setTableData(filteredData);
   }, [selectedPlatform]);
 
-  // bgian export ke pdf
-  const exportToPDF = () => {
-    const doc = new jsPDF();
-    const pdfColumns = columns.map((column) => column.Header);
-
-    const table = tableRef.current.getTableProps().instance;
-
-    const tableRows = [];
-    table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-      const rowData = [];
-      const rowNode = this.node();
-      const cells = rowNode.querySelectorAll('td');
-      cells.forEach((cell) => {
-        rowData.push(cell.textContent);
-      });
-      tableRows.push(rowData);
-    });
-
-    doc.autoTable({
-      head: [pdfColumns],
-      body: tableRows,
-      didDrawPage: function (data) {},
-    });
-
-    doc.save('Data_Campaigns.pdf');
+  const toggleAddPopup = () => {
+    setShowAddPopup(!showAddPopup);
   };
-  // End
 
-// pop up add data
- const toggleAddPopup = () => {
-  setShowAddPopup(!showAddPopup);
+  const handleAddData = () => {
+    toggleAddPopup();
+  };
+
+  //bagian close pakai esc
+  useEffect(() => {
+    const closePopupOnEscape = (e) => {
+      if (e.key === "Escape") {
+        toggleAddPopup();
+      }
+    };
+
+    if (showAddPopup) {
+      window.addEventListener("keydown", closePopupOnEscape);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", closePopupOnEscape);
+    };
+  }, [showAddPopup]);
+
+    //export table ke excel
+    const { onDownload } = useDownloadExcel({
+      currentTableRef: tableRef.current,
+      filename: "DataAccounts",
+      sheet: "DataAccounts",
+    });
+
+
+// select 2
+const options = [
+  { value: 'option1', label: 'PT.Makmur	' },
+  { value: 'option2', label: 'Pondok Nurul Huda	' },
+  { value: 'option3', label: 'PT Haji Umar Barokah' },
+  { value: 'option3', label: 'Pondok Nurul Huda' },
+  { value: 'option3', label: 'PT.Makmur' },
+  { value: 'option3', label: 'PT.Ubig.co.id' },
+];
+
+const [selectedOption, setSelectedOption] = useState(null);
+
+const customStyles = {
+  control: (provided) => ({
+    ...provided,
+    width: 225, 
+    backgroundColor: '#F1F5F9', 
+  }),
 };
 
-const handleAddData = () => {
-  const updatedData = [...tableData, newData];
-  setTableData(updatedData);
-  toggleAddPopup(); 
+const handleSelectChange = (selectedOption) => {
+  setSelectedOption(selectedOption);
 };
 
   return (
@@ -168,18 +183,7 @@ const handleAddData = () => {
           {/* Seleksi filter Platform dan objective */}
 
           {/* bagian platform */}
-          <div className="relative col-span-4 lg:col-span-2">
-            <select
-              className="w-full min-w-0 px-1 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
-              value={selectedPlatform}
-              onChange={(e) => setSelectedPlatform(e.target.value)}
-            >
-              <option hidden>Client</option>
-              <option value="Facebook">PT.Makmur</option>
-              <option value="Instagram">Pondok Nurul Huda</option>
-              <option value="Google">PT Haji Umar Barokah</option>
-            </select>
-          </div>
+        
 
           {/* bagian Platform */}
           <div className="relative col-span-4 lg:col-span-2">
@@ -204,14 +208,12 @@ const handleAddData = () => {
               <option hidden>Status</option>
               <option value="Facebook">Active</option>
               <option value="Instagram">DeActive</option>
-              <option value="Google">Google</option>
             </select>
           </div>
           {/* End */}
 
-          {/* div kosong untuk memberi jarak *
           <div className="hidden lg:block col-span-2"></div>
-          */}
+         
 
           {/* Button add data */}
           <button
@@ -219,7 +221,7 @@ const handleAddData = () => {
             data-te-ripple-init
             data-te-ripple-color="light"
             data-te-ripple-centered="true"
-            className="col-span-8 lg:col-span-1 flex items-center gap-2 border border-slate-300 h-9 rounded-md bg-white p-2 text-xs font-medium leading-normal text-gray-800 hover:bg-gray-50"
+            className="col-span-8 lg:col-span-1 flex items-center gap-2 border border-slate-300 h-9 rounded-md focus:border-gray-500 focus:outline-none focus:ring-0 bg-white p-2 text-xs font-medium leading-normal text-gray-800 hover:bg-gray-50"
             onClick={toggleAddPopup} // Memanggil fungsi toggleAddPopup saat tombol "Add" diklik
           >
             <BsPlus className="font-medium text-lg" />
@@ -231,33 +233,37 @@ const handleAddData = () => {
    {showAddPopup && (
               <div className="fixed z-50 inset-0 flex items-center justify-center">
                     <div className="fixed -z-10 inset-0 bg-black bg-opacity-50"></div>
-                <div className=" bg-white p-5 rounded-lg shadow-lg">
+                <div className=" bg-white p-5 rounded-lg shadow-lg  max-h-[80vh] overflow-y-auto">
                   <h2 className="text-xl font-semibold mb-4">Account</h2>
-                  <div className="flex space-x-12 mb-4">
+                  <div className="flex flex-col md:flex-row gap-4 mb-4">
                     <div className="flex flex-col">
                       <label className='pb-2 text-sm ' htmlFor="">Name</label>
                       <input
                         type="text"
-                        className="p-2 h-9 w-56 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                        className="p-2 h-9 w-56 border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                       />
                     </div>
                     <div className="flex flex-col">
-                      <label className='pb-2 text-sm ' htmlFor="">Client</label>
-                      <select
-                        className="px-3 text-slate-500 h-9 w-56 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
-                      >
-                         <option value="option1">Client1</option>
-                        <option value="option2">Client2</option>
-                        <option value="option3">Client3</option>
-                      </select>
-                    </div>
+                    <label className="pb-2 text-sm" htmlFor="">
+                      Client
+                    </label>
+                    <Select
+                      options={options}
+                      value={selectedOption}
+                      onChange={handleSelectChange}
+                      styles={customStyles}
+                      isSearchable
+                      placeholder="‎"
+                    />
+
+                  </div>
                   </div>
 
-                  <div className="flex space-x-12 mb-4">
+                  <div className="flex flex-col md:flex-row gap-4 mb-4">
                         <div className="flex flex-col">
                       <label className='pb-2 text-sm ' htmlFor="">Platform</label>
                       <select
-                        className="px-3 text-slate-500 h-9 w-56 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md "
+                        className="px-3 text-slate-500 h-9 w-56 border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md "
                       >
                        <option value="option1">Facebook Ads</option>
                         <option value="option2">Google Ads</option>
@@ -269,16 +275,12 @@ const handleAddData = () => {
                     <div className="flex flex-col">
                       <label className='pb-2 text-sm ' htmlFor="">Email</label>
                         <input type="email" 
-                        className="px-3 text-slate-500 rounded-s-md w-36 h-9 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 "
+                        className="px-3 text-slate-500 rounded-md w-56 h-9 border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 "
                         />
                        
                     </div>
 
-                        <input type="email"
-                        disabled
-                        placeholder='gmail.com' 
-                        className=" text-center text-sm relative top-7 rounded-e-md w-20 h-9 border bg-slate-300 border-slate-300 "
-                        />
+                    
 
                     </div>
 
@@ -286,68 +288,56 @@ const handleAddData = () => {
 
                   
 
-                  <div className="flex space-x-12 mb-4">
+                  <div className="flex flex-col md:flex-row gap-4 mb-4">
                      <div className="flex flex-col">
-      <label className="pb-2 text-sm" htmlFor="">
-        Password
-      </label>
-      <div className="relative">
-        <input
-          type={showPassword ? 'text' : 'password'}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="p-2 h-9 w-56 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md pr-10"
-        />
-        <div
-          className="absolute top-3 right-2  cursor-pointer"
-          onClick={togglePasswordVisibility}
-        >
-          {showPassword ? (
-            <AiOutlineEyeInvisible size={15} />
-          ) : (
-            <AiOutlineEye size={15} />
-          )}
-        </div>
-      </div>
-    </div>
+                <label className="pb-2 text-sm" htmlFor="">
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="p-2 h-9 w-56 border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md pr-10"
+                  />
+                  <div
+                    className="absolute top-3 right-2  cursor-pointer"
+                    onClick={togglePasswordVisibility}
+                  >
+                    {showPassword ? (
+                      <AiOutlineEyeInvisible size={15} />
+                    ) : (
+                      <AiOutlineEye size={15} />
+                    )}
+                  </div>
+                </div>
+              </div>
 
 
 
                     <div className="flex flex-col">
                       <label className='pb-2 text-sm' htmlFor="">Status</label>
                       <select
-                        className="px-3 text-slate-500 h-9 w-56 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md "
+                        className="px-3 text-slate-500 h-9 w-56 border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md "
                       >
-                      <option value="option1">All</option>
-                        <option value="option2">Draft</option>
-                        <option value="option3">Active</option>
-                        <option value="option3">Completed</option>
+                      <option value="option1">Active</option>
+                        <option value="option3">Deactive</option>
                       </select>
                     </div>
                   </div>
 
                 
 
-                  <div className="flex space-x-12 mb-4">
+                  <div className="flex flex-col md:flex-row gap-4 mb-4">
                   <div className="flex flex-col">
                   <label className='pb-2 text-sm ' htmlFor="">Notes</label>
                   <textarea
-                    className="p-2 max-h-md w-56 text-slate-500 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                    className="p-2 max-h-md w-56 text-slate-500 border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                     ></textarea>
                   </div>
 
 
-                    <div className="flex flex-col">
-                      <label className='pb-2 text-sm ' htmlFor="">Status</label>
-                      <select
-                        className="px-3 text-slate-500 h-9 w-56 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md "
-                      >
-                        <option value="option1">All</option>
-                        <option value="option2">Draft</option>
-                        <option value="option3">Active</option>
-                        <option value="option3">Completed</option>
-                      </select>
-                    </div>
+             
                   </div>
          
 
@@ -377,8 +367,8 @@ const handleAddData = () => {
             <button
               type="button"
               className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
-              onClick={() => tableRef.current.exportToExcel()}
-            >
+              onClick={onDownload}
+           >
               <RiFileExcel2Line className="relative font-medium text-lg" />
             </button>
             {/* End */}
@@ -387,7 +377,6 @@ const handleAddData = () => {
             <button
               type="button"
               className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
-              onClick={exportToPDF}
             >
               <AiOutlineFilePdf className="relative font-medium text-lg" />
             </button>
@@ -395,12 +384,7 @@ const handleAddData = () => {
         </div>
 
         <div className="opacity-0 !w-0 !h-0">
-          <DownloadTableExcel
-            ref={tableRef}
-            data={tableData}
-            columns={columns}
-            filename="Data_Campaigns.xlsx"
-          />
+         
         </div>
 
         <div className="w-full bg-white max-md:overflow-x-scroll">

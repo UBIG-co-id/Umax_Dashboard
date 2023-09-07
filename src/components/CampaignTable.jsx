@@ -5,12 +5,16 @@ import { BsTrash3, BsPlus } from "react-icons/bs";
 import { CiSearch } from "react-icons/ci";
 import { AiOutlineEdit, AiOutlineFilePdf } from "react-icons/ai";
 import { RiFileExcel2Line } from "react-icons/ri";
+import { useDownloadExcel } from "react-export-table-to-excel";
 import "../styles.css";
+import Select from 'react-select';
+
 
 function DataTable() {
   const [tableData, setTableData] = useState(data);
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [showAddPopup, setShowAddPopup] = useState(false);
+  
 
   const columns = React.useMemo(
     () => [
@@ -100,7 +104,6 @@ function DataTable() {
     setTableData(filteredData);
   }, [selectedPlatform]);
 
-  // pop up add data
   const toggleAddPopup = () => {
     setShowAddPopup(!showAddPopup);
   };
@@ -109,10 +112,67 @@ function DataTable() {
     toggleAddPopup();
   };
 
-  // bagian export pdf
+  // close pakai esc
+  useEffect(() => {
+    const closePopupOnEscape = (e) => {
+      if (e.key === "Escape") {
+        toggleAddPopup();
+      }
+    };
+
+    if (showAddPopup) {
+      window.addEventListener("keydown", closePopupOnEscape);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", closePopupOnEscape);
+    };
+  }, [showAddPopup]);
+
+  const tableRef = useRef(null);
+
+  //export table ke excel
+  const { onDownload } = useDownloadExcel({
+    currentTableRef: tableRef.current,
+    filename: "DataCampaigns",
+    sheet: "DataCampaigns",
+  });
+
+  //export table ke pdf
 
   
-  
+
+  // select 2
+const options = [
+  { value: 'option1', label: 'PT.Makmur	' },
+  { value: 'option2', label: 'Pondok Nurul Huda	' },
+  { value: 'option3', label: 'PT Haji Umar Barokah' },
+  { value: 'option3', label: 'Pondok Nurul Huda' },
+  { value: 'option3', label: 'PT.Makmur' },
+  { value: 'option3', label: 'PT.Ubig.co.id' },
+];
+const options2 = [
+  { value: 'option1', label: 'Prasetyo	' },
+  { value: 'option2', label: 'Ihsan	' },
+  { value: 'option3', label: 'Rochman	' },
+  { value: 'option3', label: 'Reivan' },
+  { value: 'option3', label: 'M Rizky	' },
+  { value: 'option3', label: 'Mahardika	' },
+];
+
+const [selectedOption, setSelectedOption] = useState(null);
+
+const customStyles = {
+  control: (provided) => ({
+    ...provided,
+    width: 200, 
+    backgroundColor: '#F1F5F9', 
+  }),
+};
+
+const handleSelectChange = (selectedOption) => {
+  setSelectedOption(selectedOption);
+};
 
   return (
     <div className="border-2 border-slate-200 bg-white p-0 lg:p-5 mx-2 mt-8 mb-4 lg:m-10 rounded-lg relative">
@@ -170,13 +230,14 @@ function DataTable() {
             data-te-ripple-init
             data-te-ripple-color="light"
             data-te-ripple-centered="true"
-            className="col-span-8 lg:col-span-2 inline-flex items-center border border-slate-300 h-9 rounded-md bg-white px-6 pb-2.5 pt-2 text-xs font-medium leading-normal text-gray-800 hover:bg-gray-50"
+            className="col-span-8 lg:col-span-2 inline-flex items-center border border-slate-300 h-9 focus:border-gray-500 focus:outline-none focus:ring-0 rounded-md bg-white px-6 pb-2.5 pt-2 text-xs font-medium leading-normal text-gray-800 hover:bg-gray-50"
             onClick={toggleAddPopup}
           >
             <BsPlus className="relative right-5 font-medium text-lg" />
             <span className="relative right-4">Add</span>
           </button>
           {/* menu add data */}
+          
           {/* Pop-up menu */}
           {showAddPopup && (
             <div className="fixed z-50 inset-0 flex items-center justify-center">
@@ -190,14 +251,14 @@ function DataTable() {
                     </label>
                     <input
                       type="text"
-                      className="p-2 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                      className="p-2 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                     />
                   </div>
                   <div className="flex flex-col">
                     <label className="pb-2 text-sm " htmlFor="">
                       Objective
                     </label>
-                    <select className="px-3 text-slate-500 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md select-custom-width">
+                    <select className="px-3 text-slate-500 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width">
                       <option value="option1">Awareness</option>
                       <option value="option2">Conversion</option>
                       <option value="option3">Consideration</option>
@@ -206,26 +267,34 @@ function DataTable() {
                 </div>
 
                 <div className="flex flex-col md:flex-row gap-4 mb-4">
-                  <div className="flex flex-col">
-                    <label className="pb-2 text-sm " htmlFor="">
+                <div className="flex flex-col">
+                    <label className="pb-2 text-sm" htmlFor="">
                       Client
                     </label>
-                    <select className="px-3 text-slate-500 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md select-custom-width">
-                      <option value="option1">Client1</option>
-                      <option value="option2">Client2</option>
-                      <option value="option3">Client3</option>
-                    </select>
+                    <Select
+                      options={options}
+                      value={selectedOption}
+                      onChange={handleSelectChange}
+                      styles={customStyles}
+                      isSearchable
+                      placeholder="‎"
+                    />
+
                   </div>
 
                   <div className="flex flex-col">
-                    <label className="pb-2 text-sm " htmlFor="">
+                    <label className="pb-2 text-sm" htmlFor="">
                       Account
                     </label>
-                    <select className="px-3 text-slate-500 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md select-custom-width">
-                      <option value="option1">Account1</option>
-                      <option value="option2">Account2</option>
-                      <option value="option3">Account3</option>
-                    </select>
+                    <Select
+                      options={options2}
+                      value={selectedOption}
+                      onChange={handleSelectChange}
+                      styles={customStyles}
+                      isSearchable
+                      placeholder="‎"
+                    />
+
                   </div>
                 </div>
 
@@ -234,7 +303,7 @@ function DataTable() {
                     <label className="pb-2 text-sm " htmlFor="">
                       Platform
                     </label>
-                    <select className="px-3 text-slate-500 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md select-custom-width">
+                    <select className="px-3 text-slate-500 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width">
                       <option value="option1">Facebook Ads</option>
                       <option value="option2">Google Ads</option>
                       <option value="option3">Instagram Ads</option>
@@ -247,7 +316,7 @@ function DataTable() {
                     </label>
                     <input
                       type="number"
-                      className="p-2 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                      className="p-2 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                     />
                   </div>
                 </div>
@@ -259,7 +328,7 @@ function DataTable() {
                     </label>
                     <input
                       type="date"
-                      className="p-2 h-9 select-custom-width text-slate-500 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                      className="p-2 h-9 select-custom-width text-slate-500 border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                     />
                   </div>
                   <div className="flex flex-col">
@@ -268,7 +337,7 @@ function DataTable() {
                     </label>
                     <input
                       type="date"
-                      className="p-2 h-9 select-custom-width text-slate-500 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"
+                      className="p-2 h-9 select-custom-width text-slate-500 border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                     />
                   </div>
                 </div>
@@ -278,18 +347,16 @@ function DataTable() {
                     <label className="pb-2 text-sm " htmlFor="">
                       Notes
                     </label>
-                    <textarea className="p-2 max-h-md select-custom-width text-slate-500 border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md"></textarea>
+                    <textarea className="p-2 max-h-md select-custom-width text-slate-500 border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"></textarea>
                   </div>
 
                   <div className="flex flex-col">
                     <label className="pb-2 text-sm " htmlFor="">
                       Status
                     </label>
-                    <select className="px-3 text-slate-500 h-9 w-full border focus:border-gray-500 focus:outline-none focus:ring-0 bg-slate-100 border-slate-300 rounded-md select-custom-width">
-                      <option value="option1">All</option>
-                      <option value="option2">Draft</option>
+                    <select className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width">
                       <option value="option3">Active</option>
-                      <option value="option3">Completed</option>
+                      <option value="option3">Deactive</option>
                     </select>
                   </div>
                 </div>
@@ -321,6 +388,7 @@ function DataTable() {
           <button
             type="button"
             className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-full rounded-md bg-white hover:bg-gray-50"
+            onClick={onDownload}
           >
             <RiFileExcel2Line className="relative font-medium text-lg" />
           </button>
@@ -341,6 +409,7 @@ function DataTable() {
         <div className="w-full bg-white overflow-x-scroll">
           <table
             {...getTableProps()}
+            ref={tableRef}
             className="table-auto border-collapse border w-full"
           >
             <thead>
@@ -375,6 +444,7 @@ function DataTable() {
                       return (
                         <td
                           {...cell.getCellProps()}
+                          
                           className={`p-2 border border-slate-300 ${
                             cell.column.id === "status" ||
                             cell.column.id === "action"
