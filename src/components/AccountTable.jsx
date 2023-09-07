@@ -8,6 +8,7 @@ import { RiFileExcel2Line } from 'react-icons/ri';
 import { useDownloadExcel } from "react-export-table-to-excel";
 import '../styles.css';
 import Select from 'react-select';
+import { useReactToPrint } from 'react-to-print'
 
 
 
@@ -160,6 +161,15 @@ const customStyles = {
 const handleSelectChange = (selectedOption) => {
   setSelectedOption(selectedOption);
 };
+
+const componentPDF = useRef();
+  
+  const generatePDF = useReactToPrint({
+    content: () => componentPDF.current,
+    documentTitle: "Data",
+    onAfterPrint: () => alert("Data Saved in PDF")
+  });
+
 
   return (
     <div className="border-2 border-slate-200 bg-white p-0 m-2 lg:m-10 mt-8 rounded-lg relative">
@@ -377,6 +387,7 @@ const handleSelectChange = (selectedOption) => {
             <button
               type="button"
               className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
+              onClick={generatePDF}
             >
               <AiOutlineFilePdf className="relative font-medium text-lg" />
             </button>
@@ -387,7 +398,7 @@ const handleSelectChange = (selectedOption) => {
          
         </div>
 
-        <div className="w-full bg-white max-md:overflow-x-scroll">
+        <div className="w-full bg-white max-md:overflow-x-scroll" ref={componentPDF}>
           <table
             {...getTableProps()}
             ref={tableRef}

@@ -6,15 +6,18 @@ import { CiSearch } from 'react-icons/ci';
 import { AiOutlineEdit, AiOutlineFilePdf } from 'react-icons/ai';
 import { RiFileExcel2Line } from 'react-icons/ri';
 import { useDownloadExcel } from "react-export-table-to-excel";
+import { useReactToPrint } from 'react-to-print';
 import '../styles.css';
+import { Document, Page, Text, View, PDFViewer } from '@react-pdf/renderer';
 
 
 function ClientsTable() {
   const [tableData, setTableData] = useState(data);
   const [selectedPlatform, setSelectedPlatform] = useState('');
   const tableRef = useRef(null);
-  const [showAddPopup, setShowAddPopup] = useState(false); 
-  const [newData, setNewData] = useState({}); 
+
+  const [showAddPopup, setShowAddPopup] = useState(false);
+  const [newData, setNewData] = useState({});
 
 
   const columns = React.useMemo(
@@ -56,7 +59,7 @@ function ClientsTable() {
           </div>
         ),
         headerClassName: 'action-column header', // Tambahkan kelas CSS khusus
-      className: 'action-column', // Tambahkan kelas CSS khusus
+        className: 'action-column', // Tambahkan kelas CSS khusus
       },
     ],
     []
@@ -120,17 +123,27 @@ function ClientsTable() {
     };
   }, [showAddPopup]);
 
-      //export table ke excel
-      const { onDownload } = useDownloadExcel({
-        currentTableRef: tableRef.current,
-        filename: "DataClients",
-        sheet: "DataClients",
-      });
+  //export table ke excel
+  const { onDownload } = useDownloadExcel({
+    currentTableRef: tableRef.current,
+    filename: "DataClients",
+    sheet: "DataClients",
+  });
+
+  const componentPDF = useRef();
+  
+  const generatePDF = useReactToPrint({
+    content: () => componentPDF.current,
+    documentTitle: "Data",
+    onAfterPrint: () => alert("Data Saved in PDF")
+  });
+
+
 
   return (
     <div className="border-2 border-slate-200 bg-white p-0 lg:p-5 m-2 lg:m-10 mt-10 rounded-lg relative">
       <div className="container mx-auto p-4 px-0">
-      <div className="grid grid-cols-12 gap-2 px-2 md:px-0 -mt-5 mb-2">
+        <div className="grid grid-cols-12 gap-2 px-2 md:px-0 -mt-5 mb-2">
           {/* Search bar */}
           <div className="relative col-span-12 lg:col-span-3">
             <input
@@ -177,110 +190,115 @@ function ClientsTable() {
           </button>
 
           {/* menu add data */}
-   {/* Pop-up menu */}
-   {showAddPopup && (
-              <div className="fixed z-50 inset-0 flex items-center justify-center">
-                    <div className="fixed -z-10 inset-0 bg-black bg-opacity-50"></div>
-                <div className=" bg-white p-5 rounded-lg shadow-lg  max-h-[80vh] overflow-y-auto">
-                  <h2 className="text-xl font-semibold mb-4">Client</h2>
-                  <div className="flex flex-col md:flex-row gap-4 mb-4">
-                    <div className="flex flex-col">
-                      <label className='pb-2 text-sm ' htmlFor="">Name</label>
-                      <input
-                        type="text"
-                        className="p-2 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <label className='pb-2 text-sm ' htmlFor="">Address</label>
-                      <input
-                        type="text"
-                        className="p-2 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col md:flex-row gap-4 mb-4">
-                        <div className="flex flex-col">
-                      <label className='pb-2 text-sm ' htmlFor="">Contact</label>
-                      <input
-                        type="number"
-                        className="p-2 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
-                      />
-                    </div>
-
-                    <div className="flex flex-col">
-                      <label className='pb-2 text-sm ' htmlFor="">Status</label>
-                      <select
-                        className="px-3 text-slate-500 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
-                      >
-                        <option value="option1">Active</option>
-                        <option value="option2">Deactive</option>
-                      </select>
-                    </div>
-                  </div>
-
-                
-
-
-                  <div className="flex flex-col md:flex-row gap-4 mb-4">
+          {/* Pop-up menu */}
+          {showAddPopup && (
+            <div className="fixed z-50 inset-0 flex items-center justify-center">
+              <div className="fixed -z-10 inset-0 bg-black bg-opacity-50"></div>
+              <div className=" bg-white p-5 rounded-lg shadow-lg  max-h-[80vh] overflow-y-auto">
+                <h2 className="text-xl font-semibold mb-4">Client</h2>
+                <div className="flex flex-col md:flex-row gap-4 mb-4">
                   <div className="flex flex-col">
-                  <label className='pb-2 text-sm ' htmlFor="">Notes</label>
-                  <textarea
-                    className="p-2 max-h-md select-custom-width text-slate-500 border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
+                    <label className='pb-2 text-sm ' htmlFor="">Name</label>
+                    <input
+                      type="text"
+                      className="p-2 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label className='pb-2 text-sm ' htmlFor="">Address</label>
+                    <input
+                      type="text"
+                      className="p-2 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col md:flex-row gap-4 mb-4">
+                  <div className="flex flex-col">
+                    <label className='pb-2 text-sm ' htmlFor="">Contact</label>
+                    <input
+                      type="number"
+                      className="p-2 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
+                    />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label className='pb-2 text-sm ' htmlFor="">Status</label>
+                    <select
+                      className="px-3 text-slate-500 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
+                    >
+                      <option value="option1">Active</option>
+                      <option value="option2">Deactive</option>
+                    </select>
+                  </div>
+                </div>
+
+
+
+
+                <div className="flex flex-col md:flex-row gap-4 mb-4">
+                  <div className="flex flex-col">
+                    <label className='pb-2 text-sm ' htmlFor="">Notes</label>
+                    <textarea
+                      className="p-2 max-h-md select-custom-width text-slate-500 border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                     ></textarea>
                   </div>
 
 
-                  
-                  </div>
-         
 
-                  <div className="flex justify-end">
-                {/* Tombol Save */}
-                <button
-                  type="button"
-                  onClick={toggleAddPopup}
-                  className=" text-gray-500 mr-4"
-                >
-                  Cancel
-                </button>
+                </div>
+
+
+                <div className="flex justify-end">
+                  {/* Tombol Save */}
                   <button
                     type="button"
-                  onClick={handleAddData}
+                    onClick={toggleAddPopup}
+                    className=" text-gray-500 mr-4"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleAddData}
                     className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
                   >
                     Save
                   </button>
                 </div>
-                </div>
               </div>
-            )}
+            </div>
+          )}
 
 
-           {/* end */}
+          {/* end */}
 
-           {/* Button export excel */}
-            <button
-              type="button"
-              className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
-              onClick={onDownload}
+          {/* Button export excel */}
+          <button
+            type="button"
+            className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
+            onClick={onDownload}
           >
-              <RiFileExcel2Line className="relative font-medium text-lg" />
-            </button>
-            {/* End */}
+            <RiFileExcel2Line className="relative font-medium text-lg" />
+          </button>
+          {/* End */}
 
-            {/* Button export pdf */}
-            <button
-              type="button"
-              className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
-            >
-              <AiOutlineFilePdf className="relative font-medium text-lg" />
-            </button>
-            {/* End */}
+          {/* Button export pdf */}
+          {/* Button export pdf */}
+          {/* End */}
+
+          {/* End */}
+          <button
+            type="button"
+            className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
+            onClick ={generatePDF}
+          >
+            <AiOutlineFilePdf className="relative font-medium text-lg" />
+          </button>
         </div>
 
-        <div className="w-full bg-white max-md:overflow-x-scroll">
+        <div className="w-full bg-white max-md:overflow-x-scroll" ref={componentPDF}>
+        
           <table
             {...getTableProps()}
             ref={tableRef}
@@ -291,18 +309,15 @@ function ClientsTable() {
                 <tr {...headerGroup.getHeaderGroupProps()}>
                   {headerGroup.headers.map((column) => (
                     <th
-                    {...column.getHeaderProps()}
-                    className={`p-2 text-white bg-sky-700 font-medium border-slate-300 border ${
-                      column.id === 'action' || column.id === 'status'
-                        ? 'text-center' // Untuk rata tengah
-                        : 'text-left' // Untuk kolom lainnya
-                    }`}
-                  >
-                    {column.render('Header')}
-                  </th>
-                  
-                  
-                   
+                      {...column.getHeaderProps()}
+                      className={`p-2 text-white bg-sky-700 font-medium border-slate-300 border ${column.id === 'action' || column.id === 'status'
+                          ? 'text-center' // Untuk rata tengah
+                          : 'text-left' // Untuk kolom lainnya
+                        }`}
+                    >
+                      {column.render('Header')}
+                    </th>
+
                   ))}
                 </tr>
               ))}
@@ -313,28 +328,23 @@ function ClientsTable() {
                 return (
                   <tr
                     {...row.getRowProps()}
-                    className={`border border-slate-300 text-gray-600 hover:bg-gray-200 hover:text-blue-600 ${
-                      rowIndex % 2 === 0 ? 'bg-gray-100' : 'bg-white' // Memberikan latar belakang selang-seling
-                    }`}                  >
+                    className={`border border-slate-300 text-gray-600 hover:bg-gray-200 hover:text-blue-600 ${rowIndex % 2 === 0 ? 'bg-gray-100' : 'bg-white' // Memberikan latar belakang selang-seling
+                      }`}                  >
                     {row.cells.map((cell) => {
                       return (
                         <td
 
-                   {...cell.getCellProps()}
+                          {...cell.getCellProps()}
 
-  {...cell.getCellProps()}
+                          {...cell.getCellProps()}
 
-  className={`p-2 border border-slate-300 ${
-    cell.column.id === 'status' || cell.column.id === 'action'
-      ? 'text-center action-column' // Terapkan kelas CSS khusus
-      : 'text-left'
-  }`}
->
-  {cell.render('Cell')}
-</td>
-
-
-                      
+                          className={`p-2 border border-slate-300 ${cell.column.id === 'status' || cell.column.id === 'action'
+                              ? 'text-center action-column' // Terapkan kelas CSS khusus
+                              : 'text-left'
+                            }`}
+                        >
+                          {cell.render('Cell')}
+                        </td>
                       );
                     })}
                   </tr>
@@ -342,6 +352,7 @@ function ClientsTable() {
               })}
             </tbody>
           </table>
+          
         </div>
       </div>
     </div>

@@ -6,6 +6,7 @@ import { CiSearch } from "react-icons/ci";
 import { AiOutlineEdit, AiOutlineFilePdf } from "react-icons/ai";
 import { RiFileExcel2Line } from "react-icons/ri";
 import { useDownloadExcel } from "react-export-table-to-excel";
+import { useReactToPrint } from 'react-to-print';
 import "../styles.css";
 import Select from 'react-select';
 
@@ -140,7 +141,13 @@ function DataTable() {
 
   //export table ke pdf
 
+  const componentPDF = useRef();
   
+  const generatePDF = useReactToPrint({
+    content: () => componentPDF.current,
+    documentTitle: "Data",
+    onAfterPrint: () => alert("Data Saved in PDF")
+  });
 
   // select 2
 const options = [
@@ -399,14 +406,14 @@ const handleSelectChange = (selectedOption) => {
           <button
             type="button"
             className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-full rounded-md bg-white hover:bg-gray-50"
-
+            onClick={generatePDF}
           >
             <AiOutlineFilePdf className="relative font-medium text-lg" />
           </button>
           {/* End */}
         </div>
 
-        <div className="w-full bg-white overflow-x-scroll">
+        <div className="w-full bg-white overflow-x-scroll" ref={componentPDF}>
           <table
             {...getTableProps()}
             ref={tableRef}
