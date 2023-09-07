@@ -39,7 +39,7 @@ function ClientsTable() {
       },
       {
         Header: 'Action',
-        accessor: 'id',
+        accessor: 'action',
 
         Cell: ({ row }) => (
           <div className="flex space-x-2  justify-center">
@@ -138,58 +138,56 @@ const handleAddData = () => {
 };
 
   return (
-    <div className="border-2 border-slate-200 bg-white p-5 m-10 rounded-lg relative">
-      <div className="container mx-auto px-0 p-4">
-        <div className="grid grid-cols-12 gap-4 px-5 -mt-4 mb-4 ">
+    <div className="border-2 border-slate-200 bg-white p-0 lg:p-5 m-2 lg:m-10 mt-10 rounded-lg relative">
+      <div className="container mx-auto p-4 px-0">
+      <div className="grid grid-cols-12 gap-2 px-2 md:px-0 -mt-5 mb-2">
           {/* Search bar */}
-          <div className="relative  mediaquery col-span-12 lg:col-span-3">
+          <div className="relative col-span-12 lg:col-span-3">
             <input
               type="text"
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
               placeholder="Search"
-              className="p-2 h-9 pl-8 text-xs border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg sm:w-48"
+              className="p-2 w-full min-w-0 h-9 pl-8 text-xs border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
             />
             <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
               <CiSearch style={{ color: '#9BA0A8' }} />
             </span>
           </div>
           {/* End */}
-          
-          {/* Seleksi filter Platform dan objective */}
 
           {/* bagian status */}
-          <div className="relative">
+          <div className="relative col-span-12 lg:col-span-3">
             <select
-              className="p-2 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg sm:w-48"
+              className="w-full min-w-0 px-1 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
               value={selectedPlatform}
               onChange={(e) => setSelectedPlatform(e.target.value)}
             >
               <option hidden>Status</option>
-              <option value="Active">Active</option>
-              <option value="Deactive">Deactive</option>
+              <option value="Facebook">Active</option>
+              <option value="Instagram">DeActive</option>
+              <option value="Google">Google</option>
             </select>
           </div>
-
-         
           {/* End */}
-        </div>
 
-        <div className="mb-4 -mt-14 flex space-x-1 justify-end">
+          {/* div kosong untuk memberi jarak */}
+          <div className="hidden lg:block col-span-2"></div>
+
           {/* Button add data */}
           <button
             type="button"
             data-te-ripple-init
             data-te-ripple-color="light"
             data-te-ripple-centered="true"
-            className="inline-flex items-center border border-slate-300 h-9 w-28 rounded-md bg-white px-6 pb-2.5 pt-2 text-xs font-medium leading-normal text-gray-800 hover:bg-gray-50"
+            className="col-span-8 lg:col-span-2 flex items-center gap-2 border border-slate-300 h-9 rounded-md bg-white p-2 text-xs font-medium leading-normal text-gray-800 hover:bg-gray-50"
             onClick={toggleAddPopup} // Memanggil fungsi toggleAddPopup saat tombol "Add" diklik
-         >
-            <BsPlus className="relative right-5 font-medium text-lg" />
-            <span className="relative right-4">Add</span>
+          >
+            <BsPlus className="font-medium text-lg" />
+            <span>Add</span>
           </button>
 
-           {/* menu add data */}
+          {/* menu add data */}
    {/* Pop-up menu */}
    {showAddPopup && (
               <div className="fixed z-50 inset-0 flex items-center justify-center">
@@ -273,31 +271,25 @@ const handleAddData = () => {
 
            {/* end */}
 
-          {/* Button export excel */}
-          <button
-            type="button"
-            className="items-center border border-slate-300 h-9 rounded-md bg-white px-3 hover:bg-gray-50"
-            onClick={() => tableRef.current.exportToExcel()}
-          >
-            <RiFileExcel2Line className="relative font-medium text-lg" />
-          </button>
-          <DownloadTableExcel
-            ref={tableRef}
-            data={tableData}
-            columns={columns}
-            filename="Data_Campaigns.xlsx"
-          />
-          {/* End */}
+           {/* Button export excel */}
+            <button
+              type="button"
+              className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
+              onClick={() => tableRef.current.exportToExcel()}
+            >
+              <RiFileExcel2Line className="relative font-medium text-lg" />
+            </button>
+            {/* End */}
 
-          {/* Button export pdf */}
-          <button
-            type="button"
-            className="items-center border border-slate-300 h-9 rounded-md bg-white px-3 hover:bg-gray-50"
-            onClick={exportToPDF}
-          >
-            <AiOutlineFilePdf className="relative font-medium text-lg" />
-          </button>
-          {/* End */}
+            {/* Button export pdf */}
+            <button
+              type="button"
+              className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
+              onClick={exportToPDF}
+            >
+              <AiOutlineFilePdf className="relative font-medium text-lg" />
+            </button>
+            {/* End */}
         </div>
 
         <div className="w-full bg-white max-md:overflow-x-scroll">
@@ -310,16 +302,16 @@ const handleAddData = () => {
               {headerGroups.map((headerGroup) => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
                   {headerGroup.headers.map((column) => (
-                     <th
-                     {...column.getHeaderProps()}
-                     className={`p-2 text-white bg-sky-700 font-normal border-slate-300 border ${
-                       column.id === "status" || column.id === "id"
-                         ? "place-items-center"
-                         : "text-left"
-                     }`}
-                   >
-                     {column.render("Header")}
-                   </th>
+                    <th
+                    {...column.getHeaderProps()}
+                    className={`p-2 text-white bg-sky-700 font-medium border-slate-300 border ${
+                      column.id === 'action' || column.id === 'status'
+                        ? 'text-center' // Untuk rata tengah
+                        : 'text-left' // Untuk kolom lainnya
+                    }`}
+                  >
+                    {column.render('Header')}
+                  </th>
                   
                   
                    

@@ -9,7 +9,7 @@ import {logo, profile} from "../assets"
 import { FiSun, FiMoon } from "react-icons/fi";
 import '../styles.css';
 import React, {useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -77,9 +77,9 @@ export default function Navbar() {
                 <div className="hidden sm:ml-6 sm:block ">
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
-                      <a
+                      <Link
                         key={item.name}
-                        href={item.href}
+                        to={item.href}
                         className={classNames(
                           activePage === item.href
                           ? 'bg-cyan-100 text-blue-600'
@@ -95,7 +95,7 @@ export default function Navbar() {
                       {item.name === 'Clients' && <BiGroup className="h-5 w-5" />}
                     </span>
                         {item.name}
-                      </a>
+                      </Link>
                     ))}
                   </div>
                 </div>

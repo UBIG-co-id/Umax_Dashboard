@@ -109,12 +109,17 @@ function DataTable() {
     toggleAddPopup();
   };
 
+  // bagian export pdf
+
+  
+  
+
   return (
     <div className="border-2 border-slate-200 bg-white p-0 lg:p-5 mx-2 mt-8 mb-4 lg:m-10 rounded-lg relative">
       <div className="container mx-auto px-0 p-4">
-        <div className="grid grid-cols-12 gap-4 px-5 -mt-4 mb-4 ">
+        <div className="grid grid-cols-12 gap-4 px-1 -mt-5 mb-4 ">
           {/* Search bar */}
-          <div className="relative  mediaquery col-span-12 lg:col-span-3">
+          <div className="relative max-lg:mt-5 mediaquery col-span-12 lg:col-span-3">
             <input
               type="text"
               value={globalFilter}
@@ -157,7 +162,7 @@ function DataTable() {
           </div>
 
           {/* div kosong untuk memberi jarak */}
-          <div className="hidden lg:block col-span-1"></div>
+          <div className="hidden lg:flex col-span-1"></div>
 
           {/* Button add data */}
           <button
@@ -326,6 +331,7 @@ function DataTable() {
           <button
             type="button"
             className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-full rounded-md bg-white hover:bg-gray-50"
+
           >
             <AiOutlineFilePdf className="relative font-medium text-lg" />
           </button>
