@@ -168,22 +168,21 @@ const Dashboard = () => {
               {/* end */}
 
               {/* bagian content */}
-            <div clas>
-                <div className='flex mt-5 gap-5'>
-                  {/* Card Info */}
-                  <div className='w-2/6 flex flex-col h-full gap-5'>
-                    {renderCardInfo()}
-                  </div>
-                  {/* Chart */}
-                  <div className='w-full flex flex-col gap-5 justify-between'>
-                    <Chart />
-                    <div className=' flex w-full gap-5 -mt-4'>
-                      {renderCardInfo2()}
-                    </div>
-                  </div>
-                </div>
-                
-              </div>
+              <div>
+        <div className='flex flex-col md:flex-row mt-5 md:gap-5'>
+          {/* Card Info */}
+          <div className='w-full md:w-2/6 flex flex-col h-full gap-5'>
+            {renderCardInfo()}
+          </div>
+          {/* Chart */}
+          <div className='w-full md:w-full flex flex-col gap-5 justify-between'>
+            <Chart />
+            <div className='flex flex-col md:flex-row w-full gap-5 -mt-4'>
+              {renderCardInfo2()}
+            </div>
+          </div>
+        </div>
+      </div>
               {/* end */}
 
 
@@ -249,44 +248,43 @@ const Dashboard = () => {
             {/* end */}
 
             {/* bagian content */}
-            <div className='flex'>
-          <div className='w-full justify-center flex flex-row gap-3 md:w-full '>
+            <div className='flex flex-wrap justify-center gap-4 px-2 md:gap-8'>
+          
           <Metrics title="Amount Spent" value="Rp. 4.000.000" chartData={chartData1} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description="Total Amount spent compared to last 7 day"  persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
           <Metrics title="Reach" value="97.000" chartData={chartData2} icon={<AiOutlineInfoCircle size={20}  />} persen="-2,0%" description="Total Reach compared to last 7 day"  persenTextColor="#D40B0B" spanBackgroundColor="#FF6D6D" />
           <Metrics title="Impression" value="230.000" chartData={chartData3} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description="Total Impression compared to last 7 day"  persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
-          </div>
             </div>
 
-            <div className='flex'>
-          <div className='w-full justify-center flex flex-row gap-3 md:w-full '>
+            <div className='flex flex-wrap justify-center gap-4 px-2 md:gap-8'>
+          
           <Metrics title="Frequency" value="2,3" chartData={chartData4} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description={<span style={{ fontSize: '12.3px', whiteSpace: 'nowrap'}}>Total Frequency compared to last 7 day</span>}
             persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
           <Metrics title="Reach Amount Ratio" value="6,1%" chartData={chartData5} icon={<AiOutlineInfoCircle size={20} />} persen="-2,0%" description={<span style={{ fontSize: '7.9px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Reach Amount Ratio compared to last 7 day</span>}
             persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
           <Metrics title="Cost per Click" value="Rp. 2.000" chartData={chartData6} icon={<AiOutlineInfoCircle size={20} />} persen="+2,0%" description={<span style={{ fontSize: '10.4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Cost per Click compared to last 7 day</span>}
           persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
-          </div>
+         
           </div>
 
-          <div className='flex'>
-          <div className='w-full justify-center flex flex-row gap-3 md:w-full '>
+          <div className='flex flex-wrap justify-center gap-4 px-2 md:gap-8'>
+          
           <Metrics title="Click Through Rate" value="1,0%" chartData={chartData7} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description={<span style={{ fontSize: '10.1px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Click Through Rate compared to last 7 day</span>} 
             persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
           <Metrics titleBig="Outbont Click Landing Page" value="30%" chartData={chartData8} icon={<AiOutlineInfoCircle size={20} />} persen="-2,0%" description={<span style={{ fontSize: '11.5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total OCLP compared to last 7 day</span>}
             persenTextColor="#D40B0B" spanBackgroundColor="#FF6D6D" />
           <Metrics title="Cost per Result" value="Rp. 5.000" chartData={chartData9} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description={<span style={{ fontSize: '10.1px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Cost per Result compared to last 7 day</span>}
             persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
+         
           </div>
-          </div>
-          <div className='flex'>
-          <div className='w-full justify-center flex flex-row gap-3 md:w-full '>
+          <div className='flex flex-wrap justify-center gap-4 px-2 md:gap-8'>
+          
           <Metrics title="Add to Cart" value="2,5%" chartData={chartData10} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description={<span style={{ fontSize: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Add to Cart compared to last 7 day</span>}
             persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
           <Metrics title="Return on AD Spent" value="3,1x" chartData={chartData11} icon={<AiOutlineInfoCircle size={20}  />} persen="-2,0%" description={<span style={{ fontSize: '11.6px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total ROAS compared to last 7 day</span>} 
             persenTextColor="#D40B0B" spanBackgroundColor="#FF6D6D" />
           <Metrics title="Real ROAS" value="3,0x" chartData={chartData12} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%"description={<span style={{ fontSize: '11.4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Real ROAS compared to last 7 day</span>}
             persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
-          </div>
+         
           </div>
 
             </div>
@@ -294,30 +292,17 @@ const Dashboard = () => {
       case 'history':
         return (
           <div>
-            <div className='flex justify-end'>
-              <div className='flex gap-5 items-center'>
-                <select name="" id="" className='focus:outline-none p-2 px-5 border border-gray-300 text-gray-500 rounded-md'>
-                  <option value="">Today</option>
-                </select>
-
-              </div>
-            </div>
 
             <History />
+
           </div>
         );
       case 'setting':
         return (
          
-          <div >
-           <div className='bg-white border-2 rounded-lg p-20 h-Setting relative'>
+          
   <Setting />
-  <button className='absolute bottom-0 right-0 mb-4 mr-4 bg-sky-600 px-4 py-1 rounded-md text-white'>
-    Save
-  </button>
-</div>
-
-          </div>
+ 
         );
       default:
         return null;
@@ -384,6 +369,7 @@ const Dashboard = () => {
     <main className='bg-slate-100 min-h-screen ' >
       <div>
         <Navbar />
+        </div>
         <div className='flex gap-5  px-5'>
           <Sidebar />
           
@@ -392,46 +378,43 @@ const Dashboard = () => {
             {/* Header */}
             <div className='border-b-2  border-gray-600'>
               <div className='flex p-4 ml-3 pb-1 items-center'>
-               <img src={google} alt="google" width={50} /> <h1 className='text-2xl pl-3 font-bold text-gray-700'>Campaign Tahfidz</h1>
+               <img src={google} alt="google" width={50} />
+                <h1 className='text-2xl pl-3 font-bold text-gray-700'>Campaign Tahfidz</h1>
               </div> 
 
 
        <div className='flex justify-center'>
-                <ul className='flex -mb-1'>
-                  <li
-                    className={`p-3 px-5  ${
-                      activeTab === 'performance' ? ' atas text-sky-500 cursor-pointer font-semibold  border-b-4 border-sky-500 transition-colors ' : 'text-gray-500'
-                    }`}
-                    onClick={() => handleTabClick('performance')}
-                  >
-                    Performance
-                  </li>
-                  <li
-                    className={`p-3 px-5  ${
-                      activeTab === 'metrics' ? 'text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
-                    }`}
-                    onClick={() => handleTabClick('metrics')}
-                  >
-                    Metrics
-                  </li>
-                  <li
-                    className={`p-3 px-5  ${
-                      activeTab === 'history' ? 'text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
-                    }`}
-                    onClick={() => handleTabClick('history')}
-                  >
-                    History
-                  </li>
-                  <li
-                    className={`p-3 px-5  ${
-                      activeTab === 'setting' ? 'text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
-                    }`}
-                    onClick={() => handleTabClick('setting')}
-                  >
-                    Setting
-                  </li>
-                </ul>
-              </div>
+                  <ul className='flex -mb-1'>
+                    <li
+                      className={`p-3 px-5  ${activeTab === 'performance' ? ' atas text-sky-500 cursor-pointer font-semibold  border-b-4 border-sky-500 transition-colors ' : 'text-gray-500'
+                        }`}
+                      onClick={() => handleTabClick('performance')}
+                    >
+                      Performance
+                    </li>
+                    <li
+                      className={`p-3 px-5  ${activeTab === 'metrics' ? 'text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
+                        }`}
+                      onClick={() => handleTabClick('metrics')}
+                    >
+                      Metrics
+                    </li>
+                    <li
+                      className={`p-3 px-5  ${activeTab === 'history' ? 'text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
+                        }`}
+                      onClick={() => handleTabClick('history')}
+                    >
+                      History
+                    </li>
+                    <li
+                      className={`p-3 px-5  ${activeTab === 'setting' ? 'text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
+                        }`}
+                      onClick={() => handleTabClick('setting')}
+                    >
+                      Setting
+                    </li>
+                  </ul>
+            </div>
             </div>
                 {/* Body */}
             <div className='px-5 py-5 flex flex-col '>
@@ -443,7 +426,7 @@ const Dashboard = () => {
 
           </ContainerCard>
         </div>
-      </div>
+      
       
     </main>
   );
