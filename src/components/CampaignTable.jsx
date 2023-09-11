@@ -9,7 +9,8 @@ import { useDownloadExcel } from "react-export-table-to-excel";
 import { useReactToPrint } from 'react-to-print';
 import "../styles.css";
 import Select from 'react-select';
-
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
 
 function DataTable() {
   const [tableData, setTableData] = useState(data);
@@ -79,6 +80,7 @@ function DataTable() {
     rows,
     state,
     setGlobalFilter,
+    page,
   } = useTable(
     {
       columns,
@@ -154,20 +156,21 @@ const options = [
   { value: 'option1', label: 'PT.Makmur	' },
   { value: 'option2', label: 'Pondok Nurul Huda	' },
   { value: 'option3', label: 'PT Haji Umar Barokah' },
-  { value: 'option3', label: 'Pondok Nurul Huda' },
-  { value: 'option3', label: 'PT.Makmur' },
-  { value: 'option3', label: 'PT.Ubig.co.id' },
+  { value: 'option4', label: 'Pondok Nurul Huda' },
+  { value: 'option5', label: 'PT.Makmur' },
+  { value: 'option6', label: 'PT.Ubig.co.id' },
 ];
 const options2 = [
   { value: 'option1', label: 'Prasetyo	' },
   { value: 'option2', label: 'Ihsan	' },
   { value: 'option3', label: 'Rochman	' },
-  { value: 'option3', label: 'Reivan' },
-  { value: 'option3', label: 'M Rizky	' },
-  { value: 'option3', label: 'Mahardika	' },
+  { value: 'option4', label: 'Reivan' },
+  { value: 'option5', label: 'M Rizky	' },
+  { value: 'option6', label: 'Mahardika	' },
 ];
 
-const [selectedOption, setSelectedOption] = useState(null);
+const [selectedClient, setSelectedClient] = useState(null);
+const [selectedAccount, setSelectedAccount] = useState(null);
 
 const customStyles = {
   control: (provided) => ({
@@ -177,9 +180,15 @@ const customStyles = {
   }),
 };
 
-const handleSelectChange = (selectedOption) => {
-  setSelectedOption(selectedOption);
+const handleSelectChange = (selectedOption, field) => {
+  if (field === 'client') {
+    setSelectedClient(selectedOption);
+  } else if (field === 'account') {
+    setSelectedAccount(selectedOption);
+  }
 };
+
+
 
   return (
     <div className="border-2 border-slate-200 bg-white p-0 lg:p-5 mx-2 mt-8 mb-4 lg:m-10 rounded-lg relative">
@@ -280,8 +289,8 @@ const handleSelectChange = (selectedOption) => {
                     </label>
                     <Select
                       options={options}
-                      value={selectedOption}
-                      onChange={handleSelectChange}
+                      value={selectedClient}
+                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'client')}
                       styles={customStyles}
                       isSearchable
                       placeholder="‎"
@@ -294,9 +303,9 @@ const handleSelectChange = (selectedOption) => {
                       Account
                     </label>
                     <Select
-                      options={options2}
-                      value={selectedOption}
-                      onChange={handleSelectChange}
+                       options={options2}
+                      value={selectedAccount}
+                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'account')}
                       styles={customStyles}
                       isSearchable
                       placeholder="‎"

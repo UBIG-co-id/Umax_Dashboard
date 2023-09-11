@@ -219,7 +219,16 @@
               { title: 'Bilingual - 15/10',  icon: google ,amountSpent:'Rp. 2.000.000', reach: '100.000', startDate: 'May 21, 14:00' },
               { title: 'Peduli Pangan', icon: google ,amountSpent: 'Rp. 1.000.000', reach: '97.000', startDate: 'Apr 12, 12:36' },
               { title: 'Retarget CA Web Visitor', icon: tiktok ,amountSpent: 'Rp. 5.000.000', reach: '100.000', startDate: 'Mei 24, 09:36' },
-              { title: 'Campaign Tahfidz FB IG EN...', icon: google ,amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
+              { title: 'Pesantren Berkualitas...', icon: google ,amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
+              { title: 'Menginspirasi Hafidz', icon: facebook ,amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
+              { title: 'Pondok Pesantren Inklusif', icon: facebook ,amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
+              { title: 'Mengasah Potensi Pemi...', icon: google ,amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
+              { title: 'Merajut Masa Depan', icon: google ,amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
+              { title: 'Pondok Pesantren Terdepan', icon: google ,amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
+              { title: 'Menghormati Tradisi', icon: tiktok ,amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
+              { title: 'Transformasi Melalui Ilmu', icon: tiktok ,amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
+              { title: 'Menyentuh Hati dan Akal', icon: google ,amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
+              { title: 'Generasi Unggul', icon: facebook ,amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
             ])}
             </>
             )}

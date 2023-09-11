@@ -8,7 +8,6 @@ import { RiFileExcel2Line } from 'react-icons/ri';
 import { useDownloadExcel } from "react-export-table-to-excel";
 import { useReactToPrint } from 'react-to-print';
 import '../styles.css';
-import { Document, Page, Text, View, PDFViewer } from '@react-pdf/renderer';
 
 
 function ClientsTable() {
