@@ -1,7 +1,8 @@
-  import React, { useState } from 'react';
+import React, { useContext, useState, useRef } from 'react';
   import '../styles.css';
   import { google, facebook, tiktok } from "../assets";
   import { BiSearch } from 'react-icons/bi';
+  import { Context } from '../context';
 
 
   const Sidebar = () => {
@@ -9,6 +10,7 @@
     const [searchText, setSearchText] = useState('');
     const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
     const [activeItem, setActiveItem] = useState(null);
+    let { state, dispatch } = useContext(Context);
 
     const handleItemClick = (item) => {
       setActiveItem(item === activeItem ? null : item); 
@@ -136,24 +138,11 @@
           className={`absolute top-2 right-2 sm:hidden text-gray-600 z-10`}
           onClick={toggleSidebar}
         >
-            <div className={`transition-transform duration-300 ease-in-out transform ${isSidebarOpen ? 'rotate-0' : 'rotate-180'}`}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <div className={`transition-transform duration-300 ease-in-out transform ${state.toggleNavbar ? 'block' : 'hidden'}`}>
+      
           </div>
         </button>
-        <div className={`relative top-5 -left-1  w-72 tinggiCard bg-white   bayangan rounded-t-xl  max-sm:left-0 text-slate-700 p-4 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out`}>
+        <div className={`relative top-5 -left-1  w-72 max-h-full bg-white  rounded-t-xl  max-sm:left-0 text-slate-700 p-4 transform ${state.toggleNavbar ? 'block' : 'hidden'} transition-transform duration-300 ease-in-out`}>
 
         <div className=" bg-gray-200 mx-1 p-1 rounded-lg flex justify-center mb-4 ">
             <button
@@ -202,15 +191,13 @@
         </div>
 
 
-
-
-
-        <div className="relative lebar-list -left-2 border-slate-500 pt-2 overflow-y-scroll max-h-[calc(150vh-85px)]">
+        <div className="relative lebar-list -left-2 border-slate-500 pt-2 overflow-y-scroll h-full">
           <ul className="  mt-5">
           {activeTab === 'all' && (
             <>
             <hr className="border-gray-500 mb-5" />
             {renderItems([
+              { title: 'Program Bimbingan Karir...', icon: tiktok ,amountSpent: 'Rp. 3.000.000', reach: '220.000', startDate: 'Sep 4, 14:09' },
               { title: 'Program Bimbingan Karir...', icon: tiktok ,amountSpent: 'Rp. 3.000.000', reach: '220.000', startDate: 'Sep 4, 14:09' },
               { title: 'Santri Berwirausaha', icon: google ,amountSpent: 'Rp. 2.000.000', reach: '97.000', startDate: 'Mart 1, 12:36' },
               { title: 'Program Tahfidz', icon: facebook ,amountSpent: 'Rp. 4.000.000', reach: '120.000', startDate: 'Feb 4, 12:36' },
@@ -248,6 +235,7 @@
                   { title: 'Tahfidz Ramadhan', icon: facebook ,amountSpent: 'Rp. 1.000.000', reach: '10.000', startDate: 'Agust 25, 11:19' },
                   { title: 'Program Bimbingan Karir...', icon: tiktok ,amountSpent: 'Rp. 3.000.000', reach: '220.000', startDate: 'Sep 4, 14:09' },
                   { title: 'Santri Berwirausaha', icon: google ,amountSpent: 'Rp. 2.000.000', reach: '97.000', startDate: 'Mart 1, 12:36' },
+                  
                   
                 ])}
               </>

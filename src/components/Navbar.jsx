@@ -1,5 +1,5 @@
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState, useEffect, useContext } from 'react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { MdDashboard } from 'react-icons/md';
 import { BiSolidMegaphone, BiGroup, BiBell, BiLogOut } from 'react-icons/bi';
@@ -10,6 +10,8 @@ import { FiSun, FiMoon } from 'react-icons/fi';
 import '../styles.css';
 import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
+import {Context} from '../context'
+
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -22,7 +24,12 @@ const navigation = [
   { name: 'Clients', href: '/Clients' },
 ];
 
-export default function Navbar() {
+const Navbar=() => {
+  let { state, dispatch } = useContext(Context)
+  let toggle = () => {
+      dispatch({ type: 'SET_TOGGLE_NAVBAR', payload: !state.toggleNavbar })
+  }
+
   const [darkMode, setDarkMode] = useState(false);
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -44,27 +51,10 @@ export default function Navbar() {
 
   return (
     <Disclosure as="nav" className="bg-white shadow-md">
-      {({ open }) => (
-        <>
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
             <div className="relative flex h-16 items-center justify-between">
-              <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                {/* Tombol menu mobile */}
-                <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-600">
-                  <span className="absolute -inset-0.5" />
-                  <span className="sr-only">Buka menu utama</span>
-                  {open ? (
-                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                  ) : (
-                    <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                  )}
-                </Disclosure.Button>
-                <div className="sm:hidden text-center">
-                  <img src={logo} alt="logo" className="w-20" />
-                </div>
-              </div>
-              <div className="hidden sm:flex sm:items-center sm:justify-center">
-                <img className="h-8 w-auto " src={logo} alt="logo" />
+              <div className=" sm:flex sm:items-center sm:justify-center">
+                <img className="h-8 w-auto " src={logo} alt="logo" onClick={toggle}/>
               </div>
               <div className="hidden sm:ml-6 sm:block">
                 <div className="flex space-x-4">
@@ -278,8 +268,9 @@ export default function Navbar() {
               ))}
             </div>
           </Disclosure.Panel>
-        </>
-      )}
+       
+    
     </Disclosure>
   );
 }
+export default Navbar;
