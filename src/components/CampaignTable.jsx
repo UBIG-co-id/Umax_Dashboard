@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useTable, useGlobalFilter } from "react-table";
+import { useTable, useGlobalFilter, usePagination } from "react-table";
 import data from "./CampaignData";
 import { BsTrash3, BsPlus } from "react-icons/bs";
 import { CiSearch } from "react-icons/ci";
@@ -17,6 +17,37 @@ function DataTable() {
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [showAddPopup, setShowAddPopup] = useState(false);
   
+
+  // PAGINATION
+  const paginationStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'end',
+    marginTop: '20px',
+  };
+
+  const buttonStyle = {
+    backgroundColor: '#007BFF',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+    padding: '5px 10px',
+    cursor: 'pointer',
+    fontSize: '16px',
+    margin: '0 5px',
+  };
+
+  const disabledButtonStyle = {
+    backgroundColor: '#ccc',
+    cursor: 'not-allowed',
+  };
+
+  const pageInfoStyle = {
+    fontSize: '16px',
+    margin: '0 10px',
+    color: '#333',
+  };
+  // END PAGINATION
 
   const columns = React.useMemo(
     () => [
@@ -77,19 +108,27 @@ function DataTable() {
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    rows,
-    state,
-    setGlobalFilter,
-    page,
+    page, // Replace 'rows' with 'page' for paginated data
+    state: { pageIndex, pageSize, globalFilter }, // Add these state properties
+    setGlobalFilter, // Add this function
+    gotoPage, // Add this function
+    nextPage, // Add this function
+    previousPage, // Add this function
+    canNextPage, // Add this function
+    canPreviousPage, // Add this function
+    pageOptions, // Add this function
+    pageCount, // Add this function
   } = useTable(
     {
       columns,
       data: tableData,
+      initialState: { pageIndex: 0, pageSize: 5 }, // Initial page settings
     },
-    useGlobalFilter
+    useGlobalFilter,
+    usePagination // Add this hook
   );
 
-  const { globalFilter } = state;
+  // const { globalFilter } = state;
 
   const handleEdit = (rowId) => {
     console.log("Editing row with ID:", rowId);
@@ -191,6 +230,7 @@ const handleSelectChange = (selectedOption, field) => {
 
 
   return (
+    <div>
     <div className="border-2 border-slate-200 bg-white p-0 lg:p-5 mx-2 mt-8 mb-4 lg:m-10 rounded-lg relative">
       <div className="container mx-auto px-0 p-4">
         <div className="grid grid-cols-12 gap-4 px-1 -mt-5 mb-4 ">
@@ -447,13 +487,13 @@ const handleSelectChange = (selectedOption, field) => {
               ))}
             </thead>
             <tbody {...getTableBodyProps()}>
-              {rows.map((row, rowIndex) => {
+            {page.map((row, i) => {
                 prepareRow(row);
                 return (
                   <tr
                     {...row.getRowProps()}
                     className={`border border-slate-300 text-gray-600 hover:bg-gray-200 hover:text-blue-600 ${
-                      rowIndex % 2 === 0 ? "bg-gray-100" : "bg-white" // Memberikan latar belakang selang-seling
+                      i % 2 === 0 ? "bg-gray-100" : "bg-white" // Memberikan latar belakang selang-seling
                     }`}
                   >
                     {row.cells.map((cell) => {
@@ -479,7 +519,60 @@ const handleSelectChange = (selectedOption, field) => {
           </table>
         </div>
       </div>
+       {/* Pagination */}
+       <div style={paginationStyle}>
+          <button
+            onClick={() => gotoPage(0)}
+            disabled={!canPreviousPage}
+            style={{
+              ...buttonStyle,
+              ...(canPreviousPage ? {} : disabledButtonStyle),
+            }}
+          >
+            {'<<'}
+          </button>{' '}
+          <button
+            onClick={() => previousPage()}
+            disabled={!canPreviousPage}
+            style={{
+              ...buttonStyle,
+              ...(canPreviousPage ? {} : disabledButtonStyle),
+            }}
+          >
+            {'<'}
+          </button>{' '}
+          <span style={pageInfoStyle}>
+            Page{' '}
+            <strong>
+              {pageIndex + 1} of {pageOptions.length}
+            </strong>{' '}
+          </span>
+          <button
+            onClick={() => nextPage()}
+            disabled={!canNextPage}
+            style={{
+              ...buttonStyle,
+              ...(canNextPage ? {} : disabledButtonStyle),
+            }}
+          >
+            {'>'}
+          </button>{' '}
+          <button
+            onClick={() => gotoPage(pageCount - 1)}
+            disabled={!canNextPage}
+            style={{
+              ...buttonStyle,
+              ...(canNextPage ? {} : disabledButtonStyle),
+            }}
+          >
+            {'>>'}
+          </button>{' '}
+        </div>
+        {/* End Pagination */}
     </div>
+    
+    </div>
+   
   );
 }
 
