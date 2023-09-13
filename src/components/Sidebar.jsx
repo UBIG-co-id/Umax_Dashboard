@@ -142,7 +142,7 @@ import React, { useContext, useState, useRef } from 'react';
       
           </div>
         </button>
-        <div className={`relative top-5 -left-1  w-72 max-h-full bg-white  rounded-t-xl  max-sm:left-0 text-slate-700 p-4 transform ${state.toggleNavbar ? 'block' : 'hidden'} transition-transform duration-300 ease-in-out`}>
+        <div className={`relative top-5 -left-1  w-72 max-h-full bg-white bayangan rounded-t-xl  max-sm:left-0 text-slate-700 p-4 transform ${state.toggleNavbar ? 'block' : 'hidden'} transition-transform duration-300 ease-in-out`}>
 
         <div className=" bg-gray-200 mx-1 p-1 rounded-lg flex justify-center mb-4 ">
             <button
@@ -191,13 +191,12 @@ import React, { useContext, useState, useRef } from 'react';
         </div>
 
 
-        <div className="relative lebar-list -left-2 border-slate-500 pt-2 overflow-y-scroll h-full">
+        <div className="relative lebar-list -left-2 border-slate-500 pt-2 overflow-y-scroll tinggiCard">
           <ul className="  mt-5">
           {activeTab === 'all' && (
             <>
             <hr className="border-gray-500 mb-5" />
             {renderItems([
-              { title: 'Program Bimbingan Karir...', icon: tiktok ,amountSpent: 'Rp. 3.000.000', reach: '220.000', startDate: 'Sep 4, 14:09' },
               { title: 'Program Bimbingan Karir...', icon: tiktok ,amountSpent: 'Rp. 3.000.000', reach: '220.000', startDate: 'Sep 4, 14:09' },
               { title: 'Santri Berwirausaha', icon: google ,amountSpent: 'Rp. 2.000.000', reach: '97.000', startDate: 'Mart 1, 12:36' },
               { title: 'Program Tahfidz', icon: facebook ,amountSpent: 'Rp. 4.000.000', reach: '120.000', startDate: 'Feb 4, 12:36' },

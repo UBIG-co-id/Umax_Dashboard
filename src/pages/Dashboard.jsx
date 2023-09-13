@@ -248,42 +248,24 @@ const Dashboard = () => {
             {/* end */}
 
             {/* bagian content */}
-            <div className='flex flex-wrap justify-center gap-4 px-2 md:gap-8'>
-          
+            <div className='flex flex-wrap justify-center gap-4 px-2 md:gap-8 max-sm:flex-col metrik'>
+  
           <Metrics title="Amount Spent" value="Rp. 4.000.000" chartData={chartData1} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description="Total Amount spent compared to last 7 day"  persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
           <Metrics title="Reach" value="97.000" chartData={chartData2} icon={<AiOutlineInfoCircle size={20}  />} persen="-2,0%" description="Total Reach compared to last 7 day"  persenTextColor="#D40B0B" spanBackgroundColor="#FF6D6D" />
           <Metrics title="Impression" value="230.000" chartData={chartData3} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description="Total Impression compared to last 7 day"  persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
-            </div>
 
-            <div className='flex flex-wrap justify-center gap-4 px-2 md:gap-8'>
+          <Metrics title="Frequency" value="2,3" chartData={chartData4} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description={<span style={{ fontSize: '12.3px', whiteSpace: 'nowrap'}}>Total Frequency compared to last 7 day</span>} persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
+          <Metrics title="Reach Amount Ratio" value="6,1%" chartData={chartData5} icon={<AiOutlineInfoCircle size={20} />} persen="-2,0%" description={<span style={{ fontSize: '7.9px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Reach Amount Ratio compared to last 7 day</span>} persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
+          <Metrics title="Cost per Click" value="Rp. 2.000" chartData={chartData6} icon={<AiOutlineInfoCircle size={20} />} persen="+2,0%" description={<span style={{ fontSize: '10.4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Cost per Click compared to last 7 day</span>} persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
           
-          <Metrics title="Frequency" value="2,3" chartData={chartData4} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description={<span style={{ fontSize: '12.3px', whiteSpace: 'nowrap'}}>Total Frequency compared to last 7 day</span>}
-            persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
-          <Metrics title="Reach Amount Ratio" value="6,1%" chartData={chartData5} icon={<AiOutlineInfoCircle size={20} />} persen="-2,0%" description={<span style={{ fontSize: '7.9px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Reach Amount Ratio compared to last 7 day</span>}
-            persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
-          <Metrics title="Cost per Click" value="Rp. 2.000" chartData={chartData6} icon={<AiOutlineInfoCircle size={20} />} persen="+2,0%" description={<span style={{ fontSize: '10.4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Cost per Click compared to last 7 day</span>}
-          persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
-         
-          </div>
-
-          <div className='flex flex-wrap justify-center gap-4 px-2 md:gap-8'>
-          
-          <Metrics title="Click Through Rate" value="1,0%" chartData={chartData7} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description={<span style={{ fontSize: '10.1px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Click Through Rate compared to last 7 day</span>} 
-            persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
-          <Metrics titleBig="Outbont Click Landing Page" value="30%" chartData={chartData8} icon={<AiOutlineInfoCircle size={20} />} persen="-2,0%" description={<span style={{ fontSize: '11.5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total OCLP compared to last 7 day</span>}
-            persenTextColor="#D40B0B" spanBackgroundColor="#FF6D6D" />
-          <Metrics title="Cost per Result" value="Rp. 5.000" chartData={chartData9} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description={<span style={{ fontSize: '10.1px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Cost per Result compared to last 7 day</span>}
-            persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
-         
-          </div>
-          <div className='flex flex-wrap justify-center gap-4 px-2 md:gap-8'>
-          
-          <Metrics title="Add to Cart" value="2,5%" chartData={chartData10} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description={<span style={{ fontSize: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Add to Cart compared to last 7 day</span>}
-            persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
-          <Metrics title="Return on AD Spent" value="3,1x" chartData={chartData11} icon={<AiOutlineInfoCircle size={20}  />} persen="-2,0%" description={<span style={{ fontSize: '11.6px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total ROAS compared to last 7 day</span>} 
-            persenTextColor="#D40B0B" spanBackgroundColor="#FF6D6D" />
-          <Metrics title="Real ROAS" value="3,0x" chartData={chartData12} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%"description={<span style={{ fontSize: '11.4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Real ROAS compared to last 7 day</span>}
-            persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
+          <Metrics title="Click Through Rate" value="1,0%" chartData={chartData7} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description={<span style={{ fontSize: '10.1px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Click Through Rate compared to last 7 day</span>} persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
+          <Metrics titleBig="Outbont Click Landing Page" value="30%" chartData={chartData8} icon={<AiOutlineInfoCircle size={20} />} persen="-2,0%" description={<span style={{ fontSize: '11.5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total OCLP compared to last 7 day</span>} persenTextColor="#D40B0B" spanBackgroundColor="#FF6D6D" />
+          <Metrics title="Cost per Result" value="Rp. 5.000" chartData={chartData9} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description={<span style={{ fontSize: '10.1px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Cost per Result compared to last 7 day</span>} persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
+            
+          <Metrics title="Add to Cart" value="2,5%" chartData={chartData10} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description={<span style={{ fontSize: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Add to Cart compared to last 7 day</span>} persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
+          <Metrics title="Return on AD Spent" value="3,1x" chartData={chartData11} icon={<AiOutlineInfoCircle size={20}  />} persen="-2,0%" description={<span style={{ fontSize: '11.6px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total ROAS compared to last 7 day</span>} persenTextColor="#D40B0B" spanBackgroundColor="#FF6D6D" />
+          <Metrics title="Real ROAS" value="3,0x" chartData={chartData12} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%"description={<span style={{ fontSize: '11.4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Real ROAS compared to last 7 day</span>} persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
+            
          
           </div>
 

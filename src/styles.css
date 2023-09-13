@@ -113,7 +113,8 @@
   left: -17px;
 }
 .tinggiCard{
-  height: ;
+  height: 50rem;
+  max-height: ;
 }
 
 /* animasi untuk pop up card */
@@ -361,5 +362,21 @@ th svg.desc{
   background-color: #505f6b;
 }
 
+//tampilan responsive setting
+@media (max-width: 640px) {
+  .setting-responsive{
+    background-color: red;
+    flex-direction: column; 
+  }
+}
 
+
+/* Tampilan Tablet (lebar layar lebih dari 640px) */
+@media (min-width: 640px) and (max-width: 994px) {
+  .metrik {
+    display: grid;
+    grid-template-columns: repeat(2, 2fr); 
+    grid-gap: 1rem; 
+  }
+}
 

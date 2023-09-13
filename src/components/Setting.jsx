@@ -139,7 +139,7 @@ function Setting() {
       />
 
 
-<div className="sm:flex">
+<div className="flex flex-col sm:flex-col setting-responsive gap-4 ">
             <InputGroup2
               name="CPC"
               placeholder="5.000"

@@ -30,6 +30,14 @@ const Navbar=() => {
       dispatch({ type: 'SET_TOGGLE_NAVBAR', payload: !state.toggleNavbar })
   }
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+  
+
+
   const [darkMode, setDarkMode] = useState(false);
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
