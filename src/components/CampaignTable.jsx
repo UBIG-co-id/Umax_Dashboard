@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useTable, useGlobalFilter, usePagination } from "react-table";
-import data from "./CampaignData";
 import { BsTrash3, BsPlus } from "react-icons/bs";
 import { CiSearch } from "react-icons/ci";
 import { AiOutlineEdit, AiOutlineFilePdf } from "react-icons/ai";
@@ -11,11 +10,29 @@ import "../styles.css";
 import Select from 'react-select';
 import 'react-tabs/style/react-tabs.css';
 
+
+
 function DataTable() {
-  const [tableData, setTableData] = useState([]); // State untuk data tabel
+  const [tableData, setTableData] = useState([]);
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [showAddPopup, setShowAddPopup] = useState(false);
-  const [apiData, setApiData] = useState([]);
+
+  
+  //ambil data
+  async function fetchData() {
+    try {
+      const response = await fetch("https://umax-1-z7228928.deta.app/campaigns");
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
+      }
+      const data = await response.json();
+      setTableData(data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  }
+
+  //post data
 
 
   // PAGINATION
@@ -109,47 +126,24 @@ function DataTable() {
     headerGroups,
     prepareRow,
     page, // Replace 'rows' with 'page' for paginated data
-    state: { pageIndex, globalFilter }, // Add these state properties
-    setGlobalFilter, 
-    gotoPage, 
-    nextPage, 
-    previousPage, 
-    canNextPage, 
-    canPreviousPage, 
-    pageOptions, 
-    pageCount, 
+    state: { pageIndex, pageSize, globalFilter }, // Add these state properties
+    setGlobalFilter, // Add this function
+    gotoPage, // Add this function
+    nextPage, // Add this function
+    previousPage, // Add this function
+    canNextPage, // Add this function
+    canPreviousPage, // Add this function
+    pageOptions, // Add this function
+    pageCount, // Add this function
   } = useTable(
     {
       columns,
-      data: apiData,
+      data: tableData,
       initialState: { pageIndex: 0, pageSize: 5 }, // Initial page settings
     },
     useGlobalFilter,
-    usePagination 
+    usePagination // Add this hook
   );
-
-  // bagian ambil data
-  useEffect(() => {
-
-  fetch("url", {
-    mode: "no-cors",
-  })
-
-    fetch("https://umax-1-z7228928.deta.app/campaigns")
-      .then((response) => response.json())
-      .then((data) => {
-        setApiData(data);
-        console.log(apiData)
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });  
-  }, []);
-
-  
-  
-
-
 
   // const { globalFilter } = state;
 
@@ -161,9 +155,12 @@ function DataTable() {
     const updatedData = tableData.filter((row) => row.id !== rowId);
     setTableData(updatedData);
   };
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   useEffect(() => {
-    const filteredData = data.filter((row) => {
+    const filteredData = tableData.filter((row) => {
       return selectedPlatform === "" || row.platform === selectedPlatform;
     });
     setTableData(filteredData);
@@ -252,15 +249,11 @@ const handleSelectChange = (selectedOption, field) => {
 
 
 
-
-
   return (
     <div>
-      
     <div className="border-2 border-slate-200 bg-white p-0 lg:p-5 mx-2 mt-8 mb-4 lg:m-10 rounded-lg relative">
       <div className="container mx-auto px-0 p-4">
         <div className="grid grid-cols-12 gap-4 px-1 -mt-5 mb-4 ">
-       
           {/* Search bar */}
           <div className="relative max-lg:mt-5 mediaquery col-span-12 lg:col-span-3">
             <input
@@ -275,8 +268,6 @@ const handleSelectChange = (selectedOption, field) => {
             </span>
           </div>
           {/* End */}
-
-
 
           {/* bagian platform */}
           <div className="relative col-span-6 lg:col-span-2">
@@ -300,9 +291,9 @@ const handleSelectChange = (selectedOption, field) => {
               onChange={(e) => setSelectedPlatform(e.target.value)}
             >
               <option hidden>Objective</option>
-              <option value="Facebook">Awareness</option>
-              <option value="Instagram">Conversion</option>
-              <option value="Google">Consideration</option>
+              <option value="Awareness">Awareness</option>
+              <option value="Conversion">Conversion</option>
+              <option value="Consideration">Consideration</option>
             </select>
           </div>
 
@@ -335,7 +326,6 @@ const handleSelectChange = (selectedOption, field) => {
                       Name
                     </label>
                     <input
-                      id="nameInput"
                       type="text"
                       className="p-2 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                     />
@@ -344,9 +334,7 @@ const handleSelectChange = (selectedOption, field) => {
                     <label className="pb-2 text-sm " htmlFor="">
                       Objective
                     </label>
-                    <select
-                      id="objectiveInput"
-                      className="px-3 text-slate-500 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width">
+                    <select className="px-3 text-slate-500 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width">
                       <option value="option1">Awareness</option>
                       <option value="option2">Conversion</option>
                       <option value="option3">Consideration</option>
@@ -360,7 +348,6 @@ const handleSelectChange = (selectedOption, field) => {
                       Client
                     </label>
                     <Select
-                       id="clientInput"
                       options={options}
                       value={selectedClient}
                       onChange={(selectedOption) => handleSelectChange(selectedOption, 'client')}
@@ -376,8 +363,7 @@ const handleSelectChange = (selectedOption, field) => {
                       Account
                     </label>
                     <Select
-                      id="accountInput"
-                      options={options2}
+                       options={options2}
                       value={selectedAccount}
                       onChange={(selectedOption) => handleSelectChange(selectedOption, 'account')}
                       styles={customStyles}
@@ -393,9 +379,7 @@ const handleSelectChange = (selectedOption, field) => {
                     <label className="pb-2 text-sm " htmlFor="">
                       Platform
                     </label>
-                    <select
-                    id="platformInput"
-                    className="px-3 text-slate-500 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width">
+                    <select className="px-3 text-slate-500 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width">
                       <option value="option1">Facebook Ads</option>
                       <option value="option2">Google Ads</option>
                       <option value="option3">Instagram Ads</option>
@@ -407,7 +391,6 @@ const handleSelectChange = (selectedOption, field) => {
                       Campaign ID
                     </label>
                     <input
-                    id="campaignIdInput"
                       type="number"
                       className="p-2 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                     />
@@ -420,7 +403,6 @@ const handleSelectChange = (selectedOption, field) => {
                       Start Date
                     </label>
                     <input
-                     id="startDateInput"
                       type="date"
                       className="p-2 h-9 select-custom-width text-slate-500 border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                     />
@@ -430,7 +412,6 @@ const handleSelectChange = (selectedOption, field) => {
                       End Date
                     </label>
                     <input
-                     id="endDateInput"
                       type="date"
                       className="p-2 h-9 select-custom-width text-slate-500 border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                     />
@@ -442,18 +423,14 @@ const handleSelectChange = (selectedOption, field) => {
                     <label className="pb-2 text-sm " htmlFor="">
                       Notes
                     </label>
-                    <textarea 
-                    id="notesInput"
-                    className="p-2 max-h-md select-custom-width text-slate-500 border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"></textarea>
+                    <textarea className="p-2 max-h-md select-custom-width text-slate-500 border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"></textarea>
                   </div>
 
                   <div className="flex flex-col">
                     <label className="pb-2 text-sm " htmlFor="">
                       Status
                     </label>
-                    <select 
-                     id="statusInput"
-                    className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width">
+                    <select className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width">
                       <option value="option3">Active</option>
                       <option value="option3">Deactive</option>
                     </select>
@@ -534,7 +511,6 @@ const handleSelectChange = (selectedOption, field) => {
                 return (
                   <tr
                     {...row.getRowProps()}
-                    key={i}
                     className={`border border-slate-300 text-gray-600 hover:bg-gray-200 hover:text-blue-600 ${
                       i % 2 === 0 ? "bg-gray-100" : "bg-white" // Memberikan latar belakang selang-seling
                     }`}
