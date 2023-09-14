@@ -274,6 +274,7 @@ const History = () => {
 
 
   return (
+    <div className="relative w-full">
     <div className='flex justify-end'>
       <div className="container mx-auto p-4">
         <div className="flex gap-5 items-center justify-end">
@@ -299,7 +300,7 @@ const History = () => {
 
           </div>
         </div>
-        <div ref={componentPDF}>
+        <div ref={componentPDF} >
           <MaterialReactTable
             columns={columns}
             data={data}
@@ -330,6 +331,7 @@ const History = () => {
 
         </div>
       </div>
+    </div>
     </div>
   )
 }

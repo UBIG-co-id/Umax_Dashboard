@@ -18,6 +18,20 @@ import '../styles.css';
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('performance'); 
+  const [state, setState] = useState({
+    toggleNavbar: false,
+    // Add other state variables here if needed
+  });
+
+  const toggleSidebar = () => {
+    setState({ ...state, toggleNavbar: !state.toggleNavbar });
+  };
+
+  // Calculate the margin-left based on the toggleNavbar state
+  const contentStyles = {
+    marginLeft: state.toggleNavbar ? '72px' : '0', // Adjust the width of the sidebar here (e.g., 72px)
+  };
+
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -152,7 +166,7 @@ const Dashboard = () => {
     switch (activeTab) {
       case 'performance':
         return (
-          <div>
+          <div >
             {/* bagian filter */}
             <div className='flex justify-end'>
                 <div className='flex gap-5 items-center'>
@@ -177,6 +191,7 @@ const Dashboard = () => {
           {/* Chart */}
           <div className='w-full md:w-full flex flex-col gap-5 justify-between'>
             <Chart />
+            
             <div className='flex flex-col md:flex-row w-full gap-5 -mt-4'>
               {renderCardInfo2()}
             </div>
@@ -190,7 +205,7 @@ const Dashboard = () => {
             <div>
               <div className='relative top-5 border-t-2 border-gray-600 p-5 px-10 pb-5'>
                 <h1 className='text-xl font-bold text-gray-700'>Suggestion</h1>
-                <div className='flex mt-5 gap-5'>
+                <div className='flex flex-col mt-5 md:flex-row gap-5'>
                   <Card color='yellow'>
                     <div className='max-w-sm'>
                       <div className='flex gap-3'>
@@ -371,9 +386,9 @@ const Dashboard = () => {
         <Navbar />
         </div>
         <div className='flex gap-5  px-5'>
-          <Sidebar />
+        <Sidebar state={state} toggleSidebar={toggleSidebar} />
           
-          <ContainerCard>
+          <ContainerCard >
             
             {/* Header */}
             <div className='border-b-2  border-gray-600'>

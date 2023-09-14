@@ -51,139 +51,174 @@ const Navbar=() => {
 
   return (
     <Disclosure as="nav" className="bg-white shadow-md">
+      {({ open }) => (
+        <>
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
             <div className="relative flex h-16 items-center justify-between">
-              <div className=" sm:flex sm:items-center sm:justify-center">
-                <img className="h-8 w-auto " src={logo} alt="logo" onClick={toggle}/>
+              <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+
+                {/* Mobile menu button */}
+
+                <div className="sm:hidden text-center">
+                    <img src={logo} alt="logo" className='w-20' onClick={toggle} />
+            </div>
+                <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-600">
+                  <span className="absolute -inset-0.5" />
+                  <span className="sr-only">Open main menu</span>
+                  {open ? (
+                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
+                  ) : (
+                    <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+                  )}
+                </Disclosure.Button>
               </div>
-              <div className="hidden sm:ml-6 sm:block">
-                <div className="flex space-x-4">
-                  {navigation.map((item) => (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      className={classNames(
-                        activePage === item.href
+                <div className="hidden sm:flex sm:items-center sm:justify-center">
+                  <img
+                    className="h-8 w-auto "
+                    src={logo}
+                    alt="logo"
+                    onClick={toggle}
+                  />
+                </div>
+                <div className="hidden sm:ml-6 sm:block ">
+                  <div className="flex space-x-4">
+                    {navigation.map((item) => (
+                      <Link
+                        key={item.name}
+                        to={item.href}
+                        className={classNames(
+                          activePage === item.href
                           ? 'bg-cyan-100 text-blue-600'
                           : 'text-gray-500 ',
                         'rounded-md px-3 py-2 text-sm font-medium'
-                      )}
-                      onClick={() => setActivePage(item.href)}
-                    >
-                      <span className="relative top-1 mr-4 inline-block max-lg:hidden ">
-                        {item.name === 'Dashboard' && <MdDashboard className="h-5 w-5" />}
-                        {item.name === 'Campaigns' && <BiSolidMegaphone className="h-5 w-5" />}
-                        {item.name === 'Accounts' && <AiOutlineUser className="h-5 w-5" />}
-                        {item.name === 'Clients' && <BiGroup className="h-5 w-5" />}
-                      </span>
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-              <div className="absolute  inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                {/* Tombol mode gelap */}
-                <label htmlFor="darkModeToggle" className="relative right-7 flex items-center cursor-pointer">
-                  <div className="relative">
-                    <input
-                      type="checkbox"
-                      id="darkModeToggle"
-                      className="sr-only"
-                      onChange={toggleDarkMode}
-                      checked={darkMode}
-                    />
-                    <div
-                      className={`w-14 h-7 bg-white rounded-full p-1 flex items-center bordernya transition-transform ${
-                        darkMode ? 'justify-end' : 'justify-start'
-                      } ease-in-out duration-300`}
-                    >
-                      <div
-                        className={`dot w-5 h-5 bg-cyan-100 rounded-full shadow transition-transform ${
-                          darkMode ? 'translate-x-full' : ''
-                        }`}
+                        )}
+                        onClick={() => setActivePage(item.href)}
                       >
-                        {darkMode ? <FiMoon className="h-5 w-5 text-sky-600" /> : <FiSun className="h-5 w-5 text-sky-600" />}
-                      </div>
-                    </div>
-                  </div>
-                </label>
-
-                {/* Tombol notifikasi */}
-                <button
-                  type="button"
-                  className="relative right-3 text-gray-500 hover:text-gray-800"
-                  onClick={toggleNotifications}
-                >
-                  {notificationCount > 0 && (
-                    <span className="absolute  -top-1 -right-1 -mt-1 -mr-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center">
-                      {notificationCount}
+                    <span className="relative top-1 mr-4 inline-block max-lg:hidden ">
+                      {item.name === 'Dashboard' && <MdDashboard className="h-5 w-5" />}
+                      {item.name === 'Campaigns' && <BiSolidMegaphone className="h-5 w-5" />}
+                      {item.name === 'Accounts' && <AiOutlineUser className="h-5 w-5" />}
+                      {item.name === 'Clients' && <BiGroup className="h-5 w-5" />}
                     </span>
-                  )}
-                  <span className="sr-only">Lihat notifikasi</span>
-                  <BiBell className="h-6 w-6" aria-hidden="true" />
-                </button>
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
 
-                {showNotifications && (
-                  <Transition
-                    show={showNotifications}
-                    enter="transition ease-out duration-200 transform"
-                    enterFrom="opacity-0 scale-95"
-                    enterTo="opacity-100 scale-100"
-                    leave="transition ease-in duration-100 transform"
-                    leaveFrom="opacity-100 scale-100"
-                    leaveTo="opacity-0 scale-95"
+            
+
+
+              <div className="absolute  inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                 
+                 {/* tombol mode gelap */}
+                  <label htmlFor="darkModeToggle" className="relative right-7 flex items-center cursor-pointer">
+                  <div className="relative">
+                  <input
+                  type="checkbox"
+                  id="darkModeToggle"
+                  className="sr-only"
+                  onChange={toggleDarkMode}
+                  checked={darkMode}
+                  />
+                  <div
+                  className={`w-14 h-7 bg-white rounded-full p-1 flex items-center bordernya transition-transform ${
+                  darkMode ? 'justify-end' : 'justify-start'
+                  } ease-in-out duration-300`}
                   >
-                    <Menu as="div" className="absolute z-10 -ml-48 mt-8 w-48 rounded-md bg-white py-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transition-transform">
-                      {/* Dropdown Notifikasi */}
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(
-                              'relative bottom-2 rounded-t-md block px-4 py-2 text-sm bg-red-500 text-white'
-                            )}
-                          >
-                            Notification
-                          </a>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(
-                              active ? 'bg-gray-100' : '',
-                              'block px-4 py-2 text-sm text-gray-700'
-                            )}
-                          >
-                            Notification 1
-                          </a>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(
-                              active ? 'bg-gray-100' : '',
-                              'block px-4 py-2 text-sm text-gray-700'
-                            )}
-                          >
-                            Notification 2
-                          </a>
-                        )}
-                      </Menu.Item>
-                    </Menu>
-                  </Transition>
-                )}
+                  <div
+                  className={`dot w-5 h-5 bg-cyan-100 rounded-full shadow transition-transform ${
+                  darkMode ? 'translate-x-full' : ''
+                  }`}
+                  >
+                  {darkMode ? <FiMoon className="h-5 w-5 text-sky-600" /> : <FiSun className="h-5 w-5 text-sky-600" />}
+                  </div>
+                  </div>
+                  </div>
+                  </label>
 
-                {/* Profil */}
+
+
+                          {/* tombol notif */}
+              <button
+            type="button"
+            className="relative right-3 text-gray-500 hover:text-gray-800"
+            onClick={toggleNotifications}
+            >
+            {notificationCount > 0 && (
+              <span className="absolute  -top-1 -right-1 -mt-1 -mr-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center">
+                {notificationCount}
+              </span>
+            )}
+            <span className="sr-only">View notifications</span>
+            <BiBell className="h-6 w-6"  aria-hidden="true" />
+            </button>
+
+            {showNotifications && (
+                <Transition
+                show={showNotifications}
+                enter="transition ease-out duration-200 transform"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="transition ease-in duration-100 transform"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+                >
+                  <Menu as="div" className="absolute z-10 -ml-48 mt-8 w-48 rounded-md bg-white py-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transition-transform">
+                    {/* Notifikasi Dropdown */}
+                    <Menu.Item>
+                      {({ active }) => (
+                        <a
+                          href="#"
+                          className={classNames(
+                            'relative bottom-2 rounded-t-md block px-4 py-2 text-sm bg-red-500 text-white'
+                          )}
+                        >
+                          Notification
+                        </a>
+                      )}
+                    </Menu.Item>
+                    <Menu.Item>
+                      {({ active }) => (
+                        <a
+                          href="#"
+                          className={classNames(
+                            active ? 'bg-gray-100' : '',
+                            'block px-4 py-2 text-sm text-gray-700'
+                          )}
+                        >
+                          Notification 1
+                        </a>
+                      )}
+                    </Menu.Item>
+                    <Menu.Item>
+                      {({ active }) => (
+                        <a
+                          href="#"
+                          className={classNames(
+                            active ? 'bg-gray-100' : '',
+                            'block px-4 py-2 text-sm text-gray-700'
+                          )}
+                        >
+                          Notification 2
+                        </a>
+                      )}
+                    </Menu.Item>
+                  </Menu>
+                </Transition>
+              )}
+
+                            {/* profile */}
                 <Menu as="div" className="relative ml-3">
                   <div>
                     <Menu.Button className="relative flex rounded-full  text-sm">
                       <span className="absolute -inset-1.5" />
-                      <span className="sr-only">Buka menu pengguna</span>
-                      <img className="h-8 w-8 rounded-full" src={profile} alt="profile" />
+                      <span className="sr-only">Open user menu</span>
+                      <img
+                        className="h-8 w-8 rounded-full"
+                        src={profile}
+                        alt="profile"
+                      />
                     </Menu.Button>
                   </div>
                   <Transition
@@ -197,23 +232,20 @@ const Navbar=() => {
                   >
                     <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <Menu.Item>
-                        <a
-                          href="#"
-                          className={classNames('bg-slate-500 rounded-t-md block px-4 py-2 text-sm text-white')}
-                        >
-                          Hello, Rizky
-                        </a>
-                      </Menu.Item>
+                          <a
+                            href="#"
+                            className={classNames('bg-slate-500 rounded-t-md block px-4 py-2 text-sm text-white')}
+                          >
+                            Hello, Rizky
+                          </a>
+                      </Menu.Item>  
                       <Menu.Item>
                         {({ active }) => (
                           <a
                             href="#"
-                            className={classNames(
-                              active ? 'bg-gray-100' : '',
-                              'flex items-center px-4 py-2 text-sm text-gray-700  '
-                            )}
+                            className={classNames(active ? 'bg-gray-100' : '', 'flex items-center px-4 py-2 text-sm text-gray-700  ')}
                           >
-                            <AiOutlineUser className="mr-2" /> Profile
+                           < AiOutlineUser className="mr-2"/> Profile
                           </a>
                         )}
                       </Menu.Item>
@@ -221,12 +253,9 @@ const Navbar=() => {
                         {({ active }) => (
                           <a
                             href="#"
-                            className={classNames(
-                              active ? 'bg-gray-100' : '',
-                              'flex items-center px-4 py-2 text-sm text-gray-700'
-                            )}
+                            className={classNames(active ? 'bg-gray-100' : '', 'flex items-center px-4 py-2 text-sm text-gray-700')}
                           >
-                            <CiSettings className="mr-2" /> Settings
+                            <CiSettings className="mr-2"/>Settings
                           </a>
                         )}
                       </Menu.Item>
@@ -234,18 +263,16 @@ const Navbar=() => {
                         {({ active }) => (
                           <a
                             href="#"
-                            className={classNames(
-                              active ? 'bg-gray-100' : '',
-                              'flex items-center px-4 py-2 text-sm text-gray-700'
-                            )}
+                            className={classNames(active ? 'bg-gray-100' : '', 'flex items-center px-4 py-2 text-sm text-gray-700')}
                           >
-                            <BiLogOut className="mr-2" /> Sign out
+                            <BiLogOut className="mr-2"/>Sign out
                           </a>
                         )}
                       </Menu.Item>
                     </Menu.Items>
                   </Transition>
                 </Menu>
+                          
               </div>
             </div>
           </div>
@@ -266,10 +293,12 @@ const Navbar=() => {
                   {item.name}
                 </Disclosure.Button>
               ))}
+  
+
             </div>
           </Disclosure.Panel>
-       
-    
+        </>
+      )}
     </Disclosure>
   );
 }

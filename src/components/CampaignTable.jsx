@@ -13,10 +13,22 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 
 function DataTable() {
-  const [tableData, setTableData] = useState(data);
+  const [tableData, setTableData] = useState([]);
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [showAddPopup, setShowAddPopup] = useState(false);
   
+  async function fetchData() {
+    try {
+      const response = await fetch("https://umax-1-z7228928.deta.app/campaigns");
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
+      }
+      const data = await response.json();
+      setTableData(data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  }
 
   // PAGINATION
   const paginationStyle = {
@@ -138,6 +150,9 @@ function DataTable() {
     const updatedData = tableData.filter((row) => row.id !== rowId);
     setTableData(updatedData);
   };
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const filteredData = data.filter((row) => {
