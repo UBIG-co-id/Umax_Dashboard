@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useTable, useGlobalFilter, usePagination } from "react-table";
-import data from "./CampaignData";
+// import data from "./CampaignData";
 import { BsTrash3, BsPlus } from "react-icons/bs";
 import { CiSearch } from "react-icons/ci";
 import { AiOutlineEdit, AiOutlineFilePdf } from "react-icons/ai";
 import { RiFileExcel2Line } from "react-icons/ri";
 import { useDownloadExcel } from "react-export-table-to-excel";
+import jsPDF from "jspdf";
+import 'jspdf-autotable';
 import { useReactToPrint } from 'react-to-print';
 import "../styles.css";
 import Select from 'react-select';
@@ -60,6 +62,18 @@ function DataTable() {
     color: '#333',
   };
   // END PAGINATION
+  const getStatusString = (status) => {
+    switch (status) {
+      case 1:
+        return "Active";
+      case 2:
+        return "Draft";
+      case 3:
+        return "Completed";
+      default:
+        return "Unknown";
+    }
+  };
 
   const columns = React.useMemo(
     () => [
@@ -90,6 +104,11 @@ function DataTable() {
       {
         Header: "Status",
         accessor: "status",
+        Cell: ({ row }) => (
+          <div className="flex justify-center">
+            {getStatusString(row.original.status)}
+          </div>
+        ),
       },
       {
         Header: "Action",
@@ -155,7 +174,7 @@ function DataTable() {
   }, []);
 
   useEffect(() => {
-    const filteredData = data.filter((row) => {
+    const filteredData = tableData.filter((row) => {
       return selectedPlatform === "" || row.platform === selectedPlatform;
     });
     setTableData(filteredData);
@@ -199,11 +218,32 @@ function DataTable() {
 
   const componentPDF = useRef();
   
-  const generatePDF = useReactToPrint({
-    content: () => componentPDF.current,
-    documentTitle: "Data",
-    onAfterPrint: () => alert("Data Saved in PDF")
-  });
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    doc.text('Campaign Data', 14, 15);
+  
+    const filteredData = tableData.map((row) => ({
+      Name: row.name,
+      Client: row.client,
+      Platform: row.platform,
+      Account: row.account,
+      Objective: row.objective,
+      'Start Date': row.startdate,
+      Status: getStatusString(row.status),
+    }));
+  
+    const tableColumnNames = Object.keys(filteredData[0]);
+    const tableColumnValues = filteredData.map((row) => Object.values(row));
+  
+    doc.autoTable({
+      head: [tableColumnNames],
+      body: tableColumnValues,
+      startY: 20,
+    });
+  
+    doc.save('campaigns.pdf');
+  };
+  
 
   // select 2
 const options = [
@@ -272,9 +312,9 @@ const handleSelectChange = (selectedOption, field) => {
               onChange={(e) => setSelectedPlatform(e.target.value)}
             >
               <option hidden>Platform</option>
-              <option value="Facebook">Facebook</option>
-              <option value="Instagram">Instagram</option>
-              <option value="Google">Google</option>
+              <option value="Facebook">Meta Ads</option>
+              <option value="Instagram">Google Ads</option>
+              <option value="Google">Tiktok Ads</option>
             </select>
           </div>
 
@@ -509,7 +549,7 @@ const handleSelectChange = (selectedOption, field) => {
                     {...row.getRowProps()}
                     className={`border border-slate-300 text-gray-600 hover:bg-gray-200 hover:text-blue-600 ${
                       i % 2 === 0 ? "bg-gray-100" : "bg-white" // Memberikan latar belakang selang-seling
-                    }`}
+                    } `}
                   >
                     {row.cells.map((cell) => {
                       return (

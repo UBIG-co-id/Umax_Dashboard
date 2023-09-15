@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useTable, useGlobalFilter } from 'react-table';
-import data from './DataAccount';
+import { useTable, useGlobalFilter, usePagination } from 'react-table';
+// import data from './DataAccount';
+import jsPDF from "jspdf";
+import 'jspdf-autotable';
 import { BsTrash3, BsPlus } from 'react-icons/bs';
 import { CiSearch } from 'react-icons/ci';
 import { AiOutlineEdit, AiOutlineFilePdf, AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
@@ -8,19 +10,127 @@ import { RiFileExcel2Line } from 'react-icons/ri';
 import { useDownloadExcel } from "react-export-table-to-excel";
 import '../styles.css';
 import Select from 'react-select';
-import { useReactToPrint } from 'react-to-print'
+import { useReactToPrint } from 'react-to-print';
 
 
 
 
 function AccountTable() {
-  const [tableData, setTableData] = useState(data);
+  const [tableData, setTableData] = useState([]);
   const [selectedPlatform, setSelectedPlatform] = useState('');
   const tableRef = useRef(null);
   const [showAddPopup, setShowAddPopup] = useState(false);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false); 
-  
+
+
+// POST DATA
+const [formData, setFormData] = useState({
+  name: '',
+  client: '',
+  platform: '',
+  email: '',
+  password: '',
+  notes: '',
+  status: 1, // Set a default value for status (e.g., Active)
+  is_admin: false,
+});
+const toggleAddPopup = () => {
+  setShowAddPopup(!showAddPopup);
+};
+
+const handleInputChange = (e) => {
+  const { name, value, type, checked } = e.target;
+  setFormData({
+    ...formData,
+    [name]: type === 'checkbox' ? checked : value,
+  })
+}
+const handleAddData = async () => {
+  try {
+    const response = await fetch("https://umax-1-z7228928.deta.app/accounts", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    setTableData([...tableData, data]); // Update the table with the new data
+    toggleAddPopup(); // Close the add popup
+  } catch (error) {
+    console.error("Error adding data:", error.message);
+  }
+};
+
+  // GET DATA
+  async function fetchData() {
+    try {
+      const response = await fetch("https://umax-1-z7228928.deta.app/accounts");
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
+      }
+      const data = await response.json();
+      setTableData(data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+  // END GET DATA
+
+  const getStatusString = (status) => {
+    switch (status) {
+      case 1:
+        return "Active";
+      case 2:
+        return "Draft";
+      case 3:
+        return "Completed";
+      default:
+        return "Unknown";
+    }
+  };
+
+  // PAGINATION
+  const paginationStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'end',
+    marginTop: '20px',
+  };
+
+  const buttonStyle = {
+    backgroundColor: '#007BFF',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+    padding: '5px 10px',
+    cursor: 'pointer',
+    fontSize: '16px',
+    margin: '0 5px',
+  };
+
+  const disabledButtonStyle = {
+    backgroundColor: '#ccc',
+    cursor: 'not-allowed',
+  };
+
+  const pageInfoStyle = {
+    fontSize: '16px',
+    margin: '0 10px',
+    color: '#333',
+  };
+  // END PAGINATION
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -46,6 +156,11 @@ function AccountTable() {
       {
         Header: 'Status',
         accessor: 'status',
+        Cell: ({ row }) => (
+          <div className="flex justify-center">
+            {getStatusString(row.original.status)}
+          </div>
+        ),
       },
       {
         Header: 'Action',
@@ -76,18 +191,27 @@ function AccountTable() {
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    rows,
-    state,
-    setGlobalFilter,
+    page, // Replace 'rows' with 'page' for paginated data
+    state: { pageIndex, pageSize, globalFilter }, // Add these state properties
+    setGlobalFilter, // Add this function
+    gotoPage, // Add this function
+    nextPage, // Add this function
+    previousPage, // Add this function
+    canNextPage, // Add this function
+    canPreviousPage, // Add this function
+    pageOptions, // Add this function
+    pageCount, 
   } = useTable(
     {
       columns,
       data: tableData,
+      initialState: { pageIndex: 0, pageSize: 5 },
     },
-    useGlobalFilter
+    useGlobalFilter,
+    usePagination
   );
 
-  const { globalFilter } = state;
+  // const { globalFilter } = state;
 
   const handleEdit = (rowId) => {
     console.log('Editing row with ID:', rowId);
@@ -99,19 +223,19 @@ function AccountTable() {
   };
 
   useEffect(() => {
-    const filteredData = data.filter((row) => {
+    const filteredData = tableData.filter((row) => {
       return selectedPlatform === "" || row.platform === selectedPlatform;
     });
     setTableData(filteredData);
   }, [selectedPlatform]);
 
-  const toggleAddPopup = () => {
-    setShowAddPopup(!showAddPopup);
-  };
+  // const toggleAddPopup = () => {
+  //   setShowAddPopup(!showAddPopup);
+  // };
 
-  const handleAddData = () => {
-    toggleAddPopup();
-  };
+  // const handleAddData = () => {
+  //   toggleAddPopup();
+  // };
 
   //bagian close pakai esc
   useEffect(() => {
@@ -164,11 +288,30 @@ const handleSelectChange = (selectedOption) => {
 
 const componentPDF = useRef();
   
-  const generatePDF = useReactToPrint({
-    content: () => componentPDF.current,
-    documentTitle: "Data",
-    onAfterPrint: () => alert("Data Saved in PDF")
-  });
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    doc.text('Account Data', 14, 15);
+  
+    const filteredData = tableData.map((row) => ({
+      Name: row.name,
+      Client: row.client,
+      Platform: row.platform,
+      Email: row.email,
+      Status: getStatusString(row.status),
+    }));
+  
+    const tableColumnNames = Object.keys(filteredData[0]);
+    const tableColumnValues = filteredData.map((row) => Object.values(row));
+  
+    doc.autoTable({
+      head: [tableColumnNames],
+      body: tableColumnValues,
+      startY: 20,
+    });
+  
+    doc.save('Account.pdf');
+  };
 
 
   return (
@@ -423,13 +566,13 @@ const componentPDF = useRef();
               ))}
             </thead>
             <tbody {...getTableBodyProps()}>
-              {rows.map((row, rowIndex) => {
+              {page.map((row, i) => {
                 prepareRow(row);
                 return (
                   <tr
                     {...row.getRowProps()}
                     className={`border border-slate-300 text-gray-600 hover:bg-gray-200 hover:text-blue-600 ${
-                      rowIndex % 2 === 0 ? 'bg-gray-100' : 'bg-white' // Memberikan latar belakang selang-seling
+                      i % 2 === 0 ? 'bg-gray-100' : 'bg-white' // Memberikan latar belakang selang-seling
                     }`}                   >
                     {row.cells.map((cell) => {
                       return (
@@ -451,7 +594,58 @@ const componentPDF = useRef();
             </tbody>
           </table>
         </div>
+          {/* Pagination */}
+       <div style={paginationStyle}>
+          <button
+            onClick={() => gotoPage(0)}
+            disabled={!canPreviousPage}
+            style={{
+              ...buttonStyle,
+              ...(canPreviousPage ? {} : disabledButtonStyle),
+            }}
+          >
+            {'<<'}
+          </button>{' '}
+          <button
+            onClick={() => previousPage()}
+            disabled={!canPreviousPage}
+            style={{
+              ...buttonStyle,
+              ...(canPreviousPage ? {} : disabledButtonStyle),
+            }}
+          >
+            {'<'}
+          </button>{' '}
+          <span style={pageInfoStyle}>
+            Page{' '}
+            <strong>
+              {pageIndex + 1} of {pageOptions.length}
+            </strong>{' '}
+          </span>
+          <button
+            onClick={() => nextPage()}
+            disabled={!canNextPage}
+            style={{
+              ...buttonStyle,
+              ...(canNextPage ? {} : disabledButtonStyle),
+            }}
+          >
+            {'>'}
+          </button>{' '}
+          <button
+            onClick={() => gotoPage(pageCount - 1)}
+            disabled={!canNextPage}
+            style={{
+              ...buttonStyle,
+              ...(canNextPage ? {} : disabledButtonStyle),
+            }}
+          >
+            {'>>'}
+          </button>{' '}
+        </div>
+        {/* End Pagination */}
       </div>
+     
     </div>
   );
 }
