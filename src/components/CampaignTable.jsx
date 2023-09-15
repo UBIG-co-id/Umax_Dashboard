@@ -8,6 +8,7 @@ import { useDownloadExcel } from "react-export-table-to-excel";
 import { useReactToPrint } from 'react-to-print';
 import "../styles.css";
 import Select from 'react-select';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 
 
@@ -448,6 +449,7 @@ const handleSelectChange = (selectedOption, field) => {
                   </button>
                   <button
                     type="button"
+                    onClick={handleAddData}
                     className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
                   >
                     Save

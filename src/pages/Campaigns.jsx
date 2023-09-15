@@ -13,7 +13,9 @@ const Campaigns = () => {
           </span>
           <CampaignTable />
         </div>
+        
       </div>
+      
     </main>
   );
 };

@@ -65,7 +65,7 @@
 
 
 
-//===== end =====//
+
 
 
 .transition-transform {
@@ -87,16 +87,16 @@
 }
 .aside__container-list_information {
   position: relative;
-  top: -14px;
-  margin-top: 1rem;
+  top: -25px;
+  margin-top: 2rem;
   display: flex;
   flex-direction: row;
   justify-content: center;
-  gap: 2rem;
+  gap: 1rem;
 }
 .aside__container-list_information > div p {
   font-size: 12px;
-  color: #878c84;
+  /* color: #878c84; */
   font-weight: 500;
 }
 .lebar-list{
@@ -112,10 +112,12 @@
   width: 289px;
   left: -17px;
 }
-.tinggiCard{
-  height: 50rem;
-  max-height: ;
-}
+/* .text{
+  width: 100px;
+  overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+} */
 
 /* animasi untuk pop up card */
 /* Transisi masuk */
@@ -142,9 +144,10 @@
   background-color: white;
   border: 1px solid gray;
   border-radius: 4px;
-  padding: 8px;
+  padding: 10px;
+  left: 80px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  margin-top: 8px;
+  margin-top: 25px;
   position: absolute;
   z-index: 10;
 }
@@ -240,7 +243,9 @@ th svg.desc{
   transform: rotate(180deg);
 }
 
-
+.hr{
+  color: #35A9DB;
+}
 
 .pagination-container {
   text-align: right;
@@ -325,7 +330,7 @@ th svg.desc{
   width: 200px; /* Sesuaikan lebar sesuai kebutuhan Anda */
 }
 
-//=warna tab=//
+
 
 
 /* responsive table */
