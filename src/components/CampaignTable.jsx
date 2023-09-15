@@ -11,14 +11,17 @@ import 'jspdf-autotable';
 import { useReactToPrint } from 'react-to-print';
 import "../styles.css";
 import Select from 'react-select';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
+
+
 
 function DataTable() {
   const [tableData, setTableData] = useState([]);
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [showAddPopup, setShowAddPopup] = useState(false);
+
   
+  //ambil data
   async function fetchData() {
     try {
       const response = await fetch("https://umax-1-z7228928.deta.app/campaigns");
@@ -26,11 +29,36 @@ function DataTable() {
         throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
       }
       const data = await response.json();
+      console.log("Data berhasil diambil:", data); // Menampilkan data di console log
       setTableData(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
   }
+
+  //post data
+
+
+
+
+  // delete data
+  async function deleteDataById(id) {
+    try {
+      const response = await fetch(`https://umax-1-z7228928.deta.app/campaigns/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
+      }
+      // Filter out the deleted item from the tableData state
+      const updatedData = tableData.filter((row) => row.id !== id);
+      setTableData(updatedData);
+      console.log("Data berhasil dihapus:", id);
+    } catch (error) {
+      console.error("Error deleting data:", error.message);
+    }
+  }
+
 
   // PAGINATION
   const paginationStyle = {
@@ -114,15 +142,15 @@ function DataTable() {
         Header: "Action",
         accessor: "id",
         Cell: ({ row }) => (
-          <div className="flex space-x-2">
+          <div className="flex space-x-2 justify-center">
             <button
-              onClick={() => handleEdit(row.original.id)}
+              onClick={() => handleDelete(row.original.id)}
               className="bg-red-200 hover:bg-red-300 text-red-600 py-1 px-1 rounded"
             >
               <BsTrash3 />
             </button>
             <button
-              onClick={() => handleDelete(row.original.id)}
+              onClick={() => handleEdit(row.original.id)}
               className="bg-blue-200 hover:bg-blue-300 text-blue-600 py-1 px-1 rounded"
             >
               <AiOutlineEdit />
@@ -168,6 +196,8 @@ function DataTable() {
   const handleDelete = (rowId) => {
     const updatedData = tableData.filter((row) => row.id !== rowId);
     setTableData(updatedData);
+    deleteDataById(rowId);
+
   };
   useEffect(() => {
     fetchData();
@@ -326,9 +356,9 @@ const handleSelectChange = (selectedOption, field) => {
               onChange={(e) => setSelectedPlatform(e.target.value)}
             >
               <option hidden>Objective</option>
-              <option value="Facebook">Awareness</option>
-              <option value="Instagram">Conversion</option>
-              <option value="Google">Consideration</option>
+              <option value="Awareness">Awareness</option>
+              <option value="Conversion">Conversion</option>
+              <option value="Consideration">Consideration</option>
             </select>
           </div>
 
