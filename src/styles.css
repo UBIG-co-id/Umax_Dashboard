@@ -1,3 +1,8 @@
+.lebarcard{
+  with: 88%;
+}
+
+
 /* CSS untuk header "Action" */
 .action-column {
   text-align: center; /* Mengatur teks menjadi rata tengah */

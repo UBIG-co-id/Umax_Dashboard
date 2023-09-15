@@ -176,6 +176,8 @@ const Dashboard = () => {
                   </div>
                   <select name="" id="" className='focus:outline-none p-2 px-5 border border-gray-300 text-gray-500 rounded-md'>
                     <option value="">Last Week</option>
+                    <option value="">Last Month</option>
+                    <option value="">Last Year</option>
                   </select>
                 </div>
               </div>
@@ -185,14 +187,14 @@ const Dashboard = () => {
               <div>
         <div className='flex flex-col md:flex-row mt-5 md:gap-5'>
           {/* Card Info */}
-          <div className='w-full md:w-2/6 flex flex-col h-full gap-5'>
+          <div className='md:w-8/12 w-full flex flex-col h-full gap-5'>
             {renderCardInfo()}
           </div>
           {/* Chart */}
           <div className='w-full md:w-full flex flex-col gap-5 justify-between'>
             <Chart />
             
-            <div className='flex flex-col md:flex-row w-full gap-5 -mt-4'>
+            <div className='flex flex-col md:flex-row gap-5 -mt-4'>
               {renderCardInfo2()}
             </div>
           </div>
@@ -311,12 +313,14 @@ const Dashboard = () => {
     {
       title: 'Amount Spent',
       value: 'Rp. 4.000.000',
-      color: 'text-sky-500'
+      color: 'text-sky-500',
+      popupContent: 'Konten untuk Amount Spent' // Isi konten popup untuk Amount Spent
     },
     {
       title: 'Reach Amount Ratio',
       value: '6.1%',
       color: 'text-yellow-500'
+      
     },
     {
       title: 'Click Through Rate',
@@ -352,13 +356,18 @@ const Dashboard = () => {
 
   const renderCardInfo = () => {
     return cardData.map((item, index) => {
-      return <CardInfo key={index} title={item.title} value={item.value} color={item.color} className='relative flex top-5 flex-col justify-between h-24' />
+      return <CardInfo key={index} title={item.title} value={item.value} color={item.color} className='relative flex top-5 flex-col justify-between h-24'>
+        
+
+</CardInfo>
+
+      
     })
   }
 
   const renderCardInfo2 = () => {
     return cardData2.map((item, index) => {
-      return <CardInfo key={index} title={item.title} value={item.value} color={item.color} className='w-full  flex flex-col justify-between h-24' />
+      return <CardInfo  key={index} title={item.title} value={item.value} color={item.color} className='w-full  flex flex-col justify-between h-24' />
     })
   }
 

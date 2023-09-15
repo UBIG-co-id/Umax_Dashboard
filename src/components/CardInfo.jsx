@@ -19,14 +19,12 @@ export default function CardInfo({ title, value, color = "text-gray-500", popupC
             <div className='flex justify-between items-center'>
                 <div className='text-sm font-medium text-gray-500'>{title}</div>
                 <div className='text-gray-500'>
-                    {/* <AiOutlineInfoCircle size={20} /> */}
-                    <AiOutlineInfoCircle size={20} />
-                    {/* <AiOutlineInfoCircle size={20} onClick={openPopup} /> */}
+                    <AiOutlineInfoCircle size={20} onClick={openPopup} />
                 </div>
             </div>
             <div className={`${color} text-xl font-bold`}>{value}</div>
 
-            {/* <CSSTransition
+            <CSSTransition
                 in={activePopup}
                 timeout={300}
                 classNames="popup"
@@ -36,10 +34,9 @@ export default function CardInfo({ title, value, color = "text-gray-500", popupC
                     <div className="close-button" onClick={closePopup}>
                         <AiOutlineClose size={15} />
                     </div>
-                    {popupContent}
-                    Amount Spent ialah pengeluaran
+                    {activePopup && popupContent}
                 </div>
-            </CSSTransition> */}
+            </CSSTransition>
         </div>
     );
 }
