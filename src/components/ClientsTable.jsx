@@ -10,6 +10,9 @@ import { RiFileExcel2Line } from 'react-icons/ri';
 import { useDownloadExcel } from "react-export-table-to-excel";
 import { useReactToPrint } from 'react-to-print';
 import '../styles.css';
+import axios from 'axios';
+
+
 
 
 function ClientsTable() {
@@ -17,7 +20,12 @@ function ClientsTable() {
   const [selectedPlatform, setSelectedPlatform] = useState('');
   const tableRef = useRef(null);
   const [showAddPopup, setShowAddPopup] = useState(false);
+  
   const [newData, setNewData] = useState({});
+ 
+
+ 
+
 
   // PAGINATION
   const paginationStyle = {
@@ -52,7 +60,7 @@ function ClientsTable() {
 
   async function fetchData() {
     try {
-      const response = await fetch("https://umax-1-z7228928.deta.app/clients");
+      const response = await fetch("http://127.0.0.1:8000/Clients");
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
       }
@@ -65,6 +73,8 @@ function ClientsTable() {
   useEffect(() => {
     fetchData();
   }, []);
+
+
 
   const getStatusString = (status) => {
     switch (status) {
@@ -106,26 +116,28 @@ function ClientsTable() {
       {
         Header: 'Action',
         accessor: 'action',
-
         Cell: ({ row }) => (
-          <div className="flex space-x-2  justify-center">
+          <div className="flex space-x-2 justify-center">
             <button
-              onClick={() => handleEdit(row.original.id)}
+              onClick={() => handleDelete(row.original.id)}
               className="bg-red-200 hover:bg-red-300 text-red-600 py-1 px-1 rounded"
             >
               <BsTrash3 />
             </button>
             <button
-              onClick={() => handleDelete(row.original.id)}
+              onClick={() => {
+               
+              }}
               className="bg-blue-200 hover:bg-blue-300 text-blue-600 py-1 px-1 rounded"
             >
               <AiOutlineEdit />
             </button>
           </div>
         ),
-        headerClassName: 'action-column header', // Tambahkan kelas CSS khusus
-        className: 'action-column', // Tambahkan kelas CSS khusus
+        headerClassName: 'action-column header',
+        className: 'action-column',
       },
+
     ],
     []
   );
@@ -144,7 +156,7 @@ function ClientsTable() {
     canNextPage, // Add this function
     canPreviousPage, // Add this function
     pageOptions, // Add this function
-    pageCount, 
+    pageCount,
   } = useTable(
     {
       columns,
@@ -157,9 +169,9 @@ function ClientsTable() {
 
   // const { globalFilter } = state;
 
-  const handleEdit = (rowId) => {
-    console.log('Editing row with ID:', rowId);
-  };
+  // const handleEdit = (rowId) => {
+  //   console.log('Editing row with ID:', rowId);
+  // };
 
   const handleDelete = (rowId) => {
     const updatedData = tableData.filter((row) => row.id !== rowId);
@@ -176,10 +188,38 @@ function ClientsTable() {
   const toggleAddPopup = () => {
     setShowAddPopup(!showAddPopup);
   };
+ 
 
-  const handleAddData = () => {
-    toggleAddPopup();
+
+
+  const handleAddData = async () => {
+    try {
+      // Make a POST request to the specified URL with the new data
+      const response = await axios.post('http://127.0.0.1:8000/Clients', newData);
+
+      // Check if the POST request was successful
+      if (response.status === 201) {
+        // The data was successfully added, you can handle any further actions here
+        console.log('Data added successfully:', response.data);
+
+        // Clear the form or reset the newData state
+        setNewData({});
+
+        // Close the add popup if it's open
+        toggleAddPopup();
+
+        // You may also want to refresh the table data by making a GET request here
+        // Example:
+        // fetchData();
+      } else {
+        console.error('Error adding data:', response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error('Error adding data:', error);
+    }
   };
+
+
 
   useEffect(() => {
     const closePopupOnEscape = (e) => {
@@ -205,27 +245,27 @@ function ClientsTable() {
   });
 
   const componentPDF = useRef();
-  
+
   const generatePDF = () => {
     const doc = new jsPDF();
     doc.text('Client Data', 14, 15);
-  
+
     const filteredData = tableData.map((row) => ({
       Name: row.name,
       Address: row.address,
       Contact: row.contact,
       Status: getStatusString(row.status),
     }));
-  
+
     const tableColumnNames = Object.keys(filteredData[0]);
     const tableColumnValues = filteredData.map((row) => Object.values(row));
-  
+
     doc.autoTable({
       head: [tableColumnNames],
       body: tableColumnValues,
       startY: 20,
     });
-  
+
     doc.save('Client.pdf');
   };
 
@@ -281,71 +321,85 @@ function ClientsTable() {
           </button>
 
           {/* menu add data */}
+          
+
+
+
           {/* Pop-up menu */}
           {showAddPopup && (
             <div className="fixed z-50 inset-0 flex items-center justify-center">
               <div className="fixed -z-10 inset-0 bg-black bg-opacity-50"></div>
-              <div className=" bg-white p-5 rounded-lg shadow-lg  max-h-[80vh] overflow-y-auto">
+              <div className="bg-white p-5 rounded-lg shadow-lg max-h-[80vh] overflow-y-auto">
                 <h2 className="text-xl font-semibold mb-4">Client</h2>
                 <div className="flex flex-col md:flex-row gap-4 mb-4">
                   <div className="flex flex-col">
-                    <label className='pb-2 text-sm ' htmlFor="">Name</label>
+                    <label className='pb-2 text-sm ' htmlFor="name">Name</label>
                     <input
                       type="text"
-                      className="p-2 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
+                      id="name"
+                      value={newData.name || ''}
+                      onChange={(e) => setNewData({ ...newData, name: e.target.value })}
+                      className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                     />
                   </div>
                   <div className="flex flex-col">
-                    <label className='pb-2 text-sm ' htmlFor="">Address</label>
+                    <label className='pb-2 text-sm ' htmlFor="address">Address</label>
                     <input
                       type="text"
-                      className="p-2 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
+                      id="address"
+                      value={newData.address || ''}
+                      onChange={(e) => setNewData({ ...newData, address: e.target.value })}
+                      className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                     />
                   </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row gap-4 mb-4">
                   <div className="flex flex-col">
-                    <label className='pb-2 text-sm ' htmlFor="">Contact</label>
+                    <label className='pb-2 text-sm ' htmlFor="contact">Contact</label>
                     <input
                       type="number"
-                      className="p-2 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
+                      id="contact"
+                      value={newData.contact || ''}
+                      onChange={(e) => setNewData({ ...newData, contact: e.target.value })}
+                      className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                     />
                   </div>
 
                   <div className="flex flex-col">
-                    <label className='pb-2 text-sm ' htmlFor="">Status</label>
+                    <label className='pb-2 text-sm' htmlFor="status">Status</label>
                     <select
-                      className="px-3 text-slate-500 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
+                      id="status"
+                      value={newData.status || ''}
+                      onChange={(e) => setNewData({ ...newData, status: parseInt(e.target.value) })}
+                      className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
                     >
-                      <option value="option1">Active</option>
-                      <option value="option2">Deactive</option>
+                      <option value="1">Active</option>
+                      <option value="2">Deactive</option>
                     </select>
                   </div>
+
+
                 </div>
-
-
-
 
                 <div className="flex flex-col md:flex-row gap-4 mb-4">
                   <div className="flex flex-col">
-                    <label className='pb-2 text-sm ' htmlFor="">Notes</label>
+                    <label className='pb-2 text-sm ' htmlFor="notes">Notes</label>
                     <textarea
-                      className="p-2 max-h-md select-custom-width text-slate-500 border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
+                      id="notes"
+                      value={newData.notes || ''}
+                      onChange={(e) => setNewData({ ...newData, notes: e.target.value })}
+                      className="p-2 max-h-md select-custom-width text-slate-500 border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                     ></textarea>
                   </div>
-
-
-
                 </div>
-
 
                 <div className="flex justify-end">
                   {/* Tombol Save */}
                   <button
                     type="button"
                     onClick={toggleAddPopup}
-                    className=" text-gray-500 mr-4"
+                    className="text-gray-500 mr-4"
                   >
                     Cancel
                   </button>
@@ -360,6 +414,7 @@ function ClientsTable() {
               </div>
             </div>
           )}
+
 
 
           {/* end */}
@@ -382,14 +437,14 @@ function ClientsTable() {
           <button
             type="button"
             className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
-            onClick ={generatePDF}
+            onClick={generatePDF}
           >
             <AiOutlineFilePdf className="relative font-medium text-lg" />
           </button>
         </div>
 
         <div className="w-full bg-white max-md:overflow-x-scroll" ref={componentPDF}>
-        
+
           <table
             {...getTableProps()}
             ref={tableRef}
@@ -402,8 +457,8 @@ function ClientsTable() {
                     <th
                       {...column.getHeaderProps()}
                       className={`p-2 text-white bg-sky-700 font-medium border-slate-300 border ${column.id === 'action' || column.id === 'status'
-                          ? 'text-center' // Untuk rata tengah
-                          : 'text-left' // Untuk kolom lainnya
+                        ? 'text-center' // Untuk rata tengah
+                        : 'text-left' // Untuk kolom lainnya
                         }`}
                     >
                       {column.render('Header')}
@@ -414,7 +469,7 @@ function ClientsTable() {
               ))}
             </thead>
             <tbody {...getTableBodyProps()}>
-            {page.map((row, i) => {
+              {page.map((row, i) => {
                 prepareRow(row);
                 return (
                   <tr
@@ -430,8 +485,8 @@ function ClientsTable() {
                           {...cell.getCellProps()}
 
                           className={`p-2 border border-slate-300 ${cell.column.id === 'status' || cell.column.id === 'action'
-                              ? 'text-center action-column' // Terapkan kelas CSS khusus
-                              : 'text-left'
+                            ? 'text-center action-column' // Terapkan kelas CSS khusus
+                            : 'text-left'
                             }`}
                         >
                           {cell.render('Cell')}
@@ -445,7 +500,7 @@ function ClientsTable() {
           </table>
         </div>
         {/* Pagination */}
-       <div style={paginationStyle}>
+        <div style={paginationStyle}>
           <button
             onClick={() => gotoPage(0)}
             disabled={!canPreviousPage}
