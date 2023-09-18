@@ -356,12 +356,7 @@ const Dashboard = () => {
 
   const renderCardInfo = () => {
     return cardData.map((item, index) => {
-      return <CardInfo key={index} title={item.title} value={item.value} color={item.color} className='relative flex top-5 flex-col justify-between h-24'>
-        
-
-</CardInfo>
-
-      
+      return <CardInfo key={index} title={item.title} value={item.value} color={item.color} className='relative flex top-5 flex-col justify-between h-24' />
     })
   }
 
