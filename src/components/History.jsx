@@ -303,12 +303,10 @@ const History = () => {
           <MaterialReactTable
             columns={columns}
             data={data}
-            // ref={tableRef}
             muiTableHeadCellProps={{
-              // Use the `sx` prop to set background color and text color
               sx: (theme) => ({
-                backgroundColor: theme.palette.primary.main, // Change to your desired blue color
-                color: theme.palette.common.white, // Set text color to white
+                backgroundColor: theme.palette.primary.main, 
+                color: theme.palette.common.white, 
               })
             }}
             muiTablePaperProps={{

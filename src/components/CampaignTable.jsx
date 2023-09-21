@@ -50,7 +50,6 @@ function DataTable() {
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
       }
-      // Filter out the deleted item from the tableData state
       const updatedData = tableData.filter((row) => row.id !== id);
       setTableData(updatedData);
       console.log("Data berhasil dihapus:", id);
@@ -551,15 +550,16 @@ const handleSelectChange = (selectedOption, field) => {
           <table
             {...getTableProps()}
             ref={tableRef}
-            className="table-auto border-collapse border w-full"
+            className="table-auto border-collapse border w-full "
           >
             <thead>
               {headerGroups.map((headerGroup) => (
-                <tr {...headerGroup.getHeaderGroupProps()}>
+                <tr {...headerGroup.getHeaderGroupProps()}
+                >
                   {headerGroup.headers.map((column) => (
                     <th
                       {...column.getHeaderProps()}
-                      className={`p-2 text-white bg-sky-700 font-normal border-slate-300 border ${
+                      className={` p-2 text-white bg-sky-700 font-normal border-slate-300 border ${
                         column.id === "status" || column.id === "id"
                           ? "place-items-center"
                           : "text-left"
@@ -578,7 +578,7 @@ const handleSelectChange = (selectedOption, field) => {
                   <tr
                     {...row.getRowProps()}
                     className={`border border-slate-300 text-gray-600 hover:bg-blue-300 hover:text-gray-700 ${
-                      i % 2 === 0 ? "bg-gray-100" : "bg-white" // Memberikan latar belakang selang-seling
+                      i % 2 === 0 ? "bg-gray-100" : "bg-white" 
                     } `}
                   >
                     {row.cells.map((cell) => {
