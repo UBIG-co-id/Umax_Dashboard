@@ -18,8 +18,7 @@
       const container = document.querySelector('.lebar-list');
       if (container) {
         if (container.scrollTop + container.clientHeight >= container.scrollHeight) {
-          // User has reached the bottom, load more items
-          setItemsToShow(itemsToShow + 10); // Increase the number of items to show
+          setItemsToShow(itemsToShow + 10); 
         }
       }
     };
@@ -91,6 +90,8 @@
       );
     };
 
+    const nonActiveHoverClass = 'hoverable';
+
     const renderItems = (items) => {
       const filtered = filteredItems(items);
 
@@ -109,15 +110,18 @@
           circleColor = tabStyle[activeTab].circleColor;
         }
         
+        const isItemActive = activeItem === item.title;
+        const listItemClasses = `flex flex-col h-20 mb-0 -ml-2 ${isItemActive ? 'bg-blue-200 ' : ''} ${!isItemActive ? nonActiveHoverClass : ''}`;
+
         return (
 
           <li
-            key={index}
-            className={`flex flex-col h-20 mb-0 -ml-2 ${activeItem === item.title ? 'bg-blue-200 ' : ''
-              }`}
-            onClick={() => handleItemClick(item.title)}
-          >
-            {index > 0 && <hr className="border-gray-500 " />}
+          key={index}
+          className={listItemClasses}
+          onClick={() => handleItemClick(item.title)}
+        >
+          
+            {index > 0 && <hr className="border-gray-300 " />}
             <div
               className={`${activeTab === item.title.toLowerCase() ? 'bg-blue-200' : ''}`}
             />
@@ -125,7 +129,7 @@
               <div className="flex items-center">
                 <img src={item.icon} alt="icon" className="w-6 mr-2" />
                 <span
-                  className={`truncate w-52 ${activeItem === item.title ? 'text-blue-500' : ''
+                  className={`truncate w-52 ${activeItem === item.title ? 'text-black' : ''
                     }`}
                     title={item.title}
                 >
@@ -142,16 +146,16 @@
 
             <div className="aside__container-list_information mt-1">
             <div>
-              <p className={activeItem === item.title ? 'text-blue-500' : ''}>Amount Spent</p>
-              <p className={activeItem === item.title ? 'text-blue-500' : ''}>{item.amountSpent}</p>
+              <p >Amount Spent</p>
+              <p >{item.amountSpent}</p>
             </div>
             <div>
-              <p className={activeItem === item.title ? 'text-blue-500' : ''}>Reach</p>
-              <p className={activeItem === item.title ? 'text-blue-500' : ''}>{item.reach}</p>
+              <p >Reach</p>
+              <p >{item.reach}</p>
             </div>
             <div>
-              <p className={activeItem === item.title ? 'text-blue-500' : ''}>Start Date</p>
-              <p className={activeItem === item.title ? 'text-blue-500' : ''}>{item.startDate}</p>
+              <p >Start Date</p>
+              <p >{item.startDate}</p>
             </div>
             </div>
           </li>
@@ -219,12 +223,12 @@
 
 
           <div className="relative lebar-list -left-2 border-slate-500 pt-2 overflow-y-scroll max-h-[50rem]">
-            <ul className="  mt-2">
+            <ul className="cursor-pointer mt-2">
               {activeTab === 'all' && (
                 <>
-                  <hr className="border-gray-500 mb-0" />
+                  <hr className="border-gray-300 mb-0" />
                   {renderItems([
-                    { title: 'Program Bimbingan Karir...', icon: tiktok, amountSpent: 'Rp. 3.000.000', reach: '220.000', startDate: 'Sep 4, 14:09' },
+                    { title: 'Program Bimbingan Karir', icon: tiktok, amountSpent: 'Rp. 3.000.000', reach: '220.000', startDate: 'Sep 4, 14:09' },
                     { title: 'Santri Berwirausaha', icon: google, amountSpent: 'Rp. 2.000.000', reach: '97.000', startDate: 'Mart 1, 12:36' },
                     { title: 'Program Tahfidz', icon: facebook, amountSpent: 'Rp. 4.000.000', reach: '120.000', startDate: 'Feb 4, 12:36' },
                     { title: 'Campaign Tahfidz', icon: google, amountSpent: 'Rp. 3.000.000', reach: '250.000', startDate: 'Apr 12, 14:00' },
@@ -232,10 +236,10 @@
                     { title: 'Bilingual - 15/10', icon: google, amountSpent: 'Rp. 2.000.000', reach: '100.000', startDate: 'May 21, 14:00' },
                     { title: 'Peduli Pangan', icon: google, amountSpent: 'Rp. 1.000.000', reach: '97.000', startDate: 'Apr 12, 12:36' },
                     { title: 'Retarget CA Web Visitor', icon: tiktok, amountSpent: 'Rp. 5.000.000', reach: '100.000', startDate: 'Mei 24, 09:36' },
-                    { title: 'Pesantren Berkualitas...', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
+                    { title: 'Pesantren Berkualitas', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
                     { title: 'Menginspirasi Hafidz', icon: facebook, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
                     { title: 'Pondok Pesantren Inklusif', icon: facebook, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
-                    { title: 'Mengasah Potensi Pemi...', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
+                    { title: 'Mengasah Potensi Pemi', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
                     { title: 'Merajut Masa Depan', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
                     { title: 'Pondok Pesantren Terdepan', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
                     { title: 'Menghormati Tradisi', icon: tiktok, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
@@ -248,18 +252,18 @@
 
               {activeTab === 'draft' && (
                 <>
-                  <hr className="border-gray-500 mb-0" />
+                  <hr className="border-gray-300 mb-0" />
 
                   {renderItems([
 
                     { title: 'Retarget VV 50-95% Tahfidz', icon: google, amountSpent: 'Rp. 2.000.000', reach: '100.000', startDate: 'May 21, 14:00' },
-                    { title: 'Campaign Tahfidz FB IG EN...', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
-                    { title: 'Retarget CA Web Visitor', icon: google, amountSpent: 'Rp. 4.000.000', reach: '97.000', startDate: 'Desc 22, 13:06' },
+                    { title: 'Campaign Tahfidz FB IG EN', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
+                    { title: 'Retarget CA Web Visitor Terbaru Update', icon: google, amountSpent: 'Rp. 4.000.000', reach: '97.000', startDate: 'Desc 22, 13:06' },
                     { title: 'Campaign Tahfidz', icon: facebook, amountSpent: 'Rp. 3.000.000', reach: '250.000', startDate: 'Apr 12, 14:00' },
                     { title: 'Program Tahfidz', icon: tiktok, amountSpent: 'Rp. 4.000.000', reach: '120.000', startDate: 'Feb 4, 02:12' },
                     { title: 'Kampung Pesantren Berkah', icon: google, amountSpent: 'Rp. 7.000.000', reach: '120.000', startDate: 'Feb 4, 07:26' },
                     { title: 'Tahfidz Ramadhan', icon: facebook, amountSpent: 'Rp. 1.000.000', reach: '10.000', startDate: 'Agust 25, 11:19' },
-                    { title: 'Program Bimbingan Karir...', icon: tiktok, amountSpent: 'Rp. 3.000.000', reach: '220.000', startDate: 'Sep 4, 14:09' },
+                    { title: 'Program Bimbingan Karir', icon: tiktok, amountSpent: 'Rp. 3.000.000', reach: '220.000', startDate: 'Sep 4, 14:09' },
                     { title: 'Santri Berwirausaha', icon: google, amountSpent: 'Rp. 2.000.000', reach: '97.000', startDate: 'Mart 1, 12:36' },
 
 
@@ -269,10 +273,10 @@
 
               {activeTab === 'active' && (
                 <>
-                  <hr className="border-gray-500 mb-0" />
+                  <hr className="border-gray-300 mb-0" />
                   {renderItems([
                     { title: 'Bilingual - 15/10', icon: google, amountSpent: 'Rp. 2.000.000', reach: '100.000', startDate: 'May 21, 14:00' },
-                    { title: 'Campaign Tahfidz FB IG EN...', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
+                    { title: 'Campaign Tahfidz FB IG EN', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
                     { title: 'Retarget CA Web Visitor', icon: google, amountSpent: 'Rp. 4.000.000', reach: '97.000', startDate: 'Apr 12, 12:36' },
                     { title: 'Campaign Tahfidz', icon: facebook, amountSpent: 'Rp. 3.000.000', reach: '250.000', startDate: 'Apr 12, 14:50' },
                     { title: 'Program Tahfidz', icon: tiktok, amountSpent: 'Rp. 4.000.000', reach: '120.000', startDate: 'Feb 4, 12:36' },
@@ -282,10 +286,10 @@
               )}
               {activeTab === 'completed' && (
                 <>
-                  <hr className="border-gray-500 mb-0" />
+                  <hr className="border-gray-300 mb-0" />
                   {renderItems([
                     { title: 'Retarget VV 50-95% Tahfidz', icon: facebook, amountSpent: 'Rp. 2.000.000', reach: '100.000', startDate: 'May 21, 14:00' },
-                    { title: 'Campaign Tahfidz FB IG EN...', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
+                    { title: 'Campaign Tahfidz FB IG EN', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
                     { title: 'Retarget CA Web Visitor', icon: tiktok, amountSpent: 'Rp. 5.000.000', reach: '100.000', startDate: 'Mei 24, 09:36' },
                     { title: 'Peduli Pangan', icon: google, amountSpent: 'Rp. 1.000.000', reach: '97.000', startDate: 'Apr 12, 12:36' },
 

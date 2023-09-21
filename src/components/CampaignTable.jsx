@@ -577,7 +577,7 @@ const handleSelectChange = (selectedOption, field) => {
                 return (
                   <tr
                     {...row.getRowProps()}
-                    className={`border border-slate-300 text-gray-600 hover:bg-gray-200 hover:text-blue-600 ${
+                    className={`border border-slate-300 text-gray-600 hover:bg-blue-300 hover:text-gray-700 ${
                       i % 2 === 0 ? "bg-gray-100" : "bg-white" // Memberikan latar belakang selang-seling
                     } `}
                   >

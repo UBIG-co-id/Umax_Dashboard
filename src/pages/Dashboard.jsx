@@ -20,16 +20,14 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('performance'); 
   const [state, setState] = useState({
     toggleNavbar: false,
-    // Add other state variables here if needed
   });
 
   const toggleSidebar = () => {
     setState({ ...state, toggleNavbar: !state.toggleNavbar });
   };
 
-  // Calculate the margin-left based on the toggleNavbar state
   const contentStyles = {
-    marginLeft: state.toggleNavbar ? '72px' : '0', // Adjust the width of the sidebar here (e.g., 72px)
+    marginLeft: state.toggleNavbar ? '72px' : '0',
   };
 
 
@@ -37,130 +35,365 @@ const Dashboard = () => {
     setActiveTab(tab);
   };
 
-  // bagian chart metrix
-  const chartData1 = [
-    { name: 'Day1', value: 5, color: '#8690A2' },
-    { name: 'Day2', value: 10, color: '#8690A2' },
-    { name: 'Day3', value: 7, color: '#8690A2' },
-    { name: 'Day4', value: 12, color: '#8690A2' },
-    { name: 'Day5', value: 15, color: '#8690A2' },
-    { name: 'Day6', value: 10, color: '#8690A2' },
-    { name: 'Day7', value: 20, color: '#1CD14F' },
+
+//Data Baru
+  //Backend tinggal ikutin ini aja
+  const metrixDatas = [
+    {
+      title: "Amount Spent",
+      value: 4000000,
+      chart: [
+        { name: "Day1", value: 5 },
+        { name: "Day2", value: 10 },
+        { name: "Day3", value: 7 },
+        { name: "Day4", value: 12 },
+        { name: "Day5", value: 15 },
+        { name: "Day6", value: 10 },
+        { name: "Day7", value: 20 },
+      ],
+      persen: 2.0,
+      description: "Total Amount spent compared to last 7 day",
+      descModal:
+        "Jumlah total biaya yang kita keluarkan untuk pemasangan iklan",
+    },
+    {
+      title: "Reach",
+      value: 97000,
+      chart: [
+        { name: "Day1", value: 10 },
+        { name: "Day2", value: 15 },
+        { name: "Day3", value: 7 },
+        { name: "Day4", value: 20 },
+        { name: "Day5", value: 10 },
+        { name: "Day6", value: 15 },
+        { name: "Day7", value: 5 },
+      ],
+      persen: -2.0,
+      description: "Total Reach compared to last 7 day",
+      descModal:
+        "Jumlah user yang melihat iklan kita pada platform iklan yang kita pasang",
+    },
+    {
+      title: "Impression",
+      value: 230000,
+      chart: [
+        { name: "Day1", value: 10 },
+        { name: "Day2", value: 15 },
+        { name: "Day3", value: 7 },
+        { name: "Day4", value: 12 },
+        { name: "Day5", value: 15 },
+        { name: "Day6", value: 10 },
+        { name: "Day7", value: 20 },
+      ],
+      persen: -2.0,
+      description: "Total Impression compared to last 7 day",
+      descModal:
+        "Jumlah iklan kita ditayangkan. Bedanya dengan Reach, user yang sama bisa dihitung melihat iklan yang sama lebih dari satu kali",
+    },
+    {
+      title: "Frequency",
+      value: 2.3,
+      chart: [
+        { name: "Day1", value: 10 },
+        { name: "Day2", value: 15 },
+        { name: "Day3", value: 7 },
+        { name: "Day4", value: 20 },
+        { name: "Day5", value: 10 },
+        { name: "Day6", value: 15 },
+        { name: "Day7", value: 5 },
+      ],
+      persen: -2.0,
+      description: "Total Impression compared to last 7 day",
+      descModal:
+        "Berapa kali rata-rata seorang user melihat iklan kita ditampilkan dalam rentang waktu tertentu. Dihitung dari jumlah Impressions dibagi dengan jumlah Reach",
+    },
+    {
+      title: "Reach Amount Ratio",
+      value: 6.1,
+      chart: [
+        { name: "Day1", value: 10 },
+        { name: "Day2", value: 15 },
+        { name: "Day3", value: 7 },
+        { name: "Day4", value: 20 },
+        { name: "Day5", value: 10 },
+        { name: "Day6", value: 15 },
+        { name: "Day7", value: 20 },
+      ],
+      persen: 2.0,
+      description: "Total Reach Amount ratio compared to last 7 day",
+      descModal:
+        "Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut",
+    },
+    {
+      title: "Cost Per Click",
+      value: 2000,
+      chart: [
+        { name: "Day1", value: 10 },
+        { name: "Day2", value: 15 },
+        { name: "Day3", value: 7 },
+        { name: "Day4", value: 12 },
+        { name: "Day5", value: 15 },
+        { name: "Day6", value: 10 },
+        { name: "Day7", value: 20 },
+      ],
+      persen: 2.0,
+      description: "Total Cost per Click compared to last 7 day",
+      descModal:
+        "Perhitungan biaya yang kita keluarkan untuk setiap Link Clicks. Dihitung dari jumlah Amount Spent dibagi dengan jumlah Link Clicks",
+    },
+    {
+      title: "Click Through Rate",
+      value: 1.0,
+      chart: [
+        { name: "Day1", value: 10 },
+        { name: "Day2", value: 15 },
+        { name: "Day3", value: 7 },
+        { name: "Day4", value: 12 },
+        { name: "Day5", value: 15 },
+        { name: "Day6", value: 10 },
+        { name: "Day7", value: 15 },
+      ],
+      persen: 2.0,
+      description: "Total Click Through Rate compared to last 7 day",
+      descModal:
+        "Rasio jumlah klik pada iklan kita dibandingkan dengan jumlah iklan ditayangkan. Dihitung dari jumlah Link Click dibagi dengan jumlah Impressions",
+    },
+    {
+      title: "Outbont Click Landing Page",
+      value: 30,
+      chart: [
+        { name: "Day1", value: 10 },
+        { name: "Day2", value: 15 },
+        { name: "Day3", value: 7 },
+        { name: "Day4", value: 12 },
+        { name: "Day5", value: 15 },
+        { name: "Day6", value: 10 },
+        { name: "Day7", value: 5 },
+      ],
+      persen: -2.0,
+      description: "Total OCLP compared to last 7 day",
+      descModal:
+        "Mendorong pengunjung untuk mengklik tautan atau tombol yang mengarahkan mereka ke halaman atau situs web eksternal yang relevan",
+    },
+    {
+      title: "Cost per Result",
+      value: 5000,
+      chart: [
+        { name: "Day1", value: 10 },
+        { name: "Day2", value: 15 },
+        { name: "Day3", value: 7 },
+        { name: "Day4", value: 12 },
+        { name: "Day5", value: 15 },
+        { name: "Day6", value: 10 },
+        { name: "Day7", value: 20 },
+      ],
+      persen: 2.0,
+      description: "Total Cost per Result compared to last 7 day",
+      descModal:
+        "Perhitungan biaya yang kita keluarkan untuk setiap hasil yang kita dapatkan",
+    },
+    {
+      title: "Add to Cart",
+      value: 2.5,
+      chart: [
+        { name: "Day1", value: 10 },
+        { name: "Day2", value: 15 },
+        { name: "Day3", value: 7 },
+        { name: "Day4", value: 12 },
+        { name: "Day5", value: 15 },
+        { name: "Day6", value: 10 },
+        { name: "Day7", value: 20 },
+      ],
+      persen: 2.0,
+      description: "Total Add to Cart compared to last 7 day",
+      descModal:
+        "Menambahkan produk atau barang ke dalam keranjang belanja saat berbelanja secara online di situs web e-commerce atau toko online",
+    },
+    {
+      title: "Return on ADD Spent",
+      value: 3.1,
+      chart: [
+        { name: "Day1", value: 10 },
+        { name: "Day2", value: 15 },
+        { name: "Day3", value: 7 },
+        { name: "Day4", value: 12 },
+        { name: "Day5", value: 15 },
+        { name: "Day6", value: 10 },
+        { name: "Day7", value: 20 },
+      ],
+      persen: 2.0,
+      description: "Total ROAS to last 7 day",
+      descModal:
+        "Mengukur seberapa banyak pendapatan atau hasil yang dihasilkan dari setiap unit pengeluaran iklan",
+    },
+    {
+      title: "Real ROAS",
+      value: 3.0,
+      chart: [
+        { name: "Day1", value: 10 },
+        { name: "Day2", value: 15 },
+        { name: "Day3", value: 7 },
+        { name: "Day4", value: 12 },
+        { name: "Day5", value: 15 },
+        { name: "Day6", value: 10 },
+        { name: "Day7", value: 20 },
+      ],
+      persen: 2.0,
+      description: "Total Real ROAS to last 7 day",
+      descModal:
+        "Mengukur banyak pendapatan asli yang di hasilkan tiap pengeluaran iklan",
+    },
   ];
 
-  const chartData2 = [
-    { name: 'Day1', value: 10, color: '#8690A2' },
-    { name: 'Day2', value: 15, color: '#8690A2' },
-    { name: 'Day3', value: 7, color: '#8690A2' },
-    { name: 'Day4', value: 20, color: '#8690A2' },
-    { name: 'Day5', value: 10, color: '#8690A2' },
-    { name: 'Day6', value: 15, color: '#8690A2' },
-    { name: 'Day7', value: 5, color: '#FF3636' },
-  ];
+  //ubah integer dari BE ke rupiah
+  const rupiah = (number) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(number);
+  };
 
-  const chartData3 = [
-    { name: 'Day1', value: 10, color: '#8690A2' },
-    { name: 'Day2', value: 15, color: '#8690A2' },
-    { name: 'Day3', value: 7, color: '#8690A2' },
-    { name: 'Day4', value: 12, color: '#8690A2' },
-    { name: 'Day5', value: 15, color: '#8690A2' },
-    { name: 'Day6', value: 10, color: '#8690A2' },
-    { name: 'Day7', value: 20, color: '#1CD14F' },
-  ];
+  //ubah nilai float dari BE ke 1 angka dibelakang koma
+  const formattedKoma1 = (number) =>
+    number.toLocaleString("id-ID", {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1,
+    });
 
-  const chartData4 = [
-    { name: 'Day1', value: 5, color: '#8690A2' },
-    { name: 'Day2', value: 10, color: '#8690A2' },
-    { name: 'Day3', value: 7, color: '#8690A2' },
-    { name: 'Day4', value: 15, color: '#8690A2' },
-    { name: 'Day5', value: 6, color: '#8690A2' },
-    { name: 'Day6', value: 9, color: '#8690A2' },
-    { name: 'Day7', value: 20, color: '#1CD14F' },
-  ];
+  //ubah nilai float dari BE ke format indonesia
+  const formattedNumber = (number) =>
+    number.toLocaleString("id-ID", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
 
-  const chartData5 = [
-    { name: 'Day1', value: 20, color: '#8690A2' },
-    { name: 'Day2', value: 16, color: '#8690A2' },
-    { name: 'Day3', value: 10, color: '#8690A2' },
-    { name: 'Day4', value: 20, color: '#8690A2' },
-    { name: 'Day5', value: 10, color: '#8690A2' },
-    { name: 'Day6', value: 16, color: '#8690A2' },
-    { name: 'Day7', value: 20, color: '#1CD14F' },
-  ];
+  //prettier-ignore
+  //format value metrix
+  const formatValueMetrix = (metrixData) => {
+    const formatMap = {
+      "Amount Spent": rupiah,
+      "Cost per Click": rupiah,
+      "Cost per Result": rupiah,
+      "Reach": (value) => `${formattedNumber(value)} `,
+      "Impression": (value) => `${formattedNumber(value)} `,
+      "Frequency": (value) => `${formattedKoma1(value)}`,
+      "Return on ADD Spent": (value) => `${formattedKoma1(value)}x`,
+      "Real ROAS": (value) => `${formattedKoma1(value)}x`,
+      "Reach Amount Ratio": (value) => `${formattedKoma1(value)} %`,
+      "Outbont Click Landing Page": (value) => `${formattedKoma1(value)} %`,
+      "Click Through Rate": (value) => `${formattedKoma1(value)} %`,
+      "Add to Cart": (value) => `${formattedKoma1(value)} %`,
+    };
 
-  const chartData6 = [
-    { name: 'Day1', value: 10, color: '#8690A2' },
-    { name: 'Day2', value: 15, color: '#8690A2' },
-    { name: 'Day3', value: 7, color: '#8690A2' },
-    { name: 'Day4', value: 12, color: '#8690A2' },
-    { name: 'Day5', value: 15, color: '#8690A2' },
-    { name: 'Day6', value: 10, color: '#8690A2' },
-    { name: 'Day7', value: 20, color: '#1CD14F' },
-  ];
+    const formatFunction = formatMap[metrixData.title];
 
-  const chartData7 = [
-    { name: 'Day1', value: 10, color: '#8690A2' },
-    { name: 'Day2', value: 15, color: '#8690A2' },
-    { name: 'Day3', value: 7, color: '#8690A2' },
-    { name: 'Day4', value: 12, color: '#8690A2' },
-    { name: 'Day5', value: 15, color: '#8690A2' },
-    { name: 'Day6', value: 10, color: '#8690A2' },
-    { name: 'Day7', value: 6, color: '#FF3636' },
-  ];
+    if (formatFunction) {
+      return formatFunction(metrixData.value);
+    }
 
-  const chartData8 = [
-    { name: 'Day1', value: 10, color: '#8690A2' },
-    { name: 'Day2', value: 15, color: '#8690A2' },
-    { name: 'Day3', value: 7, color: '#8690A2' },
-    { name: 'Day4', value: 12, color: '#8690A2' },
-    { name: 'Day5', value: 15, color: '#8690A2' },
-    { name: 'Day6', value: 10, color: '#8690A2' },
-    { name: 'Day7', value: 5, color: '#FF3636' },
-  ];
+    return metrixData.value;
+  };
 
-  const chartData9 = [
-    { name: 'Day1', value: 10, color: '#8690A2' },
-    { name: 'Day2', value: 15, color: '#8690A2' },
-    { name: 'Day3', value: 7, color: '#8690A2' },
-    { name: 'Day4', value: 12, color: '#8690A2' },
-    { name: 'Day5', value: 15, color: '#8690A2' },
-    { name: 'Day6', value: 10, color: '#8690A2' },
-    { name: 'Day7', value: 20, color: '#1CD14F' },
-  ];
+  //prettier-ignore
+  //format style description
+  const formatDescMetrix = (metrixData) => {
+    const formatMap = {
+      "Amount Spent": (description) => (
+        <p
+          style={{
+            fontSize: "10.5px",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {description}
+        </p>
+      ),
+      "Frequency": (description) => (
+        <p
+          style={{
+            fontSize: "11px",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {description}
+        </p>
+      ),
+      "Reach Amount Ratio": (description) => (
+        <p
+          style={{
+            fontSize: "9.5px",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {description}
+        </p>
+      ),
+      "Cost per Click": (description) => (
+        <p
+          style={{
+            fontSize: "10.4px",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {description}
+        </p>
+      ),
+      "Click Through Rate": (description) => (
+        <p
+          style={{
+            fontSize: "9.5px",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {description}
+        </p>
+      ),
+      "Outbont Click Landing Page": (description) => (
+        <p
+          style={{
+            fontSize: "11.5px",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {description}
+        </p>
+      ),
+      "Cost per Result": (description) => (
+        <p
+          style={{
+            fontSize: "10.1px",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {description}
+        </p>
+      ),
+    };
 
-  const chartData10 = [
-    { name: 'Day1', value: 10, color: '#8690A2' },
-    { name: 'Day2', value: 15, color: '#8690A2' },
-    { name: 'Day3', value: 7, color: '#8690A2' },
-    { name: 'Day4', value: 12, color: '#8690A2' },
-    { name: 'Day5', value: 15, color: '#8690A2' },
-    { name: 'Day6', value: 10, color: '#8690A2' },
-    { name: 'Day7', value: 20, color: '#1CD14F' },
-  ];
+    const formatFunction = formatMap[metrixData.title];
 
-  const chartData11 = [
-    { name: 'Day1', value: 10, color: '#8690A2' },
-    { name: 'Day2', value: 15, color: '#8690A2' },
-    { name: 'Day3', value: 7, color: '#8690A2' },
-    { name: 'Day4', value: 12, color: '#8690A2' },
-    { name: 'Day5', value: 15, color: '#8690A2' },
-    { name: 'Day6', value: 10, color: '#8690A2' },
-    { name: 'Day7', value: 20, color: '#1CD14F' },
-  ];
+    if (formatFunction) {
+      return formatFunction(metrixData.description);
+    }
 
-  const chartData12 = [
-    { name: 'Day1', value: 10, color: '#8690A2' },
-    { name: 'Day2', value: 15, color: '#8690A2' },
-    { name: 'Day3', value: 7, color: '#8690A2' },
-    { name: 'Day4', value: 12, color: '#8690A2' },
-    { name: 'Day5', value: 15, color: '#8690A2' },
-    { name: 'Day6', value: 10, color: '#8690A2' },
-    { name: 'Day7', value: 20, color: '#1CD14F' },
-  ];
-
-
-// end
-
+    return metrixData.description;
+  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -265,26 +498,26 @@ const Dashboard = () => {
             {/* end */}
 
             {/* bagian content */}
-            <div className='flex flex-wrap justify-center gap-4 px-2 md:gap-8 max-sm:flex-col metrik'>
-  
-          <Metrics title="Amount Spent" value="Rp. 4.000.000" chartData={chartData1} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description="Total Amount spent compared to last 7 day"  persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
-          <Metrics title="Reach" value="97.000" chartData={chartData2} icon={<AiOutlineInfoCircle size={20}  />} persen="-2,0%" description="Total Reach compared to last 7 day"  persenTextColor="#D40B0B" spanBackgroundColor="#FF6D6D" />
-          <Metrics title="Impression" value="230.000" chartData={chartData3} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description="Total Impression compared to last 7 day"  persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
-
-          <Metrics title="Frequency" value="2,3" chartData={chartData4} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description={<span style={{ fontSize: '12.3px', whiteSpace: 'nowrap'}}>Total Frequency compared to last 7 day</span>} persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
-          <Metrics title="Reach Amount Ratio" value="6,1%" chartData={chartData5} icon={<AiOutlineInfoCircle size={20} />} persen="-2,0%" description={<span style={{ fontSize: '7.9px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Reach Amount Ratio compared to last 7 day</span>} persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
-          <Metrics title="Cost per Click" value="Rp. 2.000" chartData={chartData6} icon={<AiOutlineInfoCircle size={20} />} persen="+2,0%" description={<span style={{ fontSize: '10.4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Cost per Click compared to last 7 day</span>} persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
-          
-          <Metrics title="Click Through Rate" value="1,0%" chartData={chartData7} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description={<span style={{ fontSize: '10.1px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Click Through Rate compared to last 7 day</span>} persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
-          <Metrics titleBig="Outbont Click Landing Page" value="30%" chartData={chartData8} icon={<AiOutlineInfoCircle size={20} />} persen="-2,0%" description={<span style={{ fontSize: '11.5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total OCLP compared to last 7 day</span>} persenTextColor="#D40B0B" spanBackgroundColor="#FF6D6D" />
-          <Metrics title="Cost per Result" value="Rp. 5.000" chartData={chartData9} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description={<span style={{ fontSize: '10.1px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Cost per Result compared to last 7 day</span>} persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
-            
-          <Metrics title="Add to Cart" value="2,5%" chartData={chartData10} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%" description={<span style={{ fontSize: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Add to Cart compared to last 7 day</span>} persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
-          <Metrics title="Return on AD Spent" value="3,1x" chartData={chartData11} icon={<AiOutlineInfoCircle size={20}  />} persen="-2,0%" description={<span style={{ fontSize: '11.6px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total ROAS compared to last 7 day</span>} persenTextColor="#D40B0B" spanBackgroundColor="#FF6D6D" />
-          <Metrics title="Real ROAS" value="3,0x" chartData={chartData12} icon={<AiOutlineInfoCircle size={20}  />} persen="+2,0%"description={<span style={{ fontSize: '11.4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Total Real ROAS compared to last 7 day</span>} persenTextColor="#656F84" spanBackgroundColor="#1CD14F" />
-            
-         
-          </div>
+            <div className="flex flex-wrap justify-center gap-4 px-2 md:gap-8 max-sm:flex-col">
+              {metrixDatas.map((metrixData, index) => (
+                <Metrics
+                  key={index}
+                  title={metrixData.title}
+                  value={formatValueMetrix(metrixData)}
+                  chartData={metrixData.chart}
+                  icon={<AiOutlineInfoCircle size={20} />}
+                  persen={`${formattedKoma1(metrixData.persen)}%`}
+                  description={formatDescMetrix(metrixData)}
+                  persenTextColor={
+                    metrixData.persen < 0 ? "#D40B0B" : "#656F84"
+                  }
+                  spanBackgroundColor={
+                    metrixData.persen < 0 ? "#FF6D6D" : "#1CD14F"
+                  }
+                  descModal={metrixData.descModal}
+                />
+              ))}
+            </div>
 
             </div>
         );
@@ -314,55 +547,66 @@ const Dashboard = () => {
       title: 'Amount Spent',
       value: 'Rp. 4.000.000',
       color: 'text-sky-500',
-      popupContent: 'Konten untuk Amount Spent' // Isi konten popup untuk Amount Spent
+      popupContent: 'Jumlah total biaya yang kita keluarkan untuk pemasangan iklan' 
     },
     {
       title: 'Reach Amount Ratio',
       value: '6.1%',
-      color: 'text-yellow-500'
-      
+      color: 'text-yellow-500',
+      popupContent: 'Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut' 
     },
     {
       title: 'Click Through Rate',
       value: '1.0%',
-      color: 'text-green-500'
+      color: 'text-green-500',
+      popupContent: 'Rasio jumlah klik pada iklan kita dibandingkan dengan jumlah iklan ditayangkan' 
     },
     {
       title: 'OCLP',
       value: '30%',
+      popupContent: 'Mendorong pengunjung untuk mengklik tautan atau tombol yang mengarahkan mereka ke halaman atau situs web eksternal yang relevan' 
     }
   ];
 
+  
   const cardData2 = [
     {
       title: 'CPR',
       value: 'Rp. 5.000',
+      popupContent: ' Perhitungan biaya yang kita keluarkan untuk setiap hasil yang kita dapatkan' 
     },
     {
       title: 'ATC',
       value: '2,5%',
+      popupContent: ' Menambahkan produk atau barang ke dalam keranjang belanja saat berbelanja secara online di situs web e-commerce atau toko online' 
     },
     {
       title: 'ROAS',
       value: '1.0%',
+      popupContent: 'Mengukur seberapa banyak pendapatan atau hasil yang dihasilkan dari setiap unit pengeluaran iklan' 
     },
     {
       title: 'Real ROAS',
       value: '1.0%',
+      popupContent: 'Mengukur banyak pendapatan asli yang di hasilkan tiap pengeluaran iklan' 
     },
   ];
 
 
-
+ 
   const renderCardInfo = () => {
     return cardData.map((item, index) => {
-      return <CardInfo key={index} title={item.title} value={item.value} color={item.color} className='relative flex top-5 flex-col justify-between h-24' />
+      return <CardInfo key={index} title={item.title} value={item.value} color={item.color} className='relative flex top-5 flex-col justify-between h-24'          
+      popupContent={item.popupContent}
+      />
     })
   }
 
   const renderCardInfo2 = () => {
     return cardData2.map((item, index) => {
-      return <CardInfo  key={index} title={item.title} value={item.value} color={item.color} className='w-full  flex flex-col justify-between h-24' />
+      return <CardInfo  key={index} title={item.title} value={item.value} color={item.color} className='w-full  flex flex-col justify-between h-24' 
+      popupContent={item.popupContent} 
+      />
     })
   }
 

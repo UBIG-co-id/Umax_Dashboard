@@ -7,7 +7,6 @@ import excelImage from '../assets/excel.png';
 import Data from "../components/DataHistory";
 import { MaterialReactTable } from 'material-react-table'
 import { darken } from '@mui/material';
-import FileDownloadIcon from '@mui/icons-material/FileDownload'
 // import XLSX from 'xlsx';
 import { CSVLink, CSVDownload } from "react-csv";
 // import { mkConfig, generateCsv, download } from "export-to-csv";
@@ -315,7 +314,7 @@ const History = () => {
             muiTablePaperProps={{
               elevation: 0,
               sx: {
-                borderRadius: '0',
+                borderRadius: '10px',
                 border: '1px dashed #e0e0e0',
               },
             }}
