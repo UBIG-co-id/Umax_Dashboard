@@ -35,7 +35,6 @@ function DataTable() {
       console.error("Error fetching data:", error.message);
     }
   }
-
   //post data
 
 

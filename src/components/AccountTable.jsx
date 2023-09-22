@@ -44,29 +44,30 @@ const handleInputChange = (e) => {
   setFormData({
     ...formData,
     [name]: type === 'checkbox' ? checked : value,
-  })
-}
-const handleAddData = async () => {
-  try {
-    const response = await fetch("https://umax-1-z7228928.deta.app/accounts", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    setTableData([...tableData, data]); // Update the table with the new data
-    toggleAddPopup(); // Close the add popup
-  } catch (error) {
-    console.error("Error adding data:", error.message);
-  }
+  });
 };
+const handleAddData = async () => {
+    try {
+      const response = await fetch("https://umax-1-z7228928.deta.app/accounts", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setTableData([...tableData, data]); // Update the table with the new data
+      toggleAddPopup(); // Close the add popup
+    } catch (error) {
+      console.error("Error adding data:", error.message);
+    }
+  };
+
 
   // GET DATA
   async function fetchData() {
