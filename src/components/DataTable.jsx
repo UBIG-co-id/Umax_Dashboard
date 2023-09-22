@@ -19,6 +19,7 @@ import { useFormik } from 'formik';
 const DataTable = () => {
  
   const [tableData, setTableData] = useState([]);
+  const [selectedClient, setSelectedClient] = useState(null);
   const [selectedPlatform, setSelectedPlatform] = useState('');
   const tableRef = useRef(null);
   const [showAddPopup, setShowAddPopup] = useState(false);
@@ -68,43 +69,40 @@ const DataTable = () => {
     fetchData();
   }, []);
 
-  const handleUpdateLead = async (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem('jwtToken');
-    const requestoptions = {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        tableData: name,
-        last_name: lastName,
-        company: company,
-        email: email,
-        note: note,
-      }),
-    };
-    const response = await fetch(
-      `http://127.0.0.1:8000/api/leads/${id}`,
-      requestoptions
-    );
-    if (!response.ok) {
-      setErrorMessage("Something went wrong when updating");
-    } else {
-      cleanFormData();
-      handleModal();
+  const handleUpdate = (client) => {
+    setSelectedClient(client);
+  };
+
+  const handleUpdateClient = async (updatedClient) => {
+    try {
+      const token = localStorage.getItem('jwtToken');
+      const response = await axios.put(
+        `https://umax-1-z7228928.deta.app/clients/${updatedClient._id}`,
+        updatedClient,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        // Client updated successfully, you can update your UI or perform any necessary actions.
+        fetchData(); // Assuming fetchData is a function to refresh the client list.
+        setSelectedClient(null); // Clear selected client
+      } else {
+        // Handle error if necessary
+        console.error('Error updating client:', response.data);
+      }
+    } catch (error) {
+      // Handle any network or other errors
+      console.error('Error updating client:', error);
     }
   };
 
-  const handleUpdate = async (_id) => {
-    setTableData(_id);
-    setShowUpdatePopup(true);
-  };
-  const handlePopup = () => {
-    setShowUpdatePopup(!showUpdatePopup);
-    fetchData();
-    setTableData(null);
+  const handleCancelUpdate = () => {
+    setSelectedClient(null);
   };
   return (
     <div className="w-full bg-white max-md:overflow-x-scroll" >
