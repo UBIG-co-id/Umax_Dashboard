@@ -9,7 +9,7 @@ import { logo, profile } from '../assets';
 import { FiSun, FiMoon } from 'react-icons/fi';
 import '../styles.css';
 import React from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useNavigate,useLocation, Link } from 'react-router-dom';
 import {Context} from '../context'
 
 
@@ -25,6 +25,14 @@ const navigation = [
 ];
 
 const Navbar=() => {
+  const navigate=useNavigate();
+  const handleSignOut = () => {
+    // Clear the JWT token from local storage
+    localStorage.removeItem('jwtToken');
+
+    // Navigate to the sign-in page or any other desired location
+    navigate('/login');
+  };
   let { state, dispatch } = useContext(Context)
   let toggle = () => {
       dispatch({ type: 'SET_TOGGLE_NAVBAR', payload: !state.toggleNavbar })
@@ -244,7 +252,7 @@ const Navbar=() => {
                             href="#"
                             className={classNames('bg-slate-500 rounded-t-md block px-4 py-2 text-sm text-white')}
                           >
-                            Hello, Rizky
+                            Hello,Rizky
                           </a>
                       </Menu.Item>  
                       <Menu.Item>
@@ -269,12 +277,12 @@ const Navbar=() => {
                       </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(active ? 'bg-gray-100' : '', 'flex items-center px-4 py-2 text-sm text-gray-700')}
-                          >
-                            <BiLogOut className="mr-2"/>Sign out
-                          </a>
+                           <button
+                           onClick={handleSignOut}
+                           className={classNames(active ? 'bg-gray-100' : '', 'flex items-center px-4 py-2 text-sm text-gray-700')}
+                         >
+                           <BiLogOut className="mr-2" /> Sign out
+                         </button>
                         )}
                       </Menu.Item>
                     </Menu.Items>

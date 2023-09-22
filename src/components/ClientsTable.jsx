@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTable, useGlobalFilter, usePagination } from 'react-table';
 // import data from './DataClient';
+import { Link, useNavigate, useParams, } from 'react-router-dom';
 import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import { BsTrash3, BsPlus } from 'react-icons/bs';
@@ -11,7 +12,7 @@ import { useDownloadExcel } from "react-export-table-to-excel";
 import { useReactToPrint } from 'react-to-print';
 import '../styles.css';
 import axios from 'axios';
-
+import { useFormik } from 'formik';
 
 
 
@@ -20,12 +21,101 @@ function ClientsTable() {
   const [selectedPlatform, setSelectedPlatform] = useState('');
   const tableRef = useRef(null);
   const [showAddPopup, setShowAddPopup] = useState(false);
-  
-  const [newData, setNewData] = useState({});
- 
+  const navigate = useNavigate();
 
- 
 
+  // DELETE
+  // Make a DELETE request to the FastAPI endpoint
+  const handleDelete = async (_id) => {
+    try {
+      const token = localStorage.getItem('jwtToken');
+      const response = await axios.delete(
+        `https://umax-1-z7228928.deta.app/clients/${_id}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        // Client deleted successfully, you can update your UI or perform any necessary actions.
+        fetchData(); // Assuming fetchData is a function to refresh the client list.
+      } else {
+        // Handle error if necessary
+        console.error('Error deleting client:', response.data);
+      }
+    } catch (error) {
+      // Handle any network or other errors
+      console.error('Error deleting client:', error);
+    }
+  };
+  // END DELETE
+
+  // ADD DATA
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      address: '',
+      contact: '',
+      notes: '',
+      status: '',
+      is_admin: false,
+    },
+
+    onSubmit: (values) => {
+      const token = localStorage.getItem('jwtToken');
+      // Send a POST request to your FastAPI backend with form data
+      fetch('https://umax-1-z7228928.deta.app/clients', {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: new URLSearchParams(values).toString(),
+      })
+
+        .then(response => response.json())
+        .then(data => {
+          // Handle the response from the backend (e.g., success message or error)
+          console.log(data);
+          if (data.message === 'data berhasil ditambah') {
+            // Redirect to the dashboard page
+            navigate('/clients');
+          }
+        })
+        .catch(error => {
+          // Handle errors, e.g., network errors
+          console.error(error);
+        });
+
+    },
+  });
+  // END ADD DATA
+
+// GET DATA
+async function fetchData() {
+    try {
+      const response = await fetch("https://umax-1-z7228928.deta.app/clients");
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
+      }
+      const data = await response.json();
+      setTableData(data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  }
+  useEffect(() => {
+    fetchData();
+  }, []);
+// END GET DATA
+
+// UPDATE DATA
+
+// END UPDATE DATA
 
   // PAGINATION
   const paginationStyle = {
@@ -58,21 +148,7 @@ function ClientsTable() {
   };
   // END PAGINATION
 
-  async function fetchData() {
-    try {
-      const response = await fetch("http://127.0.0.1:8000/Clients");
-      if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
-      }
-      const data = await response.json();
-      setTableData(data);
-    } catch (error) {
-      console.error("Error fetching data:", error.message);
-    }
-  }
-  useEffect(() => {
-    fetchData();
-  }, []);
+  
 
 
 
@@ -92,6 +168,10 @@ function ClientsTable() {
 
   const columns = React.useMemo(
     () => [
+      // {
+      //   Header: 'Id',
+      //   accessor: '_id'
+      // },
       {
         Header: 'Name',
         accessor: 'name',
@@ -119,14 +199,14 @@ function ClientsTable() {
         Cell: ({ row }) => (
           <div className="flex space-x-2 justify-center">
             <button
-              onClick={() => handleDelete(row.original.id)}
+              onClick={() => handleDelete(row.original._id)}
               className="bg-red-200 hover:bg-red-300 text-red-600 py-1 px-1 rounded"
             >
               <BsTrash3 />
             </button>
             <button
               onClick={() => {
-               
+
               }}
               className="bg-blue-200 hover:bg-blue-300 text-blue-600 py-1 px-1 rounded"
             >
@@ -173,10 +253,10 @@ function ClientsTable() {
   //   console.log('Editing row with ID:', rowId);
   // };
 
-  const handleDelete = (rowId) => {
-    const updatedData = tableData.filter((row) => row.id !== rowId);
-    setTableData(updatedData);
-  };
+  // const handleDelete = (rowId) => {
+  //   const updatedData = tableData.filter((row) => row.id !== rowId);
+  //   setTableData(updatedData);
+  // };
 
   useEffect(() => {
     const filteredData = tableData.filter((row) => {
@@ -188,37 +268,6 @@ function ClientsTable() {
   const toggleAddPopup = () => {
     setShowAddPopup(!showAddPopup);
   };
- 
-
-
-
-  const handleAddData = async () => {
-    try {
-      // Make a POST request to the specified URL with the new data
-      const response = await axios.post('http://127.0.0.1:8000/Clients', newData);
-
-      // Check if the POST request was successful
-      if (response.status === 201) {
-        // The data was successfully added, you can handle any further actions here
-        console.log('Data added successfully:', response.data);
-
-        // Clear the form or reset the newData state
-        setNewData({});
-
-        // Close the add popup if it's open
-        toggleAddPopup();
-
-        // You may also want to refresh the table data by making a GET request here
-        // Example:
-        // fetchData();
-      } else {
-        console.error('Error adding data:', response.status, response.statusText);
-      }
-    } catch (error) {
-      console.error('Error adding data:', error);
-    }
-  };
-
 
 
   useEffect(() => {
@@ -321,7 +370,7 @@ function ClientsTable() {
           </button>
 
           {/* menu add data */}
-          
+
 
 
 
@@ -329,16 +378,17 @@ function ClientsTable() {
           {showAddPopup && (
             <div className="fixed z-50 inset-0 flex items-center justify-center">
               <div className="fixed -z-10 inset-0 bg-black bg-opacity-50"></div>
-              <div className="bg-white p-5 rounded-lg shadow-lg max-h-[80vh] overflow-y-auto">
-                <h2 className="text-xl font-semibold mb-4">Client</h2>
+              <form onSubmit={formik.handleSubmit} className="bg-white p-5 rounded-lg shadow-lg max-h-[80vh] overflow-y-auto">
+                <h2 className="text-xl font-semibold mb-4" >Client</h2>
                 <div className="flex flex-col md:flex-row gap-4 mb-4">
                   <div className="flex flex-col">
                     <label className='pb-2 text-sm ' htmlFor="name">Name</label>
                     <input
                       type="text"
+                      name='name'
                       id="name"
-                      value={newData.name || ''}
-                      onChange={(e) => setNewData({ ...newData, name: e.target.value })}
+                      onChange={formik.handleChange}
+                      value={formik.values.name}
                       className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                     />
                   </div>
@@ -346,9 +396,10 @@ function ClientsTable() {
                     <label className='pb-2 text-sm ' htmlFor="address">Address</label>
                     <input
                       type="text"
+                      name='address'
                       id="address"
-                      value={newData.address || ''}
-                      onChange={(e) => setNewData({ ...newData, address: e.target.value })}
+                      onChange={formik.handleChange}
+                      value={formik.values.address}
                       className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                     />
                   </div>
@@ -360,8 +411,9 @@ function ClientsTable() {
                     <input
                       type="number"
                       id="contact"
-                      value={newData.contact || ''}
-                      onChange={(e) => setNewData({ ...newData, contact: e.target.value })}
+                      name='contact'
+                      onChange={formik.handleChange}
+                      value={formik.values.contact}
                       className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                     />
                   </div>
@@ -369,9 +421,10 @@ function ClientsTable() {
                   <div className="flex flex-col">
                     <label className='pb-2 text-sm' htmlFor="status">Status</label>
                     <select
+                      name='status'
                       id="status"
-                      value={newData.status || ''}
-                      onChange={(e) => setNewData({ ...newData, status: parseInt(e.target.value) })}
+                      // onChange={formik.handleChange}
+                      value={formik.values.status}
                       className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
                     >
                       <option value="1">Active</option>
@@ -386,9 +439,11 @@ function ClientsTable() {
                   <div className="flex flex-col">
                     <label className='pb-2 text-sm ' htmlFor="notes">Notes</label>
                     <textarea
+                      type='text'
+                      name='notes'
                       id="notes"
-                      value={newData.notes || ''}
-                      onChange={(e) => setNewData({ ...newData, notes: e.target.value })}
+                      onChange={formik.handleChange}
+                      value={formik.values.notes}
                       className="p-2 max-h-md select-custom-width text-slate-500 border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                     ></textarea>
                   </div>
@@ -403,15 +458,16 @@ function ClientsTable() {
                   >
                     Cancel
                   </button>
+
                   <button
-                    type="button"
-                    onClick={handleAddData}
+                    type="submit"
+                    onClick={onsubmit}
                     className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
                   >
                     Save
                   </button>
                 </div>
-              </div>
+              </form>
             </div>
           )}
 
