@@ -68,7 +68,7 @@ const Navbar=() => {
                 {/* Mobile menu button */}
 
                 <div className="sm:hidden text-center">
-                    <img src={logo} alt="logo" className='w-20' onClick={toggle} />
+                    <img src={logo} alt="logo" className='w-20 cursor-pointer' onClick={toggle} />
             </div>
                 <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-600">
                   <span className="absolute -inset-0.5" />
@@ -82,7 +82,7 @@ const Navbar=() => {
               </div>
                 <div className="hidden sm:flex sm:items-center sm:justify-center">
                   <img
-                    className="h-8 w-auto "
+                    className="h-8 w-auto cursor-pointer "
                     src={logo}
                     alt="logo"
                     onClick={toggle}
