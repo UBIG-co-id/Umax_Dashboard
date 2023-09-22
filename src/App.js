@@ -6,7 +6,6 @@ import Accounts  from './pages/Accounts';
 import Clients  from './pages/Clients';
 import Login from './login/SignIn'
 import Register from './login/SignUp'
-import DataTable from './components/DataTable';
 
 
 
@@ -15,7 +14,6 @@ const App = () => {
     
     <Router>
       <Routes>
-        <Route path='/data' element={<DataTable/>}/>
         <Route path='/register' element={<Register/>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/Dashboard' element={<Dashboard/> }  />
