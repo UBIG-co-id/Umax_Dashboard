@@ -145,21 +145,25 @@ white-space: nowrap;
   transform: translateY(-10px);
   transition: opacity 300ms, transform 300ms;
 }
+.header-modal{
+  margin-top: -10px;
+  margin-left: -10px
+}
 .popup-content {
   background-color: white;
-  border: 1px solid gray;
-  border-radius: 4px;
-  padding: 10px;
+  border-radius: 8px;
   left: 80px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  margin-top: 25px;
+  color: #838383;
+  box-shadow: 0px 0px 30px 0px rgba(18, 21, 27, 0.20);
   position: absolute;
   z-index: 10;
+  line-height: 20px;
 }
+
 .close-button {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 15px;
+  right: 10px;
   cursor: pointer;
 }
 .atas{
@@ -388,5 +392,19 @@ th svg.desc{
     grid-template-columns: repeat(2, 2fr); 
     grid-gap: 1rem; 
   }
+}
+
+
+/* Setting.css */
+.container {
+}
+
+@media (min-width: 446px) and (max-width: 1123px) {
+  .container {
+  }
+}
+
+.hoverable:hover {
+  background-color: #E3F5FF;
 }
 

@@ -95,8 +95,8 @@ function ClientsTable() {
   });
   // END ADD DATA
 
-// GET DATA
-async function fetchData() {
+  // GET DATA
+  async function fetchData() {
     try {
       const response = await fetch("https://umax-1-z7228928.deta.app/clients");
       if (!response.ok) {
@@ -111,11 +111,45 @@ async function fetchData() {
   useEffect(() => {
     fetchData();
   }, []);
-// END GET DATA
+  // END GET DATA
 
-// UPDATE DATA
-
-// END UPDATE DATA
+  // UPDATE DATA
+  const handleUpdate = async (_id) => {
+    // Find the client data to update
+    const clientToUpdate = tableData.find(client => client._id === _id);
+  
+    if (!clientToUpdate) {
+      console.error('Client not found for update');
+      return;
+    }
+  
+    try {
+      // Send a PATCH request to update the client data
+      const token = localStorage.getItem('jwtToken');
+      const response = await axios.patch(
+        `https://umax-1-z7228928.deta.app/clients/${_id}`,
+        clientToUpdate, // Send the client data to update
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+  
+      if (response.status === 200) {
+        console.log('Client data updated successfully:', response.data);
+        // You can handle the success as needed, e.g., show a success message
+      } else {
+        // Handle error if necessary
+        console.error('Error updating client data:', response.data);
+      }
+    } catch (error) {
+      // Handle any network or other errors
+      console.error('Error updating client data:', error);
+    }
+  };
+  // END UPDATE DATA
 
   // PAGINATION
   const paginationStyle = {
@@ -148,7 +182,7 @@ async function fetchData() {
   };
   // END PAGINATION
 
-  
+
 
 
 
@@ -157,9 +191,7 @@ async function fetchData() {
       case 1:
         return "Active";
       case 2:
-        return "Draft";
-      case 3:
-        return "Completed";
+        return "Deactive";
       default:
         return "Unknown";
     }
@@ -206,7 +238,7 @@ async function fetchData() {
             </button>
             <button
               onClick={() => {
-
+                handleUpdate(row.origina._id)
               }}
               className="bg-blue-200 hover:bg-blue-300 text-blue-600 py-1 px-1 rounded"
             >
@@ -530,7 +562,7 @@ async function fetchData() {
                 return (
                   <tr
                     {...row.getRowProps()}
-                    className={`border border-slate-300 text-gray-600 hover:bg-gray-200 hover:text-blue-600 ${i % 2 === 0 ? 'bg-gray-100' : 'bg-white' // Memberikan latar belakang selang-seling
+                    className={`border border-slate-300 text-gray-600 hover:bg-blue-300 hover:text-gray-700 ${i % 2 === 0 ? 'bg-gray-100' : 'bg-white' // Memberikan latar belakang selang-seling
                       }`}                  >
                     {row.cells.map((cell) => {
                       return (

@@ -15,8 +15,8 @@ function InputGroup1({
   disabled,
 }) {
   return (
-    <div className="flex items-center gap-4">
-      <div className="w-1/2 flex flex-col">
+    <div className="flex md:items-center gap-4 flex-row max-md:flex-col">
+      <div className="w-1/2  max-md:w-max  flex flex-col">
         <span className="text-md font-medium">
           {label}
 
@@ -25,7 +25,7 @@ function InputGroup1({
           {label2}
         </span>
       </div>
-      <div className="relative w-52">
+      <div className="relative w-52 ">
         <input
           id={name}
           name={name}
@@ -62,8 +62,8 @@ function InputGroup2({
   disabled,
 }) {
   return (
-    <div className="flex items-center gap-4">
-      <div className="w-1/2 flex flex-col">
+    <div className="flex md:items-center gap-4 flex-row max-md:flex-col">
+      <div className="relative bottom-2 w-1/2  max-md:w-max  flex flex-col">
         <span className="text-md font-medium">
           {label}
         </span>
@@ -71,7 +71,7 @@ function InputGroup2({
           {label2}
         </span>
       </div>
-      <div className="relative w-52">
+      <div className="relative pt-5 w-52">
         <input
           id={name}
           name={name}

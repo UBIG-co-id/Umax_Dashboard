@@ -22,6 +22,7 @@ const DataTable = () => {
   const [selectedPlatform, setSelectedPlatform] = useState('');
   const tableRef = useRef(null);
   const [showAddPopup, setShowAddPopup] = useState(false);
+  const [showUpdatePopup, setShowUpdatePopup] = useState(false);
   const navigate = useNavigate();
   const [errorMesssage, setErrorMesssage] = useState("");
 
@@ -66,6 +67,45 @@ const DataTable = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const handleUpdateLead = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('jwtToken');
+    const requestoptions = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        tableData: name,
+        last_name: lastName,
+        company: company,
+        email: email,
+        note: note,
+      }),
+    };
+    const response = await fetch(
+      `http://127.0.0.1:8000/api/leads/${id}`,
+      requestoptions
+    );
+    if (!response.ok) {
+      setErrorMessage("Something went wrong when updating");
+    } else {
+      cleanFormData();
+      handleModal();
+    }
+  };
+
+  const handleUpdate = async (_id) => {
+    setTableData(_id);
+    setShowUpdatePopup(true);
+  };
+  const handlePopup = () => {
+    setShowUpdatePopup(!showUpdatePopup);
+    fetchData();
+    setTableData(null);
+  };
   return (
     <div className="w-full bg-white max-md:overflow-x-scroll" >
       <table className="table-auto border-collapse border w-full">
@@ -85,6 +125,14 @@ const DataTable = () => {
               <td>{client.address}</td>
               <td>{client.contact}</td>
               <td>{client.status}</td>
+              <td>
+                  <button
+                    className="is-info is-light button"
+                    onClick={() => handleUpdate(client._id)}
+                  >
+                    Update
+                  </button>
+                </td>
               <td>
                   <button
                     className="is-danger is-light button ml-2"
