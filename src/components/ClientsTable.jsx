@@ -455,7 +455,7 @@ function ClientsTable() {
                     <select
                       name='status'
                       id="status"
-                      // onChange={formik.handleChange}
+                      onChange={formik.handleChange}
                       value={formik.values.status}
                       className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
                     >

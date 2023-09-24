@@ -55,7 +55,7 @@ const SignIn = () => {
   return (
     <div className="relative bg-gray-100 h-screen">
       <div>
-        <img src={logo} alt="logo" className="mt-0 ml-16 w-40" />
+        <img src={logo} alt="logo" className="mt-0 ml-16 w-10" />
       </div>
       <div className="flex flex-col items-center justify-center h-[30rem]  ">
         <form onSubmit={handleSubmit} className="flex flex-col items-center outline-none p-6 bg-white rounded-lg shadow-lg">
