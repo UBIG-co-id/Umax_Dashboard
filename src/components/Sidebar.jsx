@@ -164,7 +164,7 @@
       });
     };
     return (
-      <div className="relative flex">
+      <div className="relative flex max-sm:absolute max-sm:left-0 z-20">
         <button
           className={`relative top-2 right-2 sm:hidden text-gray-600 z-10`}
           onClick={toggleSidebar}
