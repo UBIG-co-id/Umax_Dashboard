@@ -625,9 +625,10 @@ class clients(BaseModel):
     address: str
     contact: str
     status: int
-    is_admin: bool
+
     notes: Optional[Union[str, None]] = None
 
+client_database = {}
 
 @app.post("/clients", tags=["Clients"], dependencies=[Depends(get_current_user)])
 def create_clients(name: str = Form(...),
@@ -635,7 +636,7 @@ def create_clients(name: str = Form(...),
     contact: str = Form(...),
     notes: str = Form(...),
     status: int = Form(...),
-    is_admin: bool = Form(...),
+    
     roles: str = Depends(get_current_user)):
     if "staff" in roles:
         # Periksa apakah clients sudah ada dalam database
@@ -649,7 +650,7 @@ def create_clients(name: str = Form(...),
         "contact": contact,
         "notes": notes,
         "status": status,
-        "is_admin": is_admin,
+       
         }
         id = clients_collection.insert_one(clients_data).inserted_id
         return {
@@ -659,52 +660,24 @@ def create_clients(name: str = Form(...),
         "contact": clients_data["contact"],
         "notes": clients_data["notes"],
         "status": clients_data["status"],
-        "is_admin": clients_data["is_admin"],
+       
         }
 
     else:
         raise HTTPException(status_code=403, detail="Anda tidak memiliki izin untuk mengakses endpoint ini")
 
-@app.patch("/clients/{id}", tags=["Clients"], dependencies=[Depends(get_current_user)])
-def update_clients(
-    id: str,
-    name: str = Form (None),
-    address: str = Form (None),
-    contact: str = Form (None),
-    notes: str = Form (None),
-    status: int = Form (None),
-    is_admin: bool = Form (None),
-    roles: str = Depends(get_current_user)
-):
-    if "staff" in roles or "admin" in roles:
-        # Membuat filter berdasarkan ID
-        clients_filter = {"_id": ObjectId(id)}
-
-        # Membuat update berdasarkan parameter yang diberikan
-        update_data = {}
-        if name is not None:
-            update_data["name"] = name
-        if address is not None:
-            update_data["address"] = address
-        if contact is not None:
-            update_data["contact"] = contact
-        if notes is not None:
-            update_data["notes"] = notes
-        if status is not None:
-            update_data["status"] = status
-        if is_admin is not None:
-            update_data["is_admin"] = is_admin
-
-        # Melakukan update pada dokumen
-        update_result = clients_collection.update_one(clients_filter, {"$set": update_data})
-
-        if update_result.modified_count > 0:
-            return {"message": "Update Clients Successfully"}
-        else:
-            raise HTTPException(status_code=404, detail="Clients tidak ditemukan")
-        
+@app.put("/clients/{client_id}")
+async def update_client(client_id: int, updated_client: clients):
+    if client_id in client_database:
+        client = client_database[client_id]
+        client.name = updated_client.name
+        client.address = updated_client.address
+        client.contact = updated_client.contact
+        client.status = updated_client.status
+        client.notes = updated_client.notes
+        return {"message": "Client updated successfully", "updated_client": client}
     else:
-            raise HTTPException(status_code=403, detail="Anda tidak memiliki izin untuk mengakses endpoint ini")
+        raise HTTPException(status_code=404, detail="Client not found")
 
 @app.delete("/clients/{id}", tags=["Clients"], dependencies=[Depends(get_current_user)])
 def delete_clients(id: str, roles: str = Depends(get_current_user)):

@@ -6,10 +6,10 @@ import { Link, useNavigate, } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 
-const SignIn = () => {
+const SignIn = ({setIsAuthenticated}) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState(''); 
   const [error, setError] = useState(null);
 
   // Check if a token already exists in local storage (e.g., after a previous login)
@@ -38,7 +38,7 @@ const SignIn = () => {
         localStorage.setItem('jwtToken', token);
         console.log(localStorage.getItem('jwtToken'));
 
-
+        setIsAuthenticated(true);
         // Navigate to the dashboard
         navigate('/Dashboard');
       } else {
@@ -79,7 +79,7 @@ const SignIn = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           {error && <p className="text-red-500">{error}</p>}
-          <button type="submit" className="w-[25rem] h-10 mt-5 rounded-full bg-[#3D5FD9] text-[#F5F7FF] hover:bg-[#2347C5]">
+          <button type="submit"  className="w-[25rem] h-10 mt-5 rounded-full bg-[#3D5FD9] text-[#F5F7FF] hover:bg-[#2347C5]">
             SIGN IN
           </button>
           <Link to="/register" className="hover:text-[#2347C5] hover:underline">

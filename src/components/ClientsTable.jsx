@@ -16,12 +16,34 @@ import { useFormik } from 'formik';
 
 
 
+
 function ClientsTable() {
   const [tableData, setTableData] = useState([]);
-  const [selectedPlatform, setSelectedPlatform] = useState('');
+  // const [selectedStatus, setSelectedStatus] = useState(tableData);
   const tableRef = useRef(null);
   const [showAddPopup, setShowAddPopup] = useState(false);
   const navigate = useNavigate();
+  const [selectedStatus, setSelectedStatus] = useState("");
+  
+
+  const {_id} =useParams();
+  const token = localStorage.getItem('jwtToken');
+  const [values,setValues] = useState({
+      _id:_id,
+      name:'',
+      address:'',
+      contact: '',
+      status: '',
+      notes: ''
+  })
+  const headers = {
+    'accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': `Bearer ${token}`,
+}
+// UPDATE DATA
+
+// END UPDATE
 
 
   // DELETE
@@ -113,42 +135,10 @@ function ClientsTable() {
   }, []);
   // END GET DATA
 
-  // UPDATE DATA
-  const handleUpdate = async (_id) => {
-    // Find the client data to update
-    const clientToUpdate = tableData.find(client => client._id === _id);
   
-    if (!clientToUpdate) {
-      console.error('Client not found for update');
-      return;
-    }
   
-    try {
-      // Send a PATCH request to update the client data
-      const token = localStorage.getItem('jwtToken');
-      const response = await axios.patch(
-        `https://umax-1-z7228928.deta.app/clients/${_id}`,
-        clientToUpdate, // Send the client data to update
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-  
-      if (response.status === 200) {
-        console.log('Client data updated successfully:', response.data);
-        // You can handle the success as needed, e.g., show a success message
-      } else {
-        // Handle error if necessary
-        console.error('Error updating client data:', response.data);
-      }
-    } catch (error) {
-      // Handle any network or other errors
-      console.error('Error updating client data:', error);
-    }
-  };
+ // UPDATE DATA
+ 
   // END UPDATE DATA
 
   // PAGINATION
@@ -236,14 +226,15 @@ function ClientsTable() {
             >
               <BsTrash3 />
             </button>
+            <Link to={`/updateclient/${row.original._id}`}>
             <button
-              onClick={() => {
-                handleUpdate(row.origina._id)
-              }}
+              
               className="bg-blue-200 hover:bg-blue-300 text-blue-600 py-1 px-1 rounded"
-            >
+              >
               <AiOutlineEdit />
             </button>
+              </Link>
+           
           </div>
         ),
         headerClassName: 'action-column header',
@@ -259,6 +250,7 @@ function ClientsTable() {
     getTableBodyProps,
     headerGroups,
     prepareRow,
+   
     page, // Replace 'rows' with 'page' for paginated data
     state: { pageIndex, pageSize, globalFilter }, // Add these state properties
     setGlobalFilter, // Add this function
@@ -276,6 +268,7 @@ function ClientsTable() {
       initialState: { pageIndex: 0, pageSize: 5 },
     },
     useGlobalFilter,
+
     usePagination
   );
 
@@ -292,24 +285,25 @@ function ClientsTable() {
 
   useEffect(() => {
     const filteredData = tableData.filter((row) => {
-      return selectedPlatform === "" || row.platform === selectedPlatform;
+      return selectedStatus === "" || row.status === selectedStatus;
     });
     setTableData(filteredData);
-  }, [selectedPlatform]);
+  }, [selectedStatus]);
 
   const toggleAddPopup = () => {
     setShowAddPopup(!showAddPopup);
   };
-
+  
 
   useEffect(() => {
     const closePopupOnEscape = (e) => {
       if (e.key === "Escape") {
         toggleAddPopup();
+       
       }
     };
 
-    if (showAddPopup) {
+    if (showAddPopup ) {
       window.addEventListener("keydown", closePopupOnEscape);
     }
 
@@ -350,6 +344,7 @@ function ClientsTable() {
     doc.save('Client.pdf');
   };
 
+  
 
 
   return (
@@ -373,14 +368,26 @@ function ClientsTable() {
 
           {/* bagian status */}
           <div className="relative col-span-12 lg:col-span-3">
-            <select
-              className="w-full min-w-0 px-1 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
-              value={selectedPlatform}
-              onChange={(e) => setSelectedPlatform(e.target.value)}
+          {/* <select
+              
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              placeholder="Search"
+              className="p-2 w-full min-w-0 h-9 pl-8 text-xs border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
             >
               <option hidden>Status</option>
-              <option value="Facebook">Active</option>
-              <option value="Instagram">Deactive</option>
+              <option value="1">Active</option>
+              <option value="2">Deactive</option>
+            </select> */}
+            <select
+            
+              className="w-full min-w-0 px-1 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
+             value={selectedStatus}
+             onChange={(e)=>setSelectedStatus(e.target.value)}
+            >
+              <option hidden>Status</option>
+              <option value="1">Active</option>
+              <option value="2">Deactive</option>
             </select>
           </div>
           {/* End */}
@@ -402,105 +409,104 @@ function ClientsTable() {
           </button>
 
           {/* menu add data */}
-
-
+          
+         
 
 
           {/* Pop-up menu */}
-          {showAddPopup && (
-            <div className="fixed z-50 inset-0 flex items-center justify-center">
-              <div className="fixed -z-10 inset-0 bg-black bg-opacity-50"></div>
-              <form onSubmit={formik.handleSubmit} className="bg-white p-5 rounded-lg shadow-lg max-h-[80vh] overflow-y-auto">
-                <h2 className="text-xl font-semibold mb-4" >Client</h2>
-                <div className="flex flex-col md:flex-row gap-4 mb-4">
-                  <div className="flex flex-col">
-                    <label className='pb-2 text-sm ' htmlFor="name">Name</label>
-                    <input
-                      type="text"
-                      name='name'
-                      id="name"
-                      onChange={formik.handleChange}
-                      value={formik.values.name}
-                      className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <label className='pb-2 text-sm ' htmlFor="address">Address</label>
-                    <input
-                      type="text"
-                      name='address'
-                      id="address"
-                      onChange={formik.handleChange}
-                      value={formik.values.address}
-                      className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col md:flex-row gap-4 mb-4">
-                  <div className="flex flex-col">
-                    <label className='pb-2 text-sm ' htmlFor="contact">Contact</label>
-                    <input
-                      type="number"
-                      id="contact"
-                      name='contact'
-                      onChange={formik.handleChange}
-                      value={formik.values.contact}
-                      className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
-                    />
+            {showAddPopup && (
+              <div className="fixed z-50 inset-0 flex items-center justify-center">
+                <div className="fixed -z-10 inset-0 bg-black bg-opacity-50"></div>
+                <form onSubmit={formik.handleSubmit} className="bg-white p-5 rounded-lg shadow-lg max-h-[80vh] overflow-y-auto">
+                  <h2 className="text-xl font-semibold mb-4" >Client</h2>
+                  <div className="flex flex-col md:flex-row gap-4 mb-4">
+                    <div className="flex flex-col">
+                      <label className='pb-2 text-sm ' htmlFor="name">Name</label>
+                      <input
+                        type="text"
+                        name='name'
+                        id="name"
+                        onChange={formik.handleChange}
+                        value={formik.values.name}
+                        className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <label className='pb-2 text-sm ' htmlFor="address">Address</label>
+                      <input
+                        type="text"
+                        name='address'
+                        id="address"
+                        onChange={formik.handleChange}
+                        value={formik.values.address}
+                        className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
+                      />
+                    </div>
                   </div>
 
-                  <div className="flex flex-col">
-                    <label className='pb-2 text-sm' htmlFor="status">Status</label>
-                    <select
-                      name='status'
-                      id="status"
-                      // onChange={formik.handleChange}
-                      value={formik.values.status}
-                      className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
+                  <div className="flex flex-col md:flex-row gap-4 mb-4">
+                    <div className="flex flex-col">
+                      <label className='pb-2 text-sm ' htmlFor="contact">Contact</label>
+                      <input
+                        type="number"
+                        id="contact"
+                        name='contact'
+                        onChange={formik.handleChange}
+                        value={formik.values.contact}
+                        className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
+                      />
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className='pb-2 text-sm' htmlFor="status">Status</label>
+                      <select
+                      name="status"
+                        id="status"
+                        onChange={formik.handleChange}
+                        value={formik.values.status}
+                        className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
+                      >
+                        <option value="1">Active</option>
+                        <option value="2">Deactive</option>
+                      </select>
+                    </div>
+
+                  </div>
+
+                  <div className="flex flex-col md:flex-row gap-4 mb-4">
+                    <div className="flex flex-col">
+                      <label className='pb-2 text-sm ' htmlFor="notes">Notes</label>
+                      <textarea
+                        type='text'
+                        name='notes'
+                        id="notes"
+                        onChange={formik.handleChange}
+                        value={formik.values.notes}
+                        className="p-2 max-h-md select-custom-width text-slate-500 border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
+                      ></textarea>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end">
+                    {/* Tombol Save */}
+                    <button
+                      type="button"
+                      onClick={toggleAddPopup}
+                      className="text-gray-500 mr-4"
                     >
-                      <option value="1">Active</option>
-                      <option value="2">Deactive</option>
-                    </select>
+                      Cancel
+                    </button>
+
+                    <button
+                      type="submit"
+                      onClick={onsubmit}
+                      className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
+                    >
+                      Save
+                    </button>
                   </div>
-
-
-                </div>
-
-                <div className="flex flex-col md:flex-row gap-4 mb-4">
-                  <div className="flex flex-col">
-                    <label className='pb-2 text-sm ' htmlFor="notes">Notes</label>
-                    <textarea
-                      type='text'
-                      name='notes'
-                      id="notes"
-                      onChange={formik.handleChange}
-                      value={formik.values.notes}
-                      className="p-2 max-h-md select-custom-width text-slate-500 border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
-                    ></textarea>
-                  </div>
-                </div>
-
-                <div className="flex justify-end">
-                  {/* Tombol Save */}
-                  <button
-                    type="button"
-                    onClick={toggleAddPopup}
-                    className="text-gray-500 mr-4"
-                  >
-                    Cancel
-                  </button>
-
-                  <button
-                    type="submit"
-                    onClick={onsubmit}
-                    className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
-                  >
-                    Save
-                  </button>
-                </div>
-              </form>
-            </div>
+                </form>
+              </div>
           )}
 
 

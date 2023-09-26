@@ -16,17 +16,15 @@ import { useFormik } from 'formik';
 
 
 
-const DataTable = () => {
- 
-  const [tableData, setTableData] = useState([]);
-  const [selectedClient, setSelectedClient] = useState(null);
-  const [selectedPlatform, setSelectedPlatform] = useState('');
-  const tableRef = useRef(null);
-  const [showAddPopup, setShowAddPopup] = useState(false);
-  const [showUpdatePopup, setShowUpdatePopup] = useState(false);
-  const navigate = useNavigate();
-  const [errorMesssage, setErrorMesssage] = useState("");
 
+const DataTable = () => {
+
+  const [tableData, setTableData] = useState([]);
+  const navigate = useNavigate();
+  const [selectedClientId, setSelectedClientId] = useState(null);
+
+  // To track the selected client ID for updating
+  
   const handleDelete = async (_id) => {
     try {
       const token = localStorage.getItem('jwtToken');
@@ -39,7 +37,7 @@ const DataTable = () => {
           },
         }
       );
-  
+
       if (response.status === 200) {
         // Client deleted successfully, you can update your UI or perform any necessary actions.
         fetchData(); // Assuming fetchData is a function to refresh the client list.
@@ -52,7 +50,7 @@ const DataTable = () => {
       console.error('Error deleting client:', error);
     }
   };
-  
+
   async function fetchData() {
     try {
       const response = await fetch("https://umax-1-z7228928.deta.app/clients");
@@ -68,29 +66,27 @@ const DataTable = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
-  const handleUpdate = (client) => {
-    setSelectedClient(client);
+  const handleEditClick = (_id) => {
+    setSelectedClientId(_id);
   };
 
-  const handleUpdateClient = async (updatedClient) => {
+  const handleUpdate = async (values) => {
     try {
       const token = localStorage.getItem('jwtToken');
       const response = await axios.put(
-        `https://umax-1-z7228928.deta.app/clients/${updatedClient._id}`,
-        updatedClient,
+        `https://umax-1-z7228928.deta.app/clients/${selectedClientId}`,
+        values, // Send the updated data
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
         }
       );
 
       if (response.status === 200) {
-        // Client updated successfully, you can update your UI or perform any necessary actions.
-        fetchData(); // Assuming fetchData is a function to refresh the client list.
-        setSelectedClient(null); // Clear selected client
+        setSelectedClientId(null); // Clear the selected client after successful update
+        fetchData(); // Refresh the client list
       } else {
         // Handle error if necessary
         console.error('Error updating client:', response.data);
@@ -101,14 +97,29 @@ const DataTable = () => {
     }
   };
 
-  const handleCancelUpdate = () => {
-    setSelectedClient(null);
-  };
+  const initialValues = selectedClientId
+    ? tableData.find((client) => client._id === selectedClientId)
+    : {};
+
+  const formik = useFormik({
+    initialValues,
+    onSubmit: handleUpdate,
+  });
+ 
+
+
+  
+
+
   return (
     <div className="w-full bg-white max-md:overflow-x-scroll" >
+
+
+
       <table className="table-auto border-collapse border w-full">
         <thead>
           <tr>
+            <th>ID</th>
             <th>Name</th>
             <th>address</th>
             <th>contact</th>
@@ -118,20 +129,20 @@ const DataTable = () => {
         </thead>
         <tbody>
           {tableData.map((client) => (
-            <tr key={client._id}>
-              <td>{client.name}</td>
-              <td>{client.address}</td>
-              <td>{client.contact}</td>
-              <td>{client.status}</td>
-              <td>
-                  <button
-                    className="is-info is-light button"
-                    onClick={() => handleUpdate(client._id)}
-                  >
-                    Update
-                  </button>
-                </td>
-              <td>
+          
+              <tr key={client._id}>
+                <td>{client._id}</td>
+                <td>{client.name}</td>
+                <td>{client.address}</td>
+                <td>{client.contact}</td>
+                <td>{client.status}</td>
+                <td>
+                <button
+                  className="is-info is-light button"
+                  onClick={() => handleEditClick(client._id)}
+                >
+                  Update
+                </button>
                   <button
                     className="is-danger is-light button ml-2"
                     onClick={() => handleDelete(client._id)}
@@ -139,10 +150,24 @@ const DataTable = () => {
                     Delete
                   </button>
                 </td>
-            </tr>
+              </tr>
           ))}
         </tbody>
       </table>
+      {selectedClientId && (
+        <div>
+          <form onSubmit={formik.handleSubmit}>
+            <input
+              type="text"
+              name="name"
+              onChange={formik.handleChange}
+              value={formik.values.name}
+            />
+            {/* Add input fields for other client data */}
+            <button type="submit">Update User</button>
+          </form>
+        </div>
+          )}
       DataTable
     </div>
   )
