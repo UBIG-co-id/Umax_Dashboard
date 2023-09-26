@@ -28,7 +28,15 @@ function DataTable() {
   // GET DATA CLIENT
   async function fetchClientData() {
     try {
-      const response = await fetch("https://umax-1-z7228928.deta.app/clients");
+      const token = localStorage.getItem('jwtToken');
+      const response = await fetch("https://umax-1-z7228928.deta.app/clients",
+      {
+        headers: {
+         'accept': 'application/json',
+         'Content-Type': 'application/x-www-form-urlencoded',
+         'Authorization': `Bearer ${token}`,
+       },
+     });
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
       }
@@ -44,7 +52,14 @@ function DataTable() {
   // END GET DATA CLIENT
   async function fetchAccountData() {
     try {
-      const response = await fetch("https://umax-1-z7228928.deta.app/accounts");
+      const token = localStorage.getItem('jwtToken');
+      const response = await fetch("https://umax-1-z7228928.deta.app/accounts",{
+        headers: {
+         'accept': 'application/json',
+         'Content-Type': 'application/x-www-form-urlencoded',
+         'Authorization': `Bearer ${token}`,
+       },
+     });
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
       }
@@ -90,7 +105,14 @@ const handleDelete = async (_id) => {
   //ambil data
   async function fetchData() {
     try {
-      const response = await fetch("https://umax-1-z7228928.deta.app/campaigns");
+      const token = localStorage.getItem('jwtToken');
+      const response = await fetch("https://umax-1-z7228928.deta.app/campaigns",{
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
       }

@@ -1,12 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState,useEffect} from 'react';
+import imageLeft from '../assets/left-financial.svg';
+import imageRight from '../assets/right-financial.svg';
 import logo from '../assets/logo.png';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
-const SignIn = ({setIsAuthenticated}) => {
+
+const SignIn = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState(''); 
+  const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+
+  // Check if a token already exists in local storage (e.g., after a previous login)
+ 
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -31,7 +38,7 @@ const SignIn = ({setIsAuthenticated}) => {
         localStorage.setItem('jwtToken', token);
         console.log(localStorage.getItem('jwtToken'));
 
-        setIsAuthenticated(true);
+
         // Navigate to the dashboard
         navigate('/Dashboard');
       } else {
@@ -42,8 +49,11 @@ const SignIn = ({setIsAuthenticated}) => {
     }
   };
 
+
+
+
   return (
-    <div className="relative bg-gray-100 min-h-screen flex flex-col justify-center items-center">
+    <div className="relative bg-gray-100 h-screen">
       <div>
         <img src={logo} alt="logo" className="mt-0 ml-16 w-40" />
       </div>
@@ -69,7 +79,7 @@ const SignIn = ({setIsAuthenticated}) => {
             onChange={(e) => setPassword(e.target.value)}
           />
           {error && <p className="text-red-500">{error}</p>}
-          <button type="submit"  className="w-[25rem] h-10 mt-5 rounded-full bg-[#3D5FD9] text-[#F5F7FF] hover:bg-[#2347C5]">
+          <button type="submit" className="w-[25rem] h-10 mt-5 rounded-full bg-[#3D5FD9] text-[#F5F7FF] hover:bg-[#2347C5]">
             SIGN IN
           </button>
           <Link to="/register" className="hover:text-[#2347C5] hover:underline">
@@ -77,7 +87,6 @@ const SignIn = ({setIsAuthenticated}) => {
           </Link>
         </form>
       </div>
-     
     </div>
   );
 };

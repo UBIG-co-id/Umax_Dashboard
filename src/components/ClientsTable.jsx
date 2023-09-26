@@ -13,15 +13,11 @@ import { useReactToPrint } from 'react-to-print';
 import '../styles.css';
 import axios from 'axios';
 import { useFormik } from 'formik';
-import { useAuth } from '../login/AuthContext';
-
 
 
 
 function ClientsTable() {
   const [tableData, setTableData] = useState([]);
-  const { token } = useAuth();
-  // console.log('Token from context:', token);
   // const [selectedStatus, setSelectedStatus] = useState(tableData);
   const tableRef = useRef(null);
   const [showAddPopup, setShowAddPopup] = useState(false);
@@ -30,7 +26,7 @@ function ClientsTable() {
   
 
   const {_id} =useParams();
-
+  const token = localStorage.getItem('jwtToken');
   const [values,setValues] = useState({
       _id:_id,
       name:'',
@@ -42,7 +38,7 @@ function ClientsTable() {
   const headers = {
     'accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: `Bearer ${token}`,
+      'Authorization': `Bearer ${token}`,
 }
 // UPDATE DATA
 
@@ -90,11 +86,15 @@ function ClientsTable() {
     },
 
     onSubmit: (values) => {
-      
+      const token = localStorage.getItem('jwtToken');
       // Send a POST request to your FastAPI backend with form data
       fetch('https://umax-1-z7228928.deta.app/clients', {
         method: 'POST',
-        headers: headers,
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`,
+        },
         body: new URLSearchParams(values).toString(),
       })
 
@@ -119,7 +119,14 @@ function ClientsTable() {
   // GET DATA
   async function fetchData() {
     try {
-      const response = await fetch("https://umax-1-z7228928.deta.app/clients");
+      const token = localStorage.getItem('jwtToken');
+      const response = await fetch("https://umax-1-z7228928.deta.app/clients",{
+         headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
       }
