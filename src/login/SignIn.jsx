@@ -6,11 +6,13 @@ import { Link, useNavigate, } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 
+
 const SignIn = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  
 
   // Check if a token already exists in local storage (e.g., after a previous login)
  
@@ -31,8 +33,8 @@ const SignIn = () => {
 
       if (response.ok) {
         // If the login is successful, extract the JWT token from the response
-        const data = await response.json();
-        const { token } = data;
+        const token = await response.json();
+        
 
         // Store the token in a cookie
         localStorage.setItem('jwtToken', token);
