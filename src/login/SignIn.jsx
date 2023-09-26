@@ -1,19 +1,12 @@
-import React, { useState,useEffect} from 'react';
-import imageLeft from '../assets/left-financial.svg';
-import imageRight from '../assets/right-financial.svg';
+import React, { useState, useEffect } from 'react';
 import logo from '../assets/logo.png';
-import { Link, useNavigate, } from 'react-router-dom';
-import Cookies from 'js-cookie';
-
+import { Link, useNavigate } from 'react-router-dom';
 
 const SignIn = ({setIsAuthenticated}) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState(''); 
   const [error, setError] = useState(null);
-
-  // Check if a token already exists in local storage (e.g., after a previous login)
- 
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -49,11 +42,8 @@ const SignIn = ({setIsAuthenticated}) => {
     }
   };
 
-
-
-
   return (
-    <div className="relative bg-gray-100 h-screen">
+    <div className="relative bg-gray-100 min-h-screen flex flex-col justify-center items-center">
       <div>
         <img src={logo} alt="logo" className="mt-0 ml-16 w-40" />
       </div>
@@ -87,6 +77,7 @@ const SignIn = ({setIsAuthenticated}) => {
           </Link>
         </form>
       </div>
+     
     </div>
   );
 };

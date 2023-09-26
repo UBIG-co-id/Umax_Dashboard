@@ -76,7 +76,7 @@ const Navbar=() => {
                 {/* Mobile menu button */}
 
                 <div className="sm:hidden text-center">
-                    <img src={logo} alt="logo" className='w-20' onClick={toggle} />
+                    <img src={logo} alt="logo" className='w-20 cursor-pointer' onClick={toggle} />
             </div>
                 <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-600">
                   <span className="absolute -inset-0.5" />
@@ -90,7 +90,7 @@ const Navbar=() => {
               </div>
                 <div className="hidden sm:flex sm:items-center sm:justify-center">
                   <img
-                    className="h-8 w-auto "
+                    className="h-8 w-auto cursor-pointer "
                     src={logo}
                     alt="logo"
                     onClick={toggle}
@@ -128,30 +128,35 @@ const Navbar=() => {
               <div className="absolute  inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                  
                  {/* tombol mode gelap */}
-                  <label htmlFor="darkModeToggle" className="relative right-7 flex items-center cursor-pointer">
-                  <div className="relative">
-                  <input
-                  type="checkbox"
-                  id="darkModeToggle"
-                  className="sr-only"
-                  onChange={toggleDarkMode}
-                  checked={darkMode}
-                  />
-                  <div
-                  className={`w-14 h-7 bg-white rounded-full p-1 flex items-center bordernya transition-transform ${
-                  darkMode ? 'justify-end' : 'justify-start'
-                  } ease-in-out duration-300`}
-                  >
-                  <div
-                  className={`dot w-5 h-5 bg-cyan-100 rounded-full shadow transition-transform ${
-                  darkMode ? 'translate-x-full' : ''
-                  }`}
-                  >
-                  {darkMode ? <FiMoon className="h-5 w-5 text-sky-600" /> : <FiSun className="h-5 w-5 text-sky-600" />}
-                  </div>
-                  </div>
-                  </div>
-                  </label>
+                 <label htmlFor="darkModeToggle" className="relative right-7 flex items-center cursor-pointer">
+  <div className="relative">
+    <input
+      type="checkbox"
+      id="darkModeToggle"
+      className="sr-only"
+      onChange={toggleDarkMode}
+      checked={darkMode}
+    />
+    <div className={`w-14 h-7 bg-white rounded-full p-1 flex items-center bordernya transition-transform ease-in-out duration-300`}>
+      <div
+        className={`dot w-5 h-5 bg-cyan-100 rounded-full shadow transition-transform ease-in-out duration-300`}
+        style={{
+          transform: darkMode ? 'translateX(100%)' : 'translateX(0)',
+          opacity: darkMode ? '1' : '1',
+        }}
+      >
+        {darkMode ? (
+          <FiMoon className="h-5 w-5 text-sky-600 absolute left-0" />
+        ) : (
+          <FiSun className="h-5 w-5 text-sky-600 absolute right-0" />
+        )}
+      </div>
+    </div>
+  </div>
+</label>
+
+
+
 
 
 

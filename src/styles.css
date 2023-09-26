@@ -117,6 +117,66 @@
   width: 289px;
   left: -17px;
 }
+/* .status-green {
+  width: 20px;
+  height: 20px;
+  background-color: rgb(55, 236, 55);
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+  position: relative;
+}
+
+.status-green::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: inherit;
+  border-radius: inherit;
+  top: 0;
+  left: 0;
+}
+.status-orange {
+  width: 20px;
+  height: 20px;
+  background-color: rgb(244, 192, 50);
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+  position: relative;
+}
+
+.status-orange::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: inherit;
+  border-radius: inherit;
+  top: 0;
+  left: 0;
+}
+.status-gray {
+  width: 20px;
+  height: 20px;
+  background-color: rgb(99, 99, 99);
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+  position: relative;
+}
+
+.status-gray::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: inherit;
+  border-radius: inherit;
+  top: 0;
+  left: 0;
+} */
 /* .text{
   width: 100px;
   overflow: hidden;

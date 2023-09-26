@@ -4,18 +4,21 @@ import React, { createContext, useContext, useState } from 'react';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [token, setToken] = useState('');
 
-  const login = (newToken) => {
-    setToken(newToken);
+  const login = (jwtToken) => {
+    setToken(jwtToken);
+    setIsAuthenticated(true);
   };
 
   const logout = () => {
-    setToken(null);
+    setToken('');
+    setIsAuthenticated(false);
   };
 
   return (
-    <AuthContext.Provider value={{ token, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, token, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

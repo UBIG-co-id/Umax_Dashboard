@@ -1,4 +1,4 @@
-import React,  { useState }  from 'react';
+import React,  { useState, useEffect  }  from 'react';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import ContainerCard from '../components/ContainerCard';
@@ -14,6 +14,9 @@ import { AiOutlineInfoCircle } from 'react-icons/ai';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { google} from "../assets";
 import '../styles.css';
+
+import axios from 'axios';
+
 
 
 const Dashboard = () => {
@@ -35,7 +38,8 @@ const Dashboard = () => {
     setActiveTab(tab);
   };
 
-
+  const [metricsData, setMetricsData] = useState([]);
+  
 //Data Baru
   //Backend tinggal ikutin ini aja
   const metrixDatas = [
@@ -610,6 +614,26 @@ const Dashboard = () => {
     })
   }
 
+   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://umax-1-z7228928.deta.app/metrics/');
+        if (response.status === 200) {
+          const data = response.data;
+          console.log(data); 
+          setMetricsData(data);
+        } else {
+          console.error('Failed to fetch data from API');
+        }
+      } catch (error) {
+        console.error('An error occurred', error);
+      }
+      
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <main className='bg-slate-100 min-h-screen ' >
       <div>
@@ -628,38 +652,39 @@ const Dashboard = () => {
               </div> 
 
 
-       <div className='flex justify-center'>
-                  <ul className='flex -mb-1'>
-                    <li
-                      className={`p-3 px-5  ${activeTab === 'performance' ? ' atas text-sky-500 cursor-pointer font-semibold  border-b-4 border-sky-500 transition-colors ' : 'text-gray-500'
-                        }`}
-                      onClick={() => handleTabClick('performance')}
-                    >
-                      Performance
-                    </li>
-                    <li
-                      className={`p-3 px-5  ${activeTab === 'metrics' ? 'text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
-                        }`}
-                      onClick={() => handleTabClick('metrics')}
-                    >
-                      Metrics
-                    </li>
-                    <li
-                      className={`p-3 px-5  ${activeTab === 'history' ? 'text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
-                        }`}
-                      onClick={() => handleTabClick('history')}
-                    >
-                      History
-                    </li>
-                    <li
-                      className={`p-3 px-5  ${activeTab === 'setting' ? 'text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
-                        }`}
-                      onClick={() => handleTabClick('setting')}
-                    >
-                      Setting
-                    </li>
+                  <div className="flex justify-center">
+                  <ul className=" flex -mb-1 flex-wrap  sm:flex-row">
+                  <li
+                  className={`p-3 px-5 ${activeTab === 'performance' ? 'atas text-sky-500 cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
+                  }`}
+                  onClick={() => handleTabClick('performance')}
+                  >
+                  Performance
+                  </li>
+                  <li
+                  className={`p-3 px-5 ${activeTab === 'metrics' ? 'text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
+                  }`}
+                  onClick={() => handleTabClick('metrics')}
+                  >
+                  Metrics
+                  </li>
+                  <li
+                  className={`p-3 px-5 ${activeTab === 'history' ? 'text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
+                  }`}
+                  onClick={() => handleTabClick('history')}
+                  >
+                  History
+                  </li>
+                  <li
+                  className={`p-3 px-5 ${activeTab === 'setting' ? 'text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
+                  }`}
+                  onClick={() => handleTabClick('setting')}
+                  >
+                  Setting
+                  </li>
                   </ul>
-            </div>
+                  </div>
+
             </div>
                 {/* Body */}
             <div className='px-5 py-5 flex flex-col '>
