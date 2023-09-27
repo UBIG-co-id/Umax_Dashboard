@@ -23,7 +23,9 @@ const UpdateClient = () => {
     const navigate = useNavigate();
     
    useEffect(()=> {
-    axios.get('https://umax-1-z7228928.deta.app/clients/'+_id)
+    axios.get('https://umax-1-z7228928.deta.app/clients/'+_id,{
+      headers:headers,
+    })
     .then(res => 
         setValues({...values, 
             name:res.data.name, 

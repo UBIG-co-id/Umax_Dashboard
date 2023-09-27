@@ -56,7 +56,7 @@ const SignUp = () => {
           onChange={formik.handleChange}
           value={formik.values.nama}
           placeholder="Nama"
-          className="w-full h-9 rounded-md border border-blue mt-2 focus:outline-none focus:ring-1 text-slate-500"
+          className="w-full h-9 rounded-md border pl-5 border-blue mt-2 focus:outline-none focus:ring-1 text-slate-500"
         />
         <input
           type="text"
@@ -65,7 +65,7 @@ const SignUp = () => {
           onChange={formik.handleChange}
           value={formik.values.email}
           placeholder="Email"
-          className="w-full h-9 rounded-md border border-blue mt-2 focus:outline-none focus:ring-1 text-slate-500"
+          className="w-full h-9 rounded-md border pl-5 border-blue mt-2 focus:outline-none focus:ring-1 text-slate-500"
         />
         <input
           type="password"
@@ -74,7 +74,7 @@ const SignUp = () => {
           onChange={formik.handleChange}
           value={formik.values.password}
           placeholder="Password"
-          className="w-full h-9 rounded-md border border-blue mt-2 focus:outline-none focus:ring-1 text-slate-500"
+          className="w-full h-9 rounded-md border pl-5 border-blue mt-2 focus:outline-none focus:ring-1 text-slate-500"
         />
         <input
           type="password"
@@ -83,7 +83,7 @@ const SignUp = () => {
           onChange={formik.handleChange}
           value={formik.values.konfirmasi_password}
           placeholder="Konfirmasi Password"
-          className="w-full h-9 rounded-md border border-blue mt-2 focus:outline-none focus:ring-1 text-slate-500"
+          className="w-full h-9 rounded-md border pl-5 border-blue mt-2 focus:outline-none focus:ring-1 text-slate-500"
         />
         <button
           type="submit"

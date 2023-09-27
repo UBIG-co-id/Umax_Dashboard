@@ -34,7 +34,7 @@ export default function Chart() {
     }
 
     return (
-        <div className='w-full h-fit'>
+        <div className='w-[99%] h-fit'>
             <ReactApexChart options={option} series={series} type="area" height={'350px'} />
         </div>
     )
