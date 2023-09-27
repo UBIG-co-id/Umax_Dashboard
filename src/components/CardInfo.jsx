@@ -37,7 +37,7 @@ export default function CardInfo({ title, value, color = "text-gray-500", popupC
 
 
     return (
-        <div className={`p-4 relative  rounded-lg bg-slate-100 border border-gray-300 ${className}`}>
+        <div className={`p-4 relative rounded-lg bg-slate-100 border border-gray-300 ${className}`}>
             <div className='flex justify-between items-center'>
                 <div className={`text-sm font-medium ${color}`}>{title}</div>
                 <div className='text-gray-500 cursor-pointer'>

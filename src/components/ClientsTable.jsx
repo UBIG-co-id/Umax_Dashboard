@@ -104,7 +104,7 @@ function ClientsTable() {
           console.log(data);
           if (data.message === 'data berhasil ditambah') {
             // Redirect to the dashboard page
-            navigate('/clients');
+            navigate('/Clients');
           }
         })
         .catch(error => {

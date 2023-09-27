@@ -600,7 +600,7 @@ const Dashboard = () => {
  
   const renderCardInfo = () => {
     return cardData.map((item, index) => {
-      return <CardInfo key={index} title={item.title} value={item.value} color={item.color} className='relative flex top-5 flex-col justify-between h-24'          
+      return <CardInfo key={index} title={item.title} value={item.value} color={item.color} className='relative w-full flex top-5 flex-col justify-between h-24'          
       popupContent={item.popupContent}
       />
     })
@@ -608,7 +608,7 @@ const Dashboard = () => {
 
   const renderCardInfo2 = () => {
     return cardData2.map((item, index) => {
-      return <CardInfo  key={index} title={item.title} value={item.value} color={item.color} className='w-full  flex flex-col justify-between h-24' 
+      return <CardInfo  key={index} title={item.title} value={item.value} color={item.color} className='w-full flex flex-col justify-between h-24' 
       popupContent={item.popupContent} 
       />
     })
@@ -617,7 +617,15 @@ const Dashboard = () => {
    useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://umax-1-z7228928.deta.app/metrics/');
+        const token = localStorage.getItem('jwtToken');
+        const response = await axios.get('https://umax-1-z7228928.deta.app/metrics/',
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+        );
         if (response.status === 200) {
           const data = response.data;
           console.log(data); 

@@ -15,6 +15,7 @@ import 'react-tabs/style/react-tabs.css';
 import { useFormik } from 'formik';
 import { Link, useNavigate, useParams, } from 'react-router-dom';
 import axios from 'axios';
+import styled from "@emotion/styled";
 
 
 function DataTable() {
@@ -203,18 +204,48 @@ const handleDelete = async (_id) => {
     color: '#333',
   };
   // END PAGINATION
+
+
   const getStatusString = (status) => {
+    let statusStyle = {}; // Objek gaya status
+
     switch (status) {
       case 1:
-        return "Active";
+        statusStyle = {
+          backgroundColor: '#C5FFC5', 
+          color: '#00CA00', 
+          padding: '2px',
+          borderRadius: '7px',
+        };
+        return (
+          <span style={statusStyle}>Active</span>
+        );
       case 2:
-        return "Draft";
+        statusStyle = {
+          backgroundColor: '#C5FFC5', 
+          color: '#00CA00', 
+          padding: '2px',
+          borderRadius: '7px',
+        };
+        return (
+          <span style={statusStyle}>Draft</span>
+        );
       case 3:
-        return "Completed";
+        statusStyle = {
+          backgroundColor: '#C5FFC5', 
+          color: '#00CA00', 
+          padding: '2px',
+          borderRadius: '7px',
+        };
+        return (
+          <span style={statusStyle}>Completed</span>
+        );
       default:
         return "Unknown";
     }
   };
+  
+  
   const getPlatFormString = (platform) => {
     switch (platform) {
       case 1:
