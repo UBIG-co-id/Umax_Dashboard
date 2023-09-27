@@ -17,7 +17,14 @@ const Sidebar = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('https://umax-1-z7228928.deta.app/campaigns');
+      const token = localStorage.getItem('jwtToken');
+      const response = await fetch('https://umax-1-z7228928.deta.app/campaigns',{
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
       if (response.ok) {
         const data = await response.json();
         setCampaigns(data); // Memperbarui state campaigns dengan data yang diambil
@@ -112,47 +119,48 @@ const Sidebar = () => {
 
   const nonActiveHoverClass = 'hoverable';
 
-  const renderItems = (campaigns) => {
-    const filtered = filteredItems(campaigns);
-  
+  const renderItems = (items) => {
+    const filtered = filteredItems(items);
+
+
+
     if (filtered.length === 0) {
-      return <li className="mb-6 text-center ">Tidak ada hasil</li>;
+      return <li className="mb-6 text-center ">Tidak ada hasil</li>
     }
-  
-    return filtered.map((campaign, index) => {
+
+    return filtered.map((item, index) => {
       let circleColor;
-  
+
       if (activeTab === 'all') {
         circleColor = customCircleColors[index % customCircleColors.length];
       } else {
-        circleColor = tabStyle[activeTab]?.circleColor; // Use optional chaining (?.) to avoid errors
+        circleColor = tabStyle[activeTab].circleColor;
       }
-  
-      const isItemActive = activeItem === campaign.name;
-      const listItemClasses = `flex flex-col h-20 mb-0 -ml-2 ${
-        isItemActive ? 'bg-blue-200 ' : ''
-      } ${!isItemActive ? nonActiveHoverClass : ''}`;
-  
+      
+      const isItemActive = activeItem === item.title;
+      const listItemClasses = `flex flex-col h-20 mb-0 -ml-2 ${isItemActive ? 'bg-blue-200 ' : ''} ${!isItemActive ? nonActiveHoverClass : ''}`;
+
       return (
+
         <li
-          key={index}
-          className={listItemClasses}
-          onClick={() => handleItemClick(campaign.name)}
-        >
+        key={index}
+        className={listItemClasses}
+        onClick={() => handleItemClick(item.title)}
+      >
+        
           {index > 0 && <hr className="border-gray-300 " />}
           <div
-            className={`${activeTab === campaign.name?.toLowerCase() ? 'bg-blue-200' : ''}`}
-            // Use optional chaining (?.) to avoid errors
+            className={`${activeTab === item.title.toLowerCase() ? 'bg-blue-200' : ''}`}
           />
           <div className="relative mt-2 pl-3 flex items-center w-20">
             <div className="flex items-center">
-              <img src={campaign.icon} alt="icon" className="w-6 mr-2" />
+              <img src={item.icon} alt="icon" className="w-6 mr-2" />
               <span
-                className={`truncate w-52 ${activeItem === campaign.name ? 'text-black' : ''
+                className={`truncate w-52 ${activeItem === item.title ? 'text-black' : ''
                   }`}
-                title={campaign.name}
+                  title={item.title}
               >
-                {campaign.name}
+                {item.title}
               </span>
             </div>
             <div className="absolute left-64 flex items-center">
@@ -162,26 +170,26 @@ const Sidebar = () => {
               ></span>
             </div>
           </div>
-  
+
           <div className="aside__container-list_information mt-1">
-            <div>
-              <p>Amount Spent</p>
-              <p>{campaign.amountSpent}</p>
-            </div>
-            <div>
-              <p>Reach</p>
-              <p>{campaign.reach}</p>
-            </div>
-            <div>
-              <p>Start Date</p>
-              <p>{campaign.startDate}</p>
-            </div>
+          <div>
+            <p >Amount Spent</p>
+            <p >{item.amountSpent}</p>
+          </div>
+          <div>
+            <p >Reach</p>
+            <p >{item.reach}</p>
+          </div>
+          <div>
+            <p >Start Date</p>
+            <p >{item.startDate}</p>
+          </div>
           </div>
         </li>
+
       );
     });
   };
-  
   return (
     <div className="relative flex max-sm:absolute max-sm:left-0 z-20">
       <button
@@ -247,7 +255,7 @@ const Sidebar = () => {
               <>
                 <hr className="border-gray-300 mb-0" />
                 {renderItems([
-                  { name: 'Program Bimbingan Karir', icon: tiktok, amountSpent: 'Rp. 3.000.000', reach: '220.000', startDate: 'Sep 4, 14:09' },
+                  { title: 'Program Bimbingan Karir', icon: tiktok, amountSpent: 'Rp. 3.000.000', reach: '220.000', startDate: 'Sep 4, 14:09' },
                   { title: 'Santri Berwirausaha', icon: google, amountSpent: 'Rp. 2.000.000', reach: '97.000', startDate: 'Mart 1, 12:36' },
                   { title: 'Program Tahfidz', icon: facebook, amountSpent: 'Rp. 4.000.000', reach: '120.000', startDate: 'Feb 4, 12:36' },
                   { title: 'Campaign Tahfidz', icon: google, amountSpent: 'Rp. 3.000.000', reach: '250.000', startDate: 'Apr 12, 14:00' },
@@ -265,12 +273,7 @@ const Sidebar = () => {
                   { title: 'Transformasi Melalui Ilmu', icon: tiktok, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
                   { title: 'Menyentuh Hati dan Akal', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
                   { title: 'Generasi Unggul', icon: facebook, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
-                ]).slice(0, itemsToShow).map((campaign, index) => (
-                  <li key={index}>
-                    {campaign.name /* Menggunakan nilai 'name' dari objek kampanye */}
-                    {/* Tambahkan ikon, jumlah yang dihabiskan, jangkauan, tanggal mulai, dll. sesuai kebutuhan */}
-                  </li>
-                ))}
+                ]).slice(0, itemsToShow)}
               </>
             )}
 

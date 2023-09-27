@@ -16,6 +16,7 @@ import { useFormik } from 'formik';
 
 
 
+
 function ClientsTable() {
   const [tableData, setTableData] = useState([]);
   // const [selectedStatus, setSelectedStatus] = useState(tableData);
@@ -104,7 +105,7 @@ function ClientsTable() {
           console.log(data);
           if (data.message === 'data berhasil ditambah') {
             // Redirect to the dashboard page
-            navigate('/clients');
+            navigate('/Accounts');
           }
         })
         .catch(error => {
@@ -502,13 +503,14 @@ function ClientsTable() {
                     >
                       Cancel
                     </button>
-
                     <button
                       type="submit"
-                      onClick={onsubmit}
+                      
                       className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
                     >
+                  
                       Save
+                 
                     </button>
                   </div>
                 </form>
