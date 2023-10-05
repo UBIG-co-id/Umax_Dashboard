@@ -24,7 +24,8 @@ function ClientsTable() {
   const [showAddPopup, setShowAddPopup] = useState(false);
   const navigate = useNavigate();
   const [selectedStatus, setSelectedStatus] = useState("");
-  
+  const [activePage, setActivePage] = useState('clients');
+
 
   const {_id} =useParams();
   const token = localStorage.getItem('jwtToken');
@@ -139,6 +140,7 @@ function ClientsTable() {
   }
   useEffect(() => {
     fetchData();
+    setActivePage('clients')
   }, []);
   // END GET DATA
 

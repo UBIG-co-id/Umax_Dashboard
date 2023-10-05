@@ -14,13 +14,94 @@ import { AiOutlineInfoCircle } from 'react-icons/ai';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { google} from "../assets";
 import '../styles.css';
+import {setActiveItem, updateSelectedName} from '../components/Sidebar'
 
 import axios from 'axios';
 
 
 
 const Dashboard = () => {
+  
+  const [metricsData, setMetricsData] = useState([]);
   const [activeTab, setActiveTab] = useState('performance'); 
+  const [campaigns, setCampaigns] = useState([]);
+  const [selectedCampaignId, setSelectedCampaignId] = useState(null);
+  const [activeItem, setActiveItem] = useState(null);
+  const [selectedData, setSelectedData] = useState(null);
+  const [selectedName, setSelectedName] = useState('');
+
+  
+  const handleItemClick = (itemName) => {
+    console.log(itemName)
+    // Temukan kampanye yang sesuai dengan nama yang diklik
+    const selectedCampaign = campaigns.find((campaign) => campaign.name === itemName);
+
+    if (selectedCampaign) {
+      setActiveItem(itemName);
+      setSelectedName(itemName);
+      setSelectedData(selectedCampaign);
+    }
+  };
+  
+  const updateSelectedName = (item) => {
+    setSelectedName(item);
+    console.log("Selected Name:", item);
+  };
+
+  const fetchCampaignData = async () => {
+    try {
+      const token = localStorage.getItem('jwtToken');
+      const response = await fetch('https://umax-1-z7228928.deta.app/campaignslistt', {
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setCampaigns(data);
+      } else {
+        console.error('Gagal mengambil data');
+      }
+    } catch (error) {
+      console.error('Terjadi kesalahan:', error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchCampaignData();
+  }, []);
+
+  
+  useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem('jwtToken');
+      const response = await axios.get('https://umax-1-z7228928.deta.app/metrics/', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status === 200) {
+        const data = response.data;
+        setMetricsData(data);
+      } else {
+        console.error('Failed to fetch data from API');
+      }
+    } catch (error) {
+      console.error('An error occurred', error);
+    }
+  };
+
+  fetchData();
+}, []);
+
+
+
+
   const [state, setState] = useState({
     toggleNavbar: false,
   });
@@ -38,7 +119,7 @@ const Dashboard = () => {
     setActiveTab(tab);
   };
 
-  const [metricsData, setMetricsData] = useState([]);
+ 
   
 //Data Baru
   //Backend tinggal ikutin ini aja
@@ -424,16 +505,65 @@ const Dashboard = () => {
               <div>
         <div className='flex flex-col md:flex-row mt-5 md:gap-5'>
           {/* Card Info */}
-          <div className='md:w-8/12 w-full flex flex-col h-full gap-5'>
-            {renderCardInfo()}
-          </div>
+         
+          {selectedData && (
+        <div className="md:w-8/12 w-full flex flex-col h-full gap-5">
+          <CardInfo
+            title="Amount Spent"
+            value={selectedData.amountspent}
+            color="text-sky-500"
+            popupContent="Jumlah total biaya yang kita keluarkan untuk pemasangan iklan"
+          />
+          <CardInfo 
+           title= "Reach Amount Ratio"
+           value= {selectedData.reach}
+           color= "text-yellow-500"
+           popupContent= "Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut" 
+           />
+          <CardInfo 
+            title= 'Click Through Rate'
+            value= {selectedData.ctr}
+            color= 'text-green-500'
+            popupContent= 'Rasio jumlah klik pada iklan kita dibandingkan dengan jumlah iklan ditayangkan' 
+           />
+          <CardInfo 
+            title= 'OCLP'
+            value= {selectedData.oclp}
+            popupContent= 'Mendorong pengunjung untuk mengklik tautan atau tombol yang mengarahkan mereka ke halaman atau situs web eksternal yang relevan' 
+           />
+        </div>
+      )}
+          
           {/* Chart */}
           <div className='w-full md:w-full flex flex-col gap-5 justify-between'>
             <Chart />
             
-            <div className='flex flex-col md:flex-row gap-5 -mt-4'>
-              {renderCardInfo2()}
-            </div>
+            
+          {selectedData && (
+        <div className="flex flex-col md:flex-row gap-5 -mt-4">
+          <CardInfo
+            title= 'CPR'
+            value= {selectedData.cpr}
+            popupContent= ' Perhitungan biaya yang kita keluarkan untuk setiap hasil yang kita dapatkan' 
+          />
+          <CardInfo 
+           title= 'ATC'
+           value= {selectedData.atc}
+           popupContent= ' Menambahkan produk atau barang ke dalam keranjang belanja saat berbelanja secara online di situs web e-commerce atau toko online' 
+           />
+          <CardInfo 
+            title= 'ROAS'
+            value= {selectedData.roas}
+            popupContent= 'Mengukur seberapa banyak pendapatan atau hasil yang dihasilkan dari setiap unit pengeluaran iklan' 
+           />
+          <CardInfo 
+           title= 'Real ROAS'
+           value= {selectedData.realroas}
+           popupContent= 'Mengukur banyak pendapatan asli yang di hasilkan tiap pengeluaran iklan' 
+           />
+        </div>
+      )}
+            
           </div>
         </div>
       </div>
@@ -545,102 +675,8 @@ const Dashboard = () => {
     }
   };
 
- 
-  const cardData = [
-    {
-      title: 'Amount Spent',
-      value: 'Rp. 4.000.000',
-      color: 'text-sky-500',
-      popupContent: 'Jumlah total biaya yang kita keluarkan untuk pemasangan iklan' 
-    },
-    {
-      title: 'Reach Amount Ratio',
-      value: '6.1%',
-      color: 'text-yellow-500',
-      popupContent: 'Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut' 
-    },
-    {
-      title: 'Click Through Rate',
-      value: '1.0%',
-      color: 'text-green-500',
-      popupContent: 'Rasio jumlah klik pada iklan kita dibandingkan dengan jumlah iklan ditayangkan' 
-    },
-    {
-      title: 'OCLP',
-      value: '30%',
-      popupContent: 'Mendorong pengunjung untuk mengklik tautan atau tombol yang mengarahkan mereka ke halaman atau situs web eksternal yang relevan' 
-    }
-  ];
-
-  
-  const cardData2 = [
-    {
-      title: 'CPR',
-      value: 'Rp. 5.000',
-      popupContent: ' Perhitungan biaya yang kita keluarkan untuk setiap hasil yang kita dapatkan' 
-    },
-    {
-      title: 'ATC',
-      value: '2,5%',
-      popupContent: ' Menambahkan produk atau barang ke dalam keranjang belanja saat berbelanja secara online di situs web e-commerce atau toko online' 
-    },
-    {
-      title: 'ROAS',
-      value: '1.0%',
-      popupContent: 'Mengukur seberapa banyak pendapatan atau hasil yang dihasilkan dari setiap unit pengeluaran iklan' 
-    },
-    {
-      title: 'Real ROAS',
-      value: '1.0%',
-      popupContent: 'Mengukur banyak pendapatan asli yang di hasilkan tiap pengeluaran iklan' 
-    },
-  ];
 
 
- 
-  const renderCardInfo = () => {
-    return cardData.map((item, index) => {
-      return <CardInfo key={index} title={item.title} value={item.value} color={item.color} className='relative w-full flex top-5 flex-col justify-between h-24'          
-      popupContent={item.popupContent}
-      />
-    })
-  }
-
-  const renderCardInfo2 = () => {
-    return cardData2.map((item, index) => {
-      return <CardInfo  key={index} title={item.title} value={item.value} color={item.color} className='w-full flex flex-col justify-between h-24' 
-      popupContent={item.popupContent} 
-      />
-    })
-  }
-
-   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem('jwtToken');
-        const response = await axios.get('https://umax-1-z7228928.deta.app/metrics/',
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-        );
-        if (response.status === 200) {
-          const data = response.data;
-          console.log(data); 
-          setMetricsData(data);
-        } else {
-          console.error('Failed to fetch data from API');
-        }
-      } catch (error) {
-        console.error('An error occurred', error);
-      }
-      
-    };
-
-    fetchData();
-  }, []);
 
   return (
     <main className='bg-slate-100 min-h-screen ' >
@@ -648,7 +684,7 @@ const Dashboard = () => {
         <Navbar />
         </div>
         <div className='flex gap-5  px-5'>
-        <Sidebar state={state} toggleSidebar={toggleSidebar} />
+        <Sidebar state={state} toggleSidebar={toggleSidebar} updateSelectedName={handleItemClick} />
           
           <ContainerCard >
             
@@ -656,7 +692,7 @@ const Dashboard = () => {
             <div className='border-b-2  border-gray-600'>
               <div className='flex p-4 ml-3 pb-1 items-center'>
                <img src={google} alt="google" width={50} />
-                <h1 className='text-2xl pl-3 font-bold text-gray-700'>Campaign Tahfidz</h1>
+                <h1 className='text-2xl pl-3 font-bold text-gray-700'> {selectedName ? selectedName : 'campaign'}</h1>
               </div> 
 
 

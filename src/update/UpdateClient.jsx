@@ -7,6 +7,7 @@ const UpdateClient = () => {
     // const [data,setData] =useState([])
     const {_id} =useParams();
     const token = localStorage.getItem('jwtToken');
+    const [activePage, setActivePage] = useState('clients');
     const [values,setValues] = useState({
         _id:_id,
         name:'',
@@ -40,9 +41,10 @@ const UpdateClient = () => {
         e.preventDefault();
         axios.put ('https://umax-1-z7228928.deta.app/clients/'+_id,values,{headers})
         .then(res => {
-            navigate('/clients');
+            navigate('/Clients');
         })
         .catch(err => console.log(err))
+        setActivePage('clients');
     }
     
     return (

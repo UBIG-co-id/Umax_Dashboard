@@ -6,19 +6,46 @@ import { Context } from '../context';
 
 
 
-const Sidebar = () => {
-  const [activeTab, setActiveTab] = useState('draft');
+const Sidebar = ({updateSelectedName}) => {
+  const [activeTab, setActiveTab] = useState('all');
   const [searchText, setSearchText] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeItem, setActiveItem] = useState(null);
   let { state, dispatch } = useContext(Context);
   const [itemsToShow, setItemsToShow] = useState(10);
   const [campaigns, setCampaigns] = useState([]);
+  const [selectedData, setSelectedData] = useState([])
+
+  const [filteredCampaigns, setFilteredCampaigns] = useState([]);
+  useEffect(() => {
+    // Fungsi ini akan dipanggil setiap kali activeTab atau campaigns berubah
+    filterCampaignsByStatus();
+  }, [activeTab, campaigns]);
+
+  const filterCampaignsByStatus = () => {
+    if (activeTab === 'all') {
+      setFilteredCampaigns(campaigns);
+    } else {
+      const filtered = campaigns.filter((item) => {
+        if (activeTab === 'draft' && item.status === 2) {
+          return true;
+        }
+        if (activeTab === 'active' && item.status === 1) {
+          return true;
+        }
+        if (activeTab === 'completed' && item.status === 3) {
+          return true;
+        }
+        return false;
+      });
+      setFilteredCampaigns(filtered);
+    }
+  };
 
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch('https://umax-1-z7228928.deta.app/campaigns',{
+      const response = await fetch('https://umax-1-z7228928.deta.app/campaignslistt', {
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -27,7 +54,9 @@ const Sidebar = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        setCampaigns(data); // Memperbarui state campaigns dengan data yang diambil
+        // Assuming that the API response includes an "id" field for each campaign
+        const campaignsWithId = data.map((campaign, index) => ({ ...campaign, id: index + 1 }));
+        setCampaigns(campaignsWithId);
       } else {
         console.error('Gagal mengambil data');
       }
@@ -37,7 +66,7 @@ const Sidebar = () => {
   };
   useEffect(() => {
     fetchData();
-    
+
   }, []);
 
 
@@ -63,9 +92,17 @@ const Sidebar = () => {
     };
   }, [itemsToShow]);
 
-  const handleItemClick = (item) => {
-    setActiveItem(item === activeItem ? null : item);
+  const handleItemClick = (itemName) => {
+    // Temukan kampanye yang sesuai dengan nama yang diklik
+    const selectedCampaign = campaigns.find((campaign) => campaign.name === itemName);
+  
+    if (selectedCampaign) {
+      setActiveItem(itemName);
+      updateSelectedName(itemName);
+      setSelectedData(selectedCampaign);
+    }
   };
+  
 
   // menyimpan warna array
   const customCircleColors = ['#8F8F8F', '#00FF00', '#00FF00', '#FF8A00', '#FF8A00'];
@@ -121,46 +158,49 @@ const Sidebar = () => {
 
   const renderItems = (items) => {
     const filtered = filteredItems(items);
-
-
-
+  
     if (filtered.length === 0) {
       return <li className="mb-6 text-center ">Tidak ada hasil</li>
     }
-
-    return filtered.map((item, index) => {
+  
+    return filtered.slice(0, itemsToShow).map((item, index) => {
       let circleColor;
-
-      if (activeTab === 'all') {
-        circleColor = customCircleColors[index % customCircleColors.length];
+  
+      // Tambahkan pemeriksaan status item dan atur warna lingkaran sesuai dengan status
+      if (item.status === 1) { // Status 'active'
+        circleColor = '#00FF00'; // Hijau
+      } else if (item.status === 2) { // Status 'draft'
+        circleColor = '#8F8F8F'; // Abu-abu
+      } else if (item.status === 3) { // Status 'completed'
+        circleColor = '#FF8A00'; // Orange
       } else {
-        circleColor = tabStyle[activeTab].circleColor;
+        circleColor = '#8F8F8F'; // Default: Abu-abu
       }
-      
-      const isItemActive = activeItem === item.title;
-      const listItemClasses = `flex flex-col h-20 mb-0 -ml-2 ${isItemActive ? 'bg-blue-200 ' : ''} ${!isItemActive ? nonActiveHoverClass : ''}`;
-
+  
+      const isItemActive = activeItem === item.name; // Menggunakan 'name' alih-alih 'title'
+      const listItemClasses = `flex flex-col h-20 mb-0 -ml-2 ${
+        isItemActive ? 'bg-blue-200 ' : ''
+      } ${!isItemActive ? nonActiveHoverClass : ''}`;
+  
       return (
-
         <li
-        key={index}
-        className={listItemClasses}
-        onClick={() => handleItemClick(item.title)}
-      >
-        
+          key={index}
+          className={listItemClasses}
+          onClick={() => handleItemClick(item.name)}
+        >
           {index > 0 && <hr className="border-gray-300 " />}
           <div
-            className={`${activeTab === item.title.toLowerCase() ? 'bg-blue-200' : ''}`}
+            className={`${activeTab === item.name.toLowerCase() ? 'bg-blue-200' : ''}`}
           />
           <div className="relative mt-2 pl-3 flex items-center w-20">
             <div className="flex items-center">
               <img src={item.icon} alt="icon" className="w-6 mr-2" />
               <span
-                className={`truncate w-52 ${activeItem === item.title ? 'text-black' : ''
+                className={`truncate w-52 ${activeItem === item.name ? 'text-black' : ''
                   }`}
-                  title={item.title}
+                title={item.name}
               >
-                {item.title}
+                {item.name}
               </span>
             </div>
             <div className="absolute left-64 flex items-center">
@@ -170,23 +210,22 @@ const Sidebar = () => {
               ></span>
             </div>
           </div>
-
+  
           <div className="aside__container-list_information mt-1">
-          <div>
-            <p >Amount Spent</p>
-            <p >{item.amountSpent}</p>
-          </div>
-          <div>
-            <p >Reach</p>
-            <p >{item.reach}</p>
-          </div>
-          <div>
-            <p >Start Date</p>
-            <p >{item.startDate}</p>
-          </div>
+            <div>
+              <p >Amount Spent</p>
+              <p >{item.amountspent}</p>
+            </div>
+            <div>
+              <p >Reach</p>
+              <p >{item.reach}</p>
+            </div>
+            <div>
+              <p >Start Date</p>
+              <p >{item.startdate}</p>
+            </div>
           </div>
         </li>
-
       );
     });
   };
@@ -202,7 +241,7 @@ const Sidebar = () => {
       </button>
       <div className={`relative bayangan max-w-70 top-5 -left-1  w-72 max-h-full bg-white  rounded-t-xl  max-sm:left-0 text-slate-700 p-4 transform ${state.toggleNavbar ? 'block' : 'hidden'} transition-transform duration-300 ease-in-out`}>
 
-        <div className=" bg-gray-200 mx-1 p-1 rounded-lg flex justify-center mb-4 ">
+      <div className=" bg-gray-200 mx-1 p-1 rounded-lg flex justify-center mb-4 ">
           <button
             style={tabStyle.all}
             className="px-2  py-1 rounded-md"
@@ -251,80 +290,8 @@ const Sidebar = () => {
 
         <div className="relative lebar-list -left-2 border-slate-500 pt-2 overflow-y-scroll max-h-[50rem]">
           <ul className="cursor-pointer mt-2">
-            {activeTab === 'all' && (
-              <>
-                <hr className="border-gray-300 mb-0" />
-                {renderItems([
-                  { title: 'Program Bimbingan Karir', icon: tiktok, amountSpent: 'Rp. 3.000.000', reach: '220.000', startDate: 'Sep 4, 14:09' },
-                  { title: 'Santri Berwirausaha', icon: google, amountSpent: 'Rp. 2.000.000', reach: '97.000', startDate: 'Mart 1, 12:36' },
-                  { title: 'Program Tahfidz', icon: facebook, amountSpent: 'Rp. 4.000.000', reach: '120.000', startDate: 'Feb 4, 12:36' },
-                  { title: 'Campaign Tahfidz', icon: google, amountSpent: 'Rp. 3.000.000', reach: '250.000', startDate: 'Apr 12, 14:00' },
-                  { title: 'Tahfidz Ramadhan', icon: facebook, amountSpent: 'Rp. 1.000.000', reach: '10.000', startDate: 'Agust 25, 11:19' },
-                  { title: 'Bilingual - 15/10', icon: google, amountSpent: 'Rp. 2.000.000', reach: '100.000', startDate: 'May 21, 14:00' },
-                  { title: 'Peduli Pangan', icon: google, amountSpent: 'Rp. 1.000.000', reach: '97.000', startDate: 'Apr 12, 12:36' },
-                  { title: 'Retarget CA Web Visitor', icon: tiktok, amountSpent: 'Rp. 5.000.000', reach: '100.000', startDate: 'Mei 24, 09:36' },
-                  { title: 'Pesantren Berkualitas', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
-                  { title: 'Menginspirasi Hafidz', icon: facebook, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
-                  { title: 'Pondok Pesantren Inklusif', icon: facebook, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
-                  { title: 'Mengasah Potensi Pemi', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
-                  { title: 'Merajut Masa Depan', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
-                  { title: 'Pondok Pesantren Terdepan', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
-                  { title: 'Menghormati Tradisi', icon: tiktok, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
-                  { title: 'Transformasi Melalui Ilmu', icon: tiktok, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
-                  { title: 'Menyentuh Hati dan Akal', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
-                  { title: 'Generasi Unggul', icon: facebook, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
-                ]).slice(0, itemsToShow)}
-              </>
-            )}
-
-            {activeTab === 'draft' && (
-              <>
-                <hr className="border-gray-300 mb-0" />
-
-                {renderItems([
-
-                  { title: 'Retarget VV 50-95% Tahfidz', icon: google, amountSpent: 'Rp. 2.000.000', reach: '100.000', startDate: 'May 21, 14:00' },
-                  { title: 'Campaign Tahfidz FB IG EN', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
-                  { title: 'Retarget CA Web Visitor Terbaru Update', icon: google, amountSpent: 'Rp. 4.000.000', reach: '97.000', startDate: 'Desc 22, 13:06' },
-                  { title: 'Campaign Tahfidz', icon: facebook, amountSpent: 'Rp. 3.000.000', reach: '250.000', startDate: 'Apr 12, 14:00' },
-                  { title: 'Program Tahfidz', icon: tiktok, amountSpent: 'Rp. 4.000.000', reach: '120.000', startDate: 'Feb 4, 02:12' },
-                  { title: 'Kampung Pesantren Berkah', icon: google, amountSpent: 'Rp. 7.000.000', reach: '120.000', startDate: 'Feb 4, 07:26' },
-                  { title: 'Tahfidz Ramadhan', icon: facebook, amountSpent: 'Rp. 1.000.000', reach: '10.000', startDate: 'Agust 25, 11:19' },
-                  { title: 'Program Bimbingan Karir', icon: tiktok, amountSpent: 'Rp. 3.000.000', reach: '220.000', startDate: 'Sep 4, 14:09' },
-                  { title: 'Santri Berwirausaha', icon: google, amountSpent: 'Rp. 2.000.000', reach: '97.000', startDate: 'Mart 1, 12:36' },
-
-
-                ])}
-              </>
-            )}
-
-            {activeTab === 'active' && (
-              <>
-                <hr className="border-gray-300 mb-0" />
-                {renderItems([
-                  { title: 'Bilingual - 15/10', icon: google, amountSpent: 'Rp. 2.000.000', reach: '100.000', startDate: 'May 21, 14:00' },
-                  { title: 'Campaign Tahfidz FB IG EN', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
-                  { title: 'Retarget CA Web Visitor', icon: google, amountSpent: 'Rp. 4.000.000', reach: '97.000', startDate: 'Apr 12, 12:36' },
-                  { title: 'Campaign Tahfidz', icon: facebook, amountSpent: 'Rp. 3.000.000', reach: '250.000', startDate: 'Apr 12, 14:50' },
-                  { title: 'Program Tahfidz', icon: tiktok, amountSpent: 'Rp. 4.000.000', reach: '120.000', startDate: 'Feb 4, 12:36' },
-
-                ])}
-              </>
-            )}
-            {activeTab === 'completed' && (
-              <>
-                <hr className="border-gray-300 mb-0" />
-                {renderItems([
-                  { title: 'Retarget VV 50-95% Tahfidz', icon: facebook, amountSpent: 'Rp. 2.000.000', reach: '100.000', startDate: 'May 21, 14:00' },
-                  { title: 'Campaign Tahfidz FB IG EN', icon: google, amountSpent: 'Rp. 4.000.000', reach: '200.000', startDate: 'jan 24, 17:55' },
-                  { title: 'Retarget CA Web Visitor', icon: tiktok, amountSpent: 'Rp. 5.000.000', reach: '100.000', startDate: 'Mei 24, 09:36' },
-                  { title: 'Peduli Pangan', icon: google, amountSpent: 'Rp. 1.000.000', reach: '97.000', startDate: 'Apr 12, 12:36' },
-
-                ])}
-              </>
-            )}
+            {renderItems(filteredCampaigns)} {/* Menampilkan data yang sudah difilter */}
           </ul>
-
         </div>
       </div>
 

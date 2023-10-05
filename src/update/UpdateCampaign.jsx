@@ -9,6 +9,7 @@ const UpdateCampaign = () => {
     const [clientList, setClientList] = useState([]);
     const [accountList, setAccountList] = useState([]);
     const [showPassword, setShowPassword] = useState(false);
+    const [activePage, setActivePage] = useState('campaigns');
     const token = localStorage.getItem('jwtToken');
     const [values, setValues] = useState({
         _id: _id,
@@ -86,7 +87,8 @@ const UpdateCampaign = () => {
         e.preventDefault();
         axios.put('https://umax-1-z7228928.deta.app/campaigns/' + _id, values, { headers })
             .then(res => {
-                navigate('/campaigns');
+                navigate('/Campaigns');
+                setActivePage('campaigns');
             })
             .catch(err => console.log(err))
     }

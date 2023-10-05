@@ -10,6 +10,7 @@ const UpdateAccount = () => {
     const [clientList, setClientList] = useState([]);
     const [showPassword, setShowPassword] = useState(false);
     const token = localStorage.getItem('jwtToken');
+    const [activePage, setActivePage] = useState('accounts');
     const [values, setValues] = useState({
         _id: _id,
         name: '',
@@ -64,9 +65,10 @@ const UpdateAccount = () => {
         e.preventDefault();
         axios.put('https://umax-1-z7228928.deta.app/accounts/' + _id, values, { headers })
             .then(res => {
-                navigate('/accounts');
+                navigate('/Accounts');
             })
             .catch(err => console.log(err))
+            setActivePage('accounts');
     }
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -77,7 +79,7 @@ const UpdateAccount = () => {
         <div className="fixed z-50 inset-0 flex items-center justify-center">
             <div className="fixed -z-10 inset-0 bg-black bg-opacity-50"></div>
             <form onSubmit={handleSubmit} className=" bg-white p-5 rounded-lg shadow-lg  max-h-[80vh] overflow-y-auto">
-                <h2 className="text-xl font-semibold mb-4">Account</h2>
+                <h2 className="text-xl font-semibold mb-4">Edit Account</h2>
                 <div className="flex flex-col md:flex-row gap-4 mb-4">
                     <div className="flex flex-col">
                         <label className='pb-2 text-sm ' htmlFor="">Name</label>
