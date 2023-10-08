@@ -31,6 +31,7 @@ function ClientsTable() {
   const [values,setValues] = useState({
       _id:_id,
       name:'',
+
       address:'',
       contact: '',
       status: '',
