@@ -86,23 +86,23 @@ const Sidebar = () => {
 
   const tabStyle = {
     all: {
-      backgroundColor: activeTab === 'all' ? '#ffff' : '#EBECF000',
-      color: activeTab === 'all' ? '#494949' : '#6b7280',
+      backgroundColor: activeTab === 'all' ? '#008FFB' : '#EBECF000',
+      color: activeTab === 'all' ? '#ffff' : '#6b7280',
       circleColor: activeTab === 'all' ? '#000' : '#00FF00',
     },
     draft: {
-      backgroundColor: activeTab === 'draft' ? '#ffff' : '#EBECF000',
-      color: activeTab === 'draft' ? '#494949' : '#6b7280',
+      backgroundColor: activeTab === 'draft' ? '#008FFB' : '#EBECF000',
+      color: activeTab === 'draft' ? '#ffff' : '#6b7280',
       circleColor: activeTab === 'draft' ? '#8F8F8F' : '#8F8F8F',
     },
     active: {
-      backgroundColor: activeTab === 'active' ? '#ffff' : '#EBECF000',
-      color: activeTab === 'active' ? '#494949' : '#6b7280',
+      backgroundColor: activeTab === 'active' ? '#008FFB' : '#EBECF000',
+      color: activeTab === 'active' ? '#ffff' : '#6b7280',
       circleColor: activeTab === 'active' ? '#00FF00' : '#00FF00',
     },
     completed: {
-      backgroundColor: activeTab === 'completed' ? '#ffff' : '#EBECF000',
-      color: activeTab === 'completed' ? '#494949' : '#6b7280',
+      backgroundColor: activeTab === 'completed' ? '#008FFB' : '#EBECF000',
+      color: activeTab === 'completed' ? '#ffff' : '#6b7280',
       circleColor: activeTab === 'completed' ? '#FF8A00' : '#FF8A00',
     },
   };
@@ -205,7 +205,7 @@ const Sidebar = () => {
         <div className=" bg-gray-200 mx-1 p-1 rounded-lg flex justify-center mb-4 ">
           <button
             style={tabStyle.all}
-            className="px-2  py-1 rounded-md"
+            className="px-2 py-1 rounded-md"
             onClick={() => handleTabChange('all')}
           >
             All

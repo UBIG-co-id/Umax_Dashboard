@@ -5,7 +5,7 @@ import { MdDashboard } from 'react-icons/md';
 import { BiSolidMegaphone, BiGroup, BiBell, BiLogOut } from 'react-icons/bi';
 import { AiOutlineUser } from 'react-icons/ai';
 import { CiSettings } from 'react-icons/ci';
-import { logo, profile } from '../assets';
+import { logo, defaultProfile } from '../assets';
 import { FiSun, FiMoon } from 'react-icons/fi';
 import '../styles.css';
 import React from 'react';
@@ -27,12 +27,14 @@ const navigation = [
 const Navbar=() => {
   const navigate=useNavigate();
   const handleSignOut = () => {
-    // Clear the JWT token from local storage
     localStorage.removeItem('jwtToken');
 
-    // Navigate to the sign-in page or any other desired location
     navigate('/login');
   };
+
+  const profilePage = ()=> {
+    navigate('/Profile');
+  }
   let { state, dispatch } = useContext(Context)
   let toggle = () => {
       dispatch({ type: 'SET_TOGGLE_NAVBAR', payload: !state.toggleNavbar })
@@ -237,7 +239,7 @@ const Navbar=() => {
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"
-                        src={profile}
+                        src={defaultProfile}
                         alt="profile"
                       />
                     </Menu.Button>
@@ -264,6 +266,7 @@ const Navbar=() => {
                         {({ active }) => (
                           <a
                             href="#"
+                            onClick={profilePage}
                             className={classNames(active ? 'bg-gray-100' : '', 'flex items-center px-4 py-2 text-sm text-gray-700  ')}
                           >
                            < AiOutlineUser className="mr-2"/> Profile

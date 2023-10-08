@@ -10,12 +10,11 @@ import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import { useReactToPrint } from 'react-to-print';
 import "../styles.css";
-import Select from 'react-select';
 import 'react-tabs/style/react-tabs.css';
 import { useFormik } from 'formik';
 import { Link, useNavigate, useParams, } from 'react-router-dom';
 import axios from 'axios';
-import styled from "@emotion/styled";
+import Swal from 'sweetalert2';
 
 
 function DataTable() {
@@ -77,30 +76,51 @@ function DataTable() {
 
 // Make a DELETE request to the FastAPI endpoint
 const handleDelete = async (_id) => {
-  try {
-    const token = localStorage.getItem('jwtToken');
-    const response = await axios.delete(
-      `https://umax-1-z7228928.deta.app/campaigns/${_id}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+  Swal.fire({
+    title: 'Anda Yakin?',
+    text: 'Anda tidak akan dapat memulihkan data ini!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Ya, Hapus!',
+    cancelButtonText: 'Batal',
+    customClass: {
+      confirmButton: 'custom-confirm-button-class',
+      cancelButton: 'custom-cancel-button-class',
+    },
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        const token = localStorage.getItem('jwtToken');
+        const response = await axios.delete(
+          `https://umax-1-z7228928.deta.app/campaigns/${_id}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
 
-    if (response.status === 200) {
-      // Client deleted successfully, you can update your UI or perform any necessary actions.
-      fetchData(); // Assuming fetchData is a function to refresh the client list.
-    } else {
-      // Handle error if necessary
-      console.error('Error deleting Campaign:', response.data);
+        if (response.status === 200) {
+          fetchData();
+          Swal.fire({
+            title: 'Berhasil!',
+            text: 'Data Anda telah dihapus.',
+            icon: 'success',
+            customClass: {
+              confirmButton: 'custom-ok-button-class',
+            },
+          });
+        } else {
+          Swal.fire('Error', 'An error occurred while deleting the data.', 'error');
+        }
+      } catch (error) {
+        Swal.fire('Error', 'An error occurred while deleting the data.', 'error');
+      }
     }
-  } catch (error) {
-    // Handle any network or other errors
-    console.error('Error deleting Campaign:', error);
-  }
+  });
 };
+
 // END DELETE 
 // END GET DATA CLIENT
   //ambil data
@@ -212,30 +232,30 @@ const handleDelete = async (_id) => {
     switch (status) {
       case 1:
         statusStyle = {
-          backgroundColor: '#C5FFC5', 
           color: '#00CA00', 
           padding: '2px',
           borderRadius: '7px',
+          fontWeight: '500', 
         };
         return (
           <span style={statusStyle}>Active</span>
         );
       case 2:
         statusStyle = {
-          backgroundColor: '#C5FFC5', 
-          color: '#00CA00', 
+          color: '#8F8F8F', 
           padding: '2px',
           borderRadius: '7px',
+          fontWeight: '500', 
         };
         return (
           <span style={statusStyle}>Draft</span>
         );
       case 3:
         statusStyle = {
-          backgroundColor: '#C5FFC5', 
-          color: '#00CA00', 
+          color: '#FF8A00', 
           padding: '2px',
           borderRadius: '7px',
+          fontWeight: '500', 
         };
         return (
           <span style={statusStyle}>Completed</span>

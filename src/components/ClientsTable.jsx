@@ -9,10 +9,10 @@ import { CiSearch } from 'react-icons/ci';
 import { AiOutlineEdit, AiOutlineFilePdf } from 'react-icons/ai';
 import { RiFileExcel2Line } from 'react-icons/ri';
 import { useDownloadExcel } from "react-export-table-to-excel";
-import { useReactToPrint } from 'react-to-print';
 import '../styles.css';
 import axios from 'axios';
 import { useFormik } from 'formik';
+import Swal from 'sweetalert2';
 
 
 
@@ -24,7 +24,7 @@ function ClientsTable() {
   const [showAddPopup, setShowAddPopup] = useState(false);
   const navigate = useNavigate();
   const [selectedStatus, setSelectedStatus] = useState("");
-  
+
 
   const {_id} =useParams();
   const token = localStorage.getItem('jwtToken');
@@ -49,30 +49,51 @@ function ClientsTable() {
   // DELETE
   // Make a DELETE request to the FastAPI endpoint
   const handleDelete = async (_id) => {
-    try {
-      const token = localStorage.getItem('jwtToken');
-      const response = await axios.delete(
-        `https://umax-1-z7228928.deta.app/clients/${_id}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
+    Swal.fire({
+      title: 'Anda Yakin?',
+      text: 'Anda tidak akan dapat memulihkan data ini!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Ya, Hapus!',
+      cancelButtonText: 'Batal',
+      customClass: {
+        confirmButton: 'custom-confirm-button-class',
+        cancelButton: 'custom-cancel-button-class',
+      },
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const token = localStorage.getItem('jwtToken');
+          const response = await axios.delete(
+            `https://umax-1-z7228928.deta.app/clients/${_id}`,
+            {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+  
+          if (response.status === 200) {
+            fetchData();
+            Swal.fire({
+              title: 'Berhasil!',
+              text: 'Data Anda telah dihapus.',
+              icon: 'success',
+              customClass: {
+                confirmButton: 'custom-ok-button-class',
+              },
+            });
+          } else {
+            Swal.fire('Error', 'An error occurred while deleting the data.', 'error');
+          }
+        } catch (error) {
+          Swal.fire('Error', 'An error occurred while deleting the data.', 'error');
         }
-      );
-
-      if (response.status === 200) {
-        // Client deleted successfully, you can update your UI or perform any necessary actions.
-        fetchData(); // Assuming fetchData is a function to refresh the client list.
-      } else {
-        // Handle error if necessary
-        console.error('Error deleting client:', response.data);
       }
-    } catch (error) {
-      // Handle any network or other errors
-      console.error('Error deleting client:', error);
-    }
+    });
   };
+  
   // END DELETE
 
   // ADD DATA
@@ -184,11 +205,39 @@ function ClientsTable() {
 
 
   const getStatusString = (status) => {
+    let statusStyle = {}; // Objek gaya status
+
     switch (status) {
       case 1:
-        return "Active";
+        statusStyle = {
+          color: '#00CA00', 
+          padding: '2px',
+          borderRadius: '7px',
+          fontWeight: '500', 
+        };
+        return (
+          <span style={statusStyle}>Active</span>
+        );
       case 2:
-        return "Deactive";
+        statusStyle = {
+          color: '#8F8F8F', 
+          padding: '2px',
+          borderRadius: '7px',
+          fontWeight: '500', 
+        };
+        return (
+          <span style={statusStyle}>Draft</span>
+        );
+      case 3:
+        statusStyle = {
+          color: '#FF8A00', 
+          padding: '2px',
+          borderRadius: '7px',
+          fontWeight: '500', 
+        };
+        return (
+          <span style={statusStyle}>Completed</span>
+        );
       default:
         return "Unknown";
     }

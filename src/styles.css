@@ -1,7 +1,13 @@
+.custom-confirm-button-class {
+    background-color: #DC2626 !important;
+  }
+  .custom-ok-button-class {
+    background-color: #00FF00 !important; 
+  }
+
 .lebarcard{
   with: 88%;
 }
-
 
 /* CSS untuk header "Action" */
 .action-column {

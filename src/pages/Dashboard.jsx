@@ -79,7 +79,7 @@ const Dashboard = () => {
     },
     {
       title: "Impression",
-      value: 230000,
+      value: 230000,  
       chart: [
         { name: "Day1", value: 10 },
         { name: "Day2", value: 15 },
