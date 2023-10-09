@@ -1,12 +1,10 @@
 import React, { useContext, useState, useRef, useEffect } from 'react';
 import '../styles.css';
-import { google, facebook, tiktok } from "../assets";
+import { google, meta, tiktok } from "../assets";
 import { BiSearch } from 'react-icons/bi';
 import { Context } from '../context';
 
-
-
-const Sidebar = ({updateSelectedName}) => {
+const Sidebar = ({ updateSelectedName }) => {
   const [activeTab, setActiveTab] = useState('all');
   const [searchText, setSearchText] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -74,7 +72,7 @@ const Sidebar = ({updateSelectedName}) => {
     const container = document.querySelector('.lebar-list');
     if (container) {
       if (container.scrollTop + container.clientHeight >= container.scrollHeight) {
-        setItemsToShow(itemsToShow + 10); 
+        setItemsToShow(itemsToShow + 10);
       }
     }
   };
@@ -95,14 +93,14 @@ const Sidebar = ({updateSelectedName}) => {
   const handleItemClick = (itemName) => {
     // Temukan kampanye yang sesuai dengan nama yang diklik
     const selectedCampaign = campaigns.find((campaign) => campaign.name === itemName);
-  
+
     if (selectedCampaign) {
       setActiveItem(itemName);
       updateSelectedName(itemName);
       setSelectedData(selectedCampaign);
     }
   };
-  
+
 
   // menyimpan warna array
   const customCircleColors = ['#8F8F8F', '#00FF00', '#00FF00', '#FF8A00', '#FF8A00'];
@@ -158,14 +156,14 @@ const Sidebar = ({updateSelectedName}) => {
 
   const renderItems = (items) => {
     const filtered = filteredItems(items);
-  
+
     if (filtered.length === 0) {
       return <li className="mb-6 text-center ">Tidak ada hasil</li>
     }
-  
+
     return filtered.slice(0, itemsToShow).map((item, index) => {
       let circleColor;
-  
+
       // Tambahkan pemeriksaan status item dan atur warna lingkaran sesuai dengan status
       if (item.status === 1) { // Status 'active'
         circleColor = '#00FF00'; // Hijau
@@ -176,12 +174,11 @@ const Sidebar = ({updateSelectedName}) => {
       } else {
         circleColor = '#8F8F8F'; // Default: Abu-abu
       }
-  
+
       const isItemActive = activeItem === item.name; // Menggunakan 'name' alih-alih 'title'
-      const listItemClasses = `flex flex-col h-20 mb-0 -ml-2 ${
-        isItemActive ? 'bg-blue-200 ' : ''
-      } ${!isItemActive ? nonActiveHoverClass : ''}`;
-  
+      const listItemClasses = `flex flex-col h-24 mb-0 -ml-2 ${isItemActive ? 'bg-blue-200 ' : ''
+        } ${!isItemActive ? nonActiveHoverClass : ''}`;
+
       return (
         <li
           key={index}
@@ -194,7 +191,20 @@ const Sidebar = ({updateSelectedName}) => {
           />
           <div className="relative mt-2 pl-3 flex items-center w-20">
             <div className="flex items-center">
-              <img src={item.icon} alt="icon" className="w-6 mr-2" />
+              <img
+                src={
+                  item.platform === 1
+                    ? meta // Import meta from assets when platform is 1
+                    : item.platform === 2
+                      ? google // Import google from assets when platform is 2
+                      : item.platform === 3
+                        ? tiktok // Import tiktok from assets when platform is 3
+                        : '' // Default value if platform doesn't match 1, 2, or 3
+                }
+                alt="icon"
+                className="w-6 mr-2"
+              />
+
               <span
                 className={`truncate w-52 ${activeItem === item.name ? 'text-black' : ''
                   }`}
@@ -210,7 +220,7 @@ const Sidebar = ({updateSelectedName}) => {
               ></span>
             </div>
           </div>
-  
+
           <div className="aside__container-list_information mt-1">
             <div>
               <p >Amount Spent</p>
@@ -241,7 +251,7 @@ const Sidebar = ({updateSelectedName}) => {
       </button>
       <div className={`relative bayangan max-w-70 top-5 -left-1  w-72 max-h-full bg-white  rounded-t-xl  max-sm:left-0 text-slate-700 p-4 transform ${state.toggleNavbar ? 'block' : 'hidden'} transition-transform duration-300 ease-in-out`}>
 
-      <div className=" bg-gray-200 mx-1 p-1 rounded-lg flex justify-center mb-4 ">
+        <div className=" bg-gray-200 mx-1 p-1 rounded-lg flex justify-center mb-4 ">
           <button
             style={tabStyle.all}
             className="px-2  py-1 rounded-md"
@@ -288,8 +298,8 @@ const Sidebar = ({updateSelectedName}) => {
         </div>
 
 
-        <div className="relative lebar-list -left-2 border-slate-500 pt-2 overflow-y-scroll max-h-[50rem]">
-          <ul className="cursor-pointer mt-2">
+        <div className="relative lebar-list -left-2 border-slate-500 pt-2  overflow-y-scroll max-h-[50rem]">
+          <ul className="cursor-pointer mt-2 ">
             {renderItems(filteredCampaigns)} {/* Menampilkan data yang sudah difilter */}
           </ul>
         </div>

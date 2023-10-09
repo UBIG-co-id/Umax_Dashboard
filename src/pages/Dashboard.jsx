@@ -1,4 +1,4 @@
-import React,  { useState, useEffect  }  from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import ContainerCard from '../components/ContainerCard';
@@ -12,25 +12,25 @@ import History from '../components/History';
 import { FiAlertTriangle } from 'react-icons/fi';
 import { AiOutlineInfoCircle } from 'react-icons/ai';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
-import { google} from "../assets";
+import { google, meta, tiktok } from "../assets";
 import '../styles.css';
-import {setActiveItem, updateSelectedName} from '../components/Sidebar'
+import { setActiveItem, updateSelectedName } from '../components/Sidebar'
 
 import axios from 'axios';
 
 
 
 const Dashboard = () => {
-  
+
   const [metricsData, setMetricsData] = useState([]);
-  const [activeTab, setActiveTab] = useState('performance'); 
+  const [activeTab, setActiveTab] = useState('performance');
   const [campaigns, setCampaigns] = useState([]);
   const [selectedCampaignId, setSelectedCampaignId] = useState(null);
   const [activeItem, setActiveItem] = useState(null);
   const [selectedData, setSelectedData] = useState(null);
   const [selectedName, setSelectedName] = useState('');
 
-  
+
   const handleItemClick = (itemName) => {
     console.log(itemName)
     // Temukan kampanye yang sesuai dengan nama yang diklik
@@ -42,7 +42,7 @@ const Dashboard = () => {
       setSelectedData(selectedCampaign);
     }
   };
-  
+
   const updateSelectedName = (item) => {
     setSelectedName(item);
     console.log("Selected Name:", item);
@@ -68,36 +68,36 @@ const Dashboard = () => {
       console.error('Terjadi kesalahan:', error);
     }
   };
-  
+
   useEffect(() => {
     fetchCampaignData();
   }, []);
 
-  
+
   useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const token = localStorage.getItem('jwtToken');
-      const response = await axios.get('https://umax-1-z7228928.deta.app/metrics/', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('jwtToken');
+        const response = await axios.get('https://umax-1-z7228928.deta.app/metrics/', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
 
-      if (response.status === 200) {
-        const data = response.data;
-        setMetricsData(data);
-      } else {
-        console.error('Failed to fetch data from API');
+        if (response.status === 200) {
+          const data = response.data;
+          setMetricsData(data);
+        } else {
+          console.error('Failed to fetch data from API');
+        }
+      } catch (error) {
+        console.error('An error occurred', error);
       }
-    } catch (error) {
-      console.error('An error occurred', error);
-    }
-  };
+    };
 
-  fetchData();
-}, []);
+    fetchData();
+  }, []);
 
 
 
@@ -119,14 +119,15 @@ const Dashboard = () => {
     setActiveTab(tab);
   };
 
- 
-  
-//Data Baru
+
+
+  //Data Baru
   //Backend tinggal ikutin ini aja
+
   const metrixDatas = [
     {
       title: "Amount Spent",
-      value: 4000000,
+      value: selectedData ? selectedData.amountspent : null,
       chart: [
         { name: "Day1", value: 5 },
         { name: "Day2", value: 10 },
@@ -143,7 +144,7 @@ const Dashboard = () => {
     },
     {
       title: "Reach",
-      value: 97000,
+      value: selectedData ? selectedData.reach : null,
       chart: [
         { name: "Day1", value: 10 },
         { name: "Day2", value: 15 },
@@ -160,7 +161,7 @@ const Dashboard = () => {
     },
     {
       title: "Impression",
-      value: 230000,
+      value: selectedData ? selectedData.impressions : null,
       chart: [
         { name: "Day1", value: 10 },
         { name: "Day2", value: 15 },
@@ -177,7 +178,7 @@ const Dashboard = () => {
     },
     {
       title: "Frequency",
-      value: 2.3,
+      value: selectedData ? selectedData.frequency : null,
       chart: [
         { name: "Day1", value: 10 },
         { name: "Day2", value: 15 },
@@ -194,7 +195,7 @@ const Dashboard = () => {
     },
     {
       title: "Reach Amount Ratio",
-      value: 6.1,
+      value: selectedData ? selectedData.rar : null,
       chart: [
         { name: "Day1", value: 10 },
         { name: "Day2", value: 15 },
@@ -211,7 +212,7 @@ const Dashboard = () => {
     },
     {
       title: "Cost Per Click",
-      value: 2000,
+      value: selectedData ? selectedData.cpc : null,
       chart: [
         { name: "Day1", value: 10 },
         { name: "Day2", value: 15 },
@@ -228,7 +229,7 @@ const Dashboard = () => {
     },
     {
       title: "Click Through Rate",
-      value: 1.0,
+      value: selectedData ? selectedData.ctr : null,
       chart: [
         { name: "Day1", value: 10 },
         { name: "Day2", value: 15 },
@@ -245,7 +246,7 @@ const Dashboard = () => {
     },
     {
       title: "Outbont Click Landing Page",
-      value: 30,
+      value: selectedData ? selectedData.oclp : null,
       chart: [
         { name: "Day1", value: 10 },
         { name: "Day2", value: 15 },
@@ -262,7 +263,7 @@ const Dashboard = () => {
     },
     {
       title: "Cost per Result",
-      value: 5000,
+      value: selectedData ? selectedData.cpr : null,
       chart: [
         { name: "Day1", value: 10 },
         { name: "Day2", value: 15 },
@@ -279,7 +280,7 @@ const Dashboard = () => {
     },
     {
       title: "Add to Cart",
-      value: 2.5,
+      value: selectedData ? selectedData.atc : null,
       chart: [
         { name: "Day1", value: 10 },
         { name: "Day2", value: 15 },
@@ -296,7 +297,7 @@ const Dashboard = () => {
     },
     {
       title: "Return on ADD Spent",
-      value: 3.1,
+      value: selectedData ? selectedData.roas : null,
       chart: [
         { name: "Day1", value: 10 },
         { name: "Day2", value: 15 },
@@ -313,7 +314,7 @@ const Dashboard = () => {
     },
     {
       title: "Real ROAS",
-      value: 3.0,
+      value: selectedData ? selectedData.realroas : null,
       chart: [
         { name: "Day1", value: 10 },
         { name: "Day2", value: 15 },
@@ -358,18 +359,18 @@ const Dashboard = () => {
   //format value metrix
   const formatValueMetrix = (metrixData) => {
     const formatMap = {
-      "Amount Spent": rupiah,
-      "Cost per Click": rupiah,
-      "Cost per Result": rupiah,
+      "Amount Spent": (value) => `${formattedNumber(value)}`,
+      "Cost per Click": (value) => `${formattedNumber(value)}`,
+      "Cost per Result": (value) => `${formattedNumber(value)}`,
       "Reach": (value) => `${formattedNumber(value)} `,
       "Impression": (value) => `${formattedNumber(value)} `,
       "Frequency": (value) => `${formattedKoma1(value)}`,
-      "Return on ADD Spent": (value) => `${formattedKoma1(value)}x`,
-      "Real ROAS": (value) => `${formattedKoma1(value)}x`,
-      "Reach Amount Ratio": (value) => `${formattedKoma1(value)} %`,
-      "Outbont Click Landing Page": (value) => `${formattedKoma1(value)} %`,
-      "Click Through Rate": (value) => `${formattedKoma1(value)} %`,
-      "Add to Cart": (value) => `${formattedKoma1(value)} %`,
+      "Return on ADD Spent": (value) => `${formattedKoma1(value)}`,
+      "Real ROAS": (value) => `${formattedKoma1(value)}`,
+      "Reach Amount Ratio": (value) => `${formattedKoma1(value)} `,
+      "Outbont Click Landing Page": (value) => `${formattedKoma1(value)} `,
+      "Click Through Rate": (value) => `${formattedKoma1(value)} `,
+      "Add to Cart": (value) => `${formattedKoma1(value)} `,
     };
 
     const formatFunction = formatMap[metrixData.title];
@@ -487,90 +488,90 @@ const Dashboard = () => {
           <div >
             {/* bagian filter */}
             <div className='flex justify-end'>
-                <div className='flex gap-5 items-center'>
-                  <div className='flex gap-2 text-gray-500'>
-                    <BiRefresh size={25} />
-                    Feb 4, 20:12
+              <div className='flex gap-5 items-center'>
+                <div className='flex gap-2 text-gray-500'>
+                  <BiRefresh size={25} />
+                  Feb 4, 20:12
+                </div>
+                <select name="" id="" className='focus:outline-none p-2 px-5 border border-gray-300 text-gray-500 rounded-md'>
+                  <option value="">Last Week</option>
+                  <option value="">Last Month</option>
+                  <option value="">Last Year</option>
+                </select>
+              </div>
+            </div>
+            {/* end */}
+
+            {/* bagian content */}
+            <div>
+              <div className='flex flex-col md:flex-row mt-5 md:gap-5'>
+                {/* Card Info */}
+
+                {selectedData && (
+                  <div className="md:w-8/12 w-full flex flex-col h-full gap-5">
+                    <CardInfo
+                      title="Amount Spent"
+                      value={selectedData.amountspent}
+                      color="text-sky-500"
+                      popupContent="Jumlah total biaya yang kita keluarkan untuk pemasangan iklan"
+                    />
+                    <CardInfo
+                      title="Reach Amount Ratio"
+                      value={selectedData.rar}
+                      color="text-yellow-500"
+                      popupContent="Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut"
+                    />
+                    <CardInfo
+                      title='Click Through Rate'
+                      value={selectedData.ctr}
+                      color='text-green-500'
+                      popupContent='Rasio jumlah klik pada iklan kita dibandingkan dengan jumlah iklan ditayangkan'
+                    />
+                    <CardInfo
+                      title='OCLP'
+                      value={selectedData.oclp}
+                      popupContent='Mendorong pengunjung untuk mengklik tautan atau tombol yang mengarahkan mereka ke halaman atau situs web eksternal yang relevan'
+                    />
                   </div>
-                  <select name="" id="" className='focus:outline-none p-2 px-5 border border-gray-300 text-gray-500 rounded-md'>
-                    <option value="">Last Week</option>
-                    <option value="">Last Month</option>
-                    <option value="">Last Year</option>
-                  </select>
+                )}
+
+                {/* Chart */}
+                <div className='w-full md:w-full flex flex-col gap-5 justify-between'>
+                  <Chart />
+
+
+                  {selectedData && (
+                    <div className="flex flex-col md:flex-row gap-5 -mt-4">
+                      <CardInfo
+                        title='CPR'
+                        value={selectedData.cpr}
+                        popupContent=' Perhitungan biaya yang kita keluarkan untuk setiap hasil yang kita dapatkan'
+                      />
+                      <CardInfo
+                        title='ATC'
+                        value={selectedData.atc}
+                        popupContent=' Menambahkan produk atau barang ke dalam keranjang belanja saat berbelanja secara online di situs web e-commerce atau toko online'
+                      />
+                      <CardInfo
+                        title='ROAS'
+                        value={selectedData.roas}
+                        popupContent='Mengukur seberapa banyak pendapatan atau hasil yang dihasilkan dari setiap unit pengeluaran iklan'
+                      />
+                      <CardInfo
+                        title='Real ROAS'
+                        value={selectedData.realroas}
+                        popupContent='Mengukur banyak pendapatan asli yang di hasilkan tiap pengeluaran iklan'
+                      />
+                    </div>
+                  )}
+
                 </div>
               </div>
-              {/* end */}
-
-              {/* bagian content */}
-              <div>
-        <div className='flex flex-col md:flex-row mt-5 md:gap-5'>
-          {/* Card Info */}
-         
-          {selectedData && (
-        <div className="md:w-8/12 w-full flex flex-col h-full gap-5">
-          <CardInfo
-            title="Amount Spent"
-            value={selectedData.amountspent}
-            color="text-sky-500"
-            popupContent="Jumlah total biaya yang kita keluarkan untuk pemasangan iklan"
-          />
-          <CardInfo 
-           title= "Reach Amount Ratio"
-           value= {selectedData.reach}
-           color= "text-yellow-500"
-           popupContent= "Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut" 
-           />
-          <CardInfo 
-            title= 'Click Through Rate'
-            value= {selectedData.ctr}
-            color= 'text-green-500'
-            popupContent= 'Rasio jumlah klik pada iklan kita dibandingkan dengan jumlah iklan ditayangkan' 
-           />
-          <CardInfo 
-            title= 'OCLP'
-            value= {selectedData.oclp}
-            popupContent= 'Mendorong pengunjung untuk mengklik tautan atau tombol yang mengarahkan mereka ke halaman atau situs web eksternal yang relevan' 
-           />
-        </div>
-      )}
-          
-          {/* Chart */}
-          <div className='w-full md:w-full flex flex-col gap-5 justify-between'>
-            <Chart />
-            
-            
-          {selectedData && (
-        <div className="flex flex-col md:flex-row gap-5 -mt-4">
-          <CardInfo
-            title= 'CPR'
-            value= {selectedData.cpr}
-            popupContent= ' Perhitungan biaya yang kita keluarkan untuk setiap hasil yang kita dapatkan' 
-          />
-          <CardInfo 
-           title= 'ATC'
-           value= {selectedData.atc}
-           popupContent= ' Menambahkan produk atau barang ke dalam keranjang belanja saat berbelanja secara online di situs web e-commerce atau toko online' 
-           />
-          <CardInfo 
-            title= 'ROAS'
-            value= {selectedData.roas}
-            popupContent= 'Mengukur seberapa banyak pendapatan atau hasil yang dihasilkan dari setiap unit pengeluaran iklan' 
-           />
-          <CardInfo 
-           title= 'Real ROAS'
-           value= {selectedData.realroas}
-           popupContent= 'Mengukur banyak pendapatan asli yang di hasilkan tiap pengeluaran iklan' 
-           />
-        </div>
-      )}
-            
-          </div>
-        </div>
-      </div>
-              {/* end */}
+            </div>
+            {/* end */}
 
 
-                {/* bagian sugesti */}
+            {/* bagian sugesti */}
             <div>
               <div className='relative top-5 border-t-2 border-gray-600 p-5 px-10 pb-5'>
                 <h1 className='text-xl font-bold text-gray-700'>Suggestion</h1>
@@ -587,9 +588,9 @@ const Dashboard = () => {
                         </div>
                       </div>
                       <a href="https://chat.openai.com/share/3bb35f6a-4b3b-4182-b6f9-c880722b3c72" target="_blank" rel="noopener noreferrer">
-                      <div className='mt-2 hover:underline  text-end text-sm'>
-                        learn more
-                      </div>
+                        <div className='mt-2 hover:underline  text-end text-sm'>
+                          learn more
+                        </div>
                       </a>
                     </div>
                   </Card>
@@ -605,9 +606,9 @@ const Dashboard = () => {
                         </div>
                       </div>
                       <a href="https://chat.openai.com/share/cb290ced-08a9-4153-93dc-470a1e0fd126" target="_blank" rel="noopener noreferrer">
-                      <div className='mt-2 hover:underline  text-end text-sm'>
-                        learn more
-                      </div>
+                        <div className='mt-2 hover:underline  text-end text-sm'>
+                          learn more
+                        </div>
                       </a>
                     </div>
                   </Card>
@@ -633,28 +634,28 @@ const Dashboard = () => {
 
             {/* bagian content */}
             <div className="flex flex-wrap justify-center gap-4 px-2 md:gap-8 max-sm:flex-col">
-              {metrixDatas.map((metrixData, index) => (
-                <Metrics
-                  key={index}
-                  title={metrixData.title}
-                  value={formatValueMetrix(metrixData)}
-                  chartData={metrixData.chart}
-                  icon={<AiOutlineInfoCircle size={20} />}
-                  persen={`${formattedKoma1(metrixData.persen)}%`}
-                  description={formatDescMetrix(metrixData)}
-                  persenTextColor={
-                    metrixData.persen < 0 ? "#D40B0B" : "#656F84"
-                  }
-                  spanBackgroundColor={
-                    metrixData.persen < 0 ? "#FF6D6D" : "#1CD14F"
-                  }
-                  descModal={metrixData.descModal}
-                />
-              ))}
+              {selectedData ? (
+                metrixDatas.map((metrixData, index) => (
+                  <Metrics
+                    key={index}
+                    title={metrixData.title}
+                    value={formatValueMetrix(metrixData)}
+                    chartData={metrixData.chart}
+                    icon={<AiOutlineInfoCircle size={20} />}
+                    persen={`${formattedKoma1(metrixData.persen)}%`}
+                    description={formatDescMetrix(metrixData)}
+                    persenTextColor={metrixData.persen < 0 ? "#D40B0B" : "#656F84"}
+                    spanBackgroundColor={metrixData.persen < 0 ? "#FF6D6D" : "#1CD14F"}
+                    descModal={metrixData.descModal}
+                  />
+                ))
+              ) : (
+                <div>Loading...</div> // You can provide a loading indicator here
+              )}
             </div>
-
-            </div>
+          </div>
         );
+
       case 'history':
         return (
           <div>
@@ -665,10 +666,10 @@ const Dashboard = () => {
         );
       case 'setting':
         return (
-         
-          
-  <Setting />
- 
+
+
+          <Setting />
+
         );
       default:
         return null;
@@ -682,66 +683,77 @@ const Dashboard = () => {
     <main className='bg-slate-100 min-h-screen ' >
       <div>
         <Navbar />
-        </div>
-        <div className='flex gap-5  px-5'>
+      </div>
+      <div className='flex gap-5  px-5'>
         <Sidebar state={state} toggleSidebar={toggleSidebar} updateSelectedName={handleItemClick} />
-          
-          <ContainerCard >
-            
-            {/* Header */}
-            <div className='border-b-2  border-gray-600'>
-              <div className='flex p-4 ml-3 pb-1 items-center'>
-               <img src={google} alt="google" width={50} />
-                <h1 className='text-2xl pl-3 font-bold text-gray-700'> {selectedName ? selectedName : 'campaign'}</h1>
-              </div> 
+
+        <ContainerCard >
+
+          {/* Header */}
+          <div className='border-b-2  border-gray-600'>
+            <div className='flex p-4 ml-3 pb-1 items-center'>
+              {selectedData && (
+                <img src={
+                  selectedData.platform === 1
+                    ? meta // Import meta from assets when platform is 1
+                    : selectedData.platform === 2
+                      ? google // Import google from assets when platform is 2
+                      : selectedData.platform === 3
+                        ? tiktok // Import tiktok from assets when platform is 3
+                        : '' // Default value if platform doesn't match 1, 2, or 3
+                } alt="icon" width={30} />
+              )
+              }
+              <h1 className='text-2xl pl-3 font-bold text-gray-700'> {selectedName ? selectedName : ''}</h1>
+            </div>
 
 
-                  <div className="flex justify-center">
-                  <ul className=" flex -mb-1 flex-wrap  sm:flex-row">
-                  <li
+            <div className="flex justify-center">
+              <ul className=" flex -mb-1 flex-wrap  sm:flex-row">
+                <li
                   className={`p-3 px-5 ${activeTab === 'performance' ? 'atas text-sky-500 cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
-                  }`}
+                    }`}
                   onClick={() => handleTabClick('performance')}
-                  >
+                >
                   Performance
-                  </li>
-                  <li
+                </li>
+                <li
                   className={`p-3 px-5 ${activeTab === 'metrics' ? 'text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
-                  }`}
+                    }`}
                   onClick={() => handleTabClick('metrics')}
-                  >
+                >
                   Metrics
-                  </li>
-                  <li
+                </li>
+                <li
                   className={`p-3 px-5 ${activeTab === 'history' ? 'text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
-                  }`}
+                    }`}
                   onClick={() => handleTabClick('history')}
-                  >
+                >
                   History
-                  </li>
-                  <li
+                </li>
+                <li
                   className={`p-3 px-5 ${activeTab === 'setting' ? 'text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
-                  }`}
+                    }`}
                   onClick={() => handleTabClick('setting')}
-                  >
+                >
                   Setting
-                  </li>
-                  </ul>
-                  </div>
-
+                </li>
+              </ul>
             </div>
-                {/* Body */}
-            <div className='px-5 py-5 flex flex-col '>
-             
-                    {/* pemanggil */}
-              {renderContent()}
-            </div>
-          
 
-          </ContainerCard>
-        </div>
-      
-      
+          </div>
+          {/* Body */}
+          <div className='px-5 py-5 flex flex-col '>
+
+            {/* pemanggil */}
+            {renderContent()}
+          </div>
+
+
+        </ContainerCard>
+      </div>
+
+
     </main>
   );
 
