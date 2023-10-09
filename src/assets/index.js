@@ -6,8 +6,10 @@ import facebook from "../assets/facebook.svg";
 import tiktok from "../assets/tiktok.svg";
 import silang from "../assets/silang.svg";
 import meta from "../assets/meta.svg"
-
+import overlay2 from "../assets/overlay2.svg"; 
+import security from "../assets/security.svg"; 
+import security2 from "../assets/security2.svg";
 
 export {
-  logo, profile, tiktok, google, facebook, silang, meta,
+  logo, profile, tiktok, google, facebook, silang, meta, defaultProfile, security, security2
 }
