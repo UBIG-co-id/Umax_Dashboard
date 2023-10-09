@@ -110,7 +110,6 @@ function ClientsTable() {
 
     onSubmit: (values) => {
       const token = localStorage.getItem('jwtToken');
-      // Send a POST request to your FastAPI backend with form data
       fetch('https://umax-1-z7228928.deta.app/clients', {
         method: 'POST',
         headers: {

@@ -11,6 +11,7 @@ import '../styles.css';
 import React from 'react';
 import { useNavigate,useLocation, Link } from 'react-router-dom';
 import {Context} from '../context'
+import Axios from 'axios';
 
 
 function classNames(...classes) {
@@ -66,6 +67,46 @@ const Navbar=() => {
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
   };
+
+  // ambil data gambar dan nama
+  const [profileData, setProfileData] = useState({
+    name: "Your Name", 
+    image: defaultProfile, 
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('jwtToken');
+        const apiUrl = 'https://umax-1-z7228928.deta.app/profiluser/65227163017382b905f8b1dd';
+
+        const response = await Axios.get(apiUrl, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        console.log(response.data)
+
+        setProfileData({
+          name: response.data.name,
+          image: response.data.image,
+        });
+      } catch (error) {
+        if (error.response) {
+          console.error('Server error:', error.response.data);
+        } else if (error.request) {
+          console.error('No response from the server:', error.request);
+        } else {
+          console.error('Error:', error.message);
+        }
+      }
+    };
+
+    fetchData();
+  }, []);
+
 
   return (
     <Disclosure as="nav" className="bg-white shadow-md">
@@ -237,11 +278,13 @@ const Navbar=() => {
                     <Menu.Button className="relative flex rounded-full  text-sm">
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">Open user menu</span>
+                      <div className='rounded-full  border-black/10 bg-black/10 p-1'>
                       <img
-                        className="h-8 w-8 rounded-full"
-                        src={defaultProfile}
+                        className="h-8 w-8 object-cover rounded-full"
+                        src={`data:image/jpeg;base64,${profileData.image}`}
                         alt="profile"
                       />
+                      </div>
                     </Menu.Button>
                   </div>
                   <Transition
@@ -259,7 +302,7 @@ const Navbar=() => {
                             href="#"
                             className={classNames('bg-slate-500 rounded-t-md block px-4 py-2 text-sm text-white')}
                           >
-                            Hello,Rizky
+                            Hallo, {profileData.name}
                           </a>
                       </Menu.Item>  
                       <Menu.Item>

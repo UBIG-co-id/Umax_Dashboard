@@ -25,15 +25,15 @@ export default function CheckoutForm() {
 
 
   const [profileData, setProfileData] = useState({
-    name: "Your Name", 
-    photo: defaultProfile, 
+    name: "‎", 
+    image: defaultProfile, 
   });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const token = localStorage.getItem('jwtToken');
         const apiUrl = 'https://umax-1-z7228928.deta.app/profiluser/65227163017382b905f8b1dd';
-        const token = 'jwtToken';
 
         const response = await Axios.get(apiUrl, {
           headers: {
@@ -42,10 +42,11 @@ export default function CheckoutForm() {
           },
         });
 
-        const { nama, foto } = response.data;
+        console.log(response.data)
+
         setProfileData({
-          name: nama,
-          photo: foto,
+          name: response.data.name,
+          image: response.data.image,
         });
       } catch (error) {
         if (error.response) {
@@ -81,7 +82,7 @@ export default function CheckoutForm() {
         <div className="relative top-4 mt-5 flex">
         <div className="mb-1 rounded-full border border-white/10 bg-white/10 p-2 text-white">
           {/* gambar */}
-          <img src={profileData.photo} className="h-24 rounded-full max-sm:h-16"/>
+          <img src={`data:image/jpeg;base64,${profileData.image}`} alt="Foto" className="h-24 w-24 object-cover rounded-full max-sm:h-16 max-sm:w-16" />
         </div>
     
         <div className="items-start mt-4 flex flex-col">
@@ -94,7 +95,7 @@ export default function CheckoutForm() {
       <CardBody>
         <Tabs value={type} className="-mt-1 overflow-hidden max-sm:-mt-4">
           <TabsHeader className="relative z-0 bg-gray-200">
-            <Tab value="card" onClick={() => setType("card")} >
+            <Tab value="Account" onClick={() => setType("Account")} >
         <div className="flex gap-1 items-center ">
             <MdOutlineAccountCircle className="h-5 w-5" /> 
             <span className="font-medium">
@@ -115,25 +116,31 @@ export default function CheckoutForm() {
             className="!overflow-x-hidden"
             animate={{
               initial: {
-                x: type === "card" ? 400 : -400,
+                x: type === "Account" ? 400 : -400,
               },
               mount: {
                 x: 0,
               },
               unmount: {
-                x: type === "card" ? 400 : -400,
+                x: type === "Account" ? 400 : -400,
               },
             }}
           >
-            <TabPanel value="card" className="p-0">
+            <TabPanel value="Account" className="p-0">
               <form className="mt-1 flex flex-col  gap-4">
-
+                  
+                  <div className='flex'>
+                      <MdOutlineAccountCircle />
+                    <span className='flex flex-col pr-5'>
+                      <p>Nick Nama</p>
+                      <h1>Dikaa</h1>
+                    </span>
+                  </div>
               </form>
 
             </TabPanel>
             <TabPanel value="Security" className="p-0">
               <form className="mt-12 flex flex-col gap-4">
-                
                 
               </form>
             </TabPanel>

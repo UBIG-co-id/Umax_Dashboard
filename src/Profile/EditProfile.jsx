@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef  } from 'react';
 import { defaultProfile, overlay, security } from '../assets';
 import { MdOutlineAccountCircle } from 'react-icons/md';
 import { BiLockOpenAlt } from 'react-icons/bi';
@@ -6,6 +6,8 @@ import { IoIosArrowBack } from 'react-icons/io';
 import { AiOutlineEye, AiOutlineEyeInvisible, AiOutlineCamera} from 'react-icons/ai';
 import { BsKey } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
+import Axios from 'axios';
+
 
 import {
   Card,
@@ -172,6 +174,51 @@ export default function CheckoutForm() {
     setIsConsPasswordVisible(!isConsPasswordVisible);
   };
 
+
+  // ambil data dari fastApi
+
+
+  const [profileData, setProfileData] = useState({
+    name: "‎", 
+    image: defaultProfile, 
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('jwtToken');
+        const apiUrl = 'https://umax-1-z7228928.deta.app/profiluser/65227163017382b905f8b1dd';
+
+        const response = await Axios.get(apiUrl, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        console.log(response.data)
+
+        setProfileData({
+          name: response.data.name,
+          image: response.data.image,
+        });
+      } catch (error) {
+        if (error.response) {
+          console.error('Server error:', error.response.data);
+        } else if (error.request) {
+          console.error('No response from the server:', error.request);
+        } else {
+          console.error('Error:', error.message);
+        }
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
+
+
   return (
     <div className="bg-gray-200 flex justify-center items-center w-screen">
     <Card className="w-full">
@@ -189,11 +236,21 @@ export default function CheckoutForm() {
 
         <div className="relative top-4 mt-5 mx-auto flex">
         <div className="relative mb-1 rounded-full border border-white/10 bg-white/10 p-2 text-white">
-      <img src={defaultProfile} className="h-24 rounded-full max-sm:h-16" alt="Profile" />
+        <img src={`data:image/jpeg;base64,${profileData.image}`} alt="Foto" className="h-24 w-24 object-cover rounded-full max-sm:h-16 max-sm:w-16" />
       <div className="absolute bottom-0 right-0">
-        <button className="bg-blue-700 hover:bg-blue-800 max-sm:p-1 rounded-full p-2 text-white">
-          <AiOutlineCamera />
+        <input
+        type="file"
+        accept="image/*"
+        style={{ display: 'none' }}
+        />
+        <label htmlFor="imageInput">
+        <button
+        className="bg-blue-700 hover:bg-blue-800 max-sm:p-1 rounded-full p-2 text-white"
+        >
+        <AiOutlineCamera />
         </button>
+        </label>
+
       </div>
     </div>
 
@@ -334,7 +391,11 @@ export default function CheckoutForm() {
                 </div>
                   </div>
                 </div>
-                <Button className='font-normal text-base bg-blue-700'>Save</Button>
+                <Button
+                  className="font-normal text-base bg-blue-700"
+                >
+                  Save
+                </Button>
                 <div className='h-32'></div>
                
               </form>
