@@ -676,8 +676,102 @@ const Dashboard = () => {
     }
   };
 
+ 
+  const cardData = [
+    {
+      title: 'Amount Spent',
+      value: 'Rp. 4.000.000',
+      color: 'text-sky-500',
+      popupContent: 'Jumlah total biaya yang kita keluarkan untuk pemasangan iklan' 
+    },
+    {
+      title: 'Reach Amount Ratio',
+      value: '6.1%',
+      color: 'text-yellow-500',
+      popupContent: 'Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut' 
+    },
+    {
+      title: 'Click Through Rate',
+      value: '1.0%',
+      color: 'text-green-500',
+      popupContent: 'Rasio jumlah klik pada iklan kita dibandingkan dengan jumlah iklan ditayangkan' 
+    },
+    {
+      title: 'OCLP',
+      value: '30%',
+      popupContent: 'Mendorong pengunjung untuk mengklik tautan atau tombol yang mengarahkan mereka ke halaman atau situs web eksternal yang relevan' 
+    }
+  ];
+
+  
+  const cardData2 = [
+    {
+      title: 'CPR',
+      value: 'Rp. 5.000',
+      popupContent: ' Perhitungan biaya yang kita keluarkan untuk setiap hasil yang kita dapatkan' 
+    },
+    {
+      title: 'ATC',
+      value: '2,5%',
+      popupContent: ' Menambahkan produk atau barang ke dalam keranjang belanja saat berbelanja secara online di situs web e-commerce atau toko online' 
+    },
+    {
+      title: 'ROAS',
+      value: '1.0%',
+      popupContent: 'Mengukur seberapa banyak pendapatan atau hasil yang dihasilkan dari setiap unit pengeluaran iklan' 
+    },
+    {
+      title: 'Real ROAS',
+      value: '1.0%',
+      popupContent: 'Mengukur banyak pendapatan asli yang di hasilkan tiap pengeluaran iklan' 
+    },
+  ];
 
 
+ 
+  const renderCardInfo = () => {
+    return cardData.map((item, index) => {
+      return <CardInfo key={index} title={item.title} value={item.value} color={item.color} className='relative w-full flex top-5 flex-col justify-between h-24'          
+      popupContent={item.popupContent}
+      />
+    })
+  }
+
+  const renderCardInfo2 = () => {
+    return cardData2.map((item, index) => {
+      return <CardInfo  key={index} title={item.title} value={item.value} color={item.color} className='w-full flex flex-col justify-between h-24' 
+      popupContent={item.popupContent} 
+      />
+    })
+  }
+
+   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('jwtToken');
+        const response = await axios.get('https://umax-1-z7228928.deta.app/metrics/',
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+        );
+        if (response.status === 200) {
+          const data = response.data;
+          console.log(data); 
+          setMetricsData(data);
+        } else {
+          console.error('Failed to fetch data from API');
+        }
+      } catch (error) {
+        console.error('An error occurred', error);
+      }
+      
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <main className='bg-slate-100 min-h-screen ' >

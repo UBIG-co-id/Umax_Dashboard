@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import imageLeft from '../assets/left-financial.svg';
-import imageRight from '../assets/right-financial.svg';
 import logo from '../assets/logo.png';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';

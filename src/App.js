@@ -10,11 +10,13 @@ import DataTable from './components/DataTable';
 import UpdateClient from './update/UpdateClient'; 
 import UpdateAccount from './update/UpdateAccount';
 import UpdateCampaign from './update/UpdateCampaign';
+import Profile from './Profile/Profile';
+import EditProfile from './Profile/EditProfile';
 
 
 
 const App = () => {
-  return (
+  return ( 
     
     <Router>
       <Routes>
@@ -28,6 +30,8 @@ const App = () => {
         <Route path='/Campaigns' element={<Campaigns/> }  />
         <Route path='/Accounts' element={<Accounts/> }  />
         <Route path='/Clients' element={<Clients/> }  />
+        <Route path='/Profile' element={<Profile/> }  />
+        <Route path='/EditProfile' element={<EditProfile/> }  />
       </Routes>
     </Router>
     
