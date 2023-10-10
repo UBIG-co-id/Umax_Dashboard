@@ -3,6 +3,8 @@ import '../styles.css';
 import { google, meta, tiktok } from "../assets";
 import { BiSearch } from 'react-icons/bi';
 import { Context } from '../context';
+import { useLanguage } from '../LanguageContext'; // Import the useLanguage hook
+import Translation from '../translation/Translation.json'; 
 
 const Sidebar = ({ updateSelectedName }) => {
   const [activeTab, setActiveTab] = useState('all');
@@ -13,6 +15,8 @@ const Sidebar = ({ updateSelectedName }) => {
   const [itemsToShow, setItemsToShow] = useState(10);
   const [campaigns, setCampaigns] = useState([]);
   const [selectedData, setSelectedData] = useState([])
+  const { selectedLanguage } = useLanguage(); // Get selectedLanguage from context
+  const translations = Translation[selectedLanguage];
 
   const [filteredCampaigns, setFilteredCampaigns] = useState([]);
   useEffect(() => {
@@ -104,7 +108,10 @@ const Sidebar = ({ updateSelectedName }) => {
 
   // menyimpan warna array
   const customCircleColors = ['#8F8F8F', '#00FF00', '#00FF00', '#FF8A00', '#FF8A00'];
-
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -223,16 +230,16 @@ const Sidebar = ({ updateSelectedName }) => {
 
           <div className="aside__container-list_information mt-1">
             <div>
-              <p >Amount Spent</p>
+              <p >{translations['Amount Spent']}</p>
               <p >{item.amountspent}</p>
             </div>
             <div>
-              <p >Reach</p>
+              <p >{translations['Reach']}</p>
               <p >{item.reach}</p>
             </div>
             <div>
-              <p >Start Date</p>
-              <p >{item.startdate}</p>
+              <p >{translations['Start Date']}</p>
+              <p >{formatDate(item.startdate)}</p>
             </div>
           </div>
         </li>
@@ -257,28 +264,28 @@ const Sidebar = ({ updateSelectedName }) => {
             className="px-2  py-1 rounded-md"
             onClick={() => handleTabChange('all')}
           >
-            All
+            {translations['All']}
           </button>
           <button
             style={tabStyle.draft}
             className="px-2 py-1 rounded-md"
             onClick={() => handleTabChange('draft')}
           >
-            Draft
+            {translations['Draft']}
           </button>
           <button
             style={tabStyle.active}
             className="px-2 py-1 rounded-md"
             onClick={() => handleTabChange('active')}
           >
-            Active
+            {translations['Active']}
           </button>
           <button
             style={tabStyle.completed}
             className="px-2 py-1 rounded-md"
             onClick={() => handleTabChange('completed')}
           >
-            Completed
+            {translations['Completed']}
           </button>
         </div>
 
@@ -290,7 +297,7 @@ const Sidebar = ({ updateSelectedName }) => {
           </span>
           <input
             type="text"
-            placeholder="Search..."
+            placeholder={translations['Search']}
             className="w-full pl-8 px-2 py-1 bg-white border-searc text-slate-600 rounded-lg"
             value={searchText}
             onChange={handleSearchChange}

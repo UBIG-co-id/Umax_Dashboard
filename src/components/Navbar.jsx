@@ -9,9 +9,12 @@ import { logo, defaultProfile } from '../assets';
 import { FiSun, FiMoon } from 'react-icons/fi';
 import '../styles.css';
 import React from 'react';
-import { useNavigate,useLocation, Link } from 'react-router-dom';
-import {Context} from '../context'
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { Context } from '../context'
 import Axios from 'axios';
+import Translation from "../translation/Translation.json"
+import { useLanguage } from '../LanguageContext';
+import { uk, indonesia } from '../assets';
 
 
 function classNames(...classes) {
@@ -25,20 +28,23 @@ const navigation = [
   { name: 'Clients', href: '/Clients' },
 ];
 
-const Navbar=() => {
-  const navigate=useNavigate();
+const Navbar = () => {
+  const { selectedLanguage, toggleLanguage } = useLanguage();
+
+  const translations = Translation[selectedLanguage];
+  const navigate = useNavigate();
   const handleSignOut = () => {
     localStorage.removeItem('jwtToken');
 
     navigate('/login');
   };
 
-  const profilePage = ()=> {
+  const profilePage = () => {
     navigate('/Profile');
   }
   let { state, dispatch } = useContext(Context)
   let toggle = () => {
-      dispatch({ type: 'SET_TOGGLE_NAVBAR', payload: !state.toggleNavbar })
+    dispatch({ type: 'SET_TOGGLE_NAVBAR', payload: !state.toggleNavbar })
   }
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -46,7 +52,10 @@ const Navbar=() => {
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
-  
+  // const toggleLanguage = () => {
+  //   setSelectedLanguage(selectedLanguage === 'english' ? 'indonesia' : 'english');
+  // };
+  // const translations = Translation[selectedLanguage];
 
 
   const [darkMode, setDarkMode] = useState(false);
@@ -70,8 +79,8 @@ const Navbar=() => {
 
   // ambil data gambar dan nama
   const [profileData, setProfileData] = useState({
-    name: "Your Name", 
-    image: defaultProfile, 
+    name: "Your Name",
+    image: defaultProfile,
   });
 
   useEffect(() => {
@@ -119,8 +128,8 @@ const Navbar=() => {
                 {/* Mobile menu button */}
 
                 <div className="sm:hidden text-center">
-                    <img src={logo} alt="logo" className='w-20 cursor-pointer' onClick={toggle} />
-            </div>
+                  <img src={logo} alt="logo" className='w-20 cursor-pointer' onClick={toggle} />
+                </div>
                 <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-600">
                   <span className="absolute -inset-0.5" />
                   <span className="sr-only">Open main menu</span>
@@ -131,159 +140,192 @@ const Navbar=() => {
                   )}
                 </Disclosure.Button>
               </div>
-                <div className="hidden sm:flex sm:items-center sm:justify-center">
-                  <img
-                    className="h-8 w-auto cursor-pointer "
-                    src={logo}
-                    alt="logo"
-                    onClick={toggle}
-                  />
-                </div>
-                <div className="hidden sm:ml-6 sm:block ">
-                  <div className="flex space-x-4">
-                    {navigation.map((item) => (
-                      <Link
-                        key={item.name}
-                        to={item.href}
-                        className={classNames(
-                          activePage === item.href
+              <div className="hidden sm:flex sm:items-center sm:justify-center">
+                <img
+                  className="h-8 w-auto cursor-pointer "
+                  src={logo}
+                  alt="logo"
+                  onClick={toggle}
+                />
+              </div>
+              <div className="hidden sm:ml-6 sm:block ">
+                <div className="flex space-x-4">
+                  {navigation.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className={classNames(
+                        activePage === item.href
                           ? 'bg-cyan-100 text-blue-600'
                           : 'text-gray-500 ',
                         'rounded-md px-3 py-2 text-sm font-medium'
+                      )}
+                      onClick={() => setActivePage(item.href)}
+                    >
+                      {/* <span className="relative top-1 mr-4 inline-block max-lg:hidden ">
+                      
+                            {item.name === 'Dashboard' && <MdDashboard className="h-5 w-5" />}
+                            {item.name === 'Campaigns' && <BiSolidMegaphone className="h-5 w-5" />}
+                            {item.name === 'Accounts' && <AiOutlineUser className="h-5 w-5" />}
+                            {item.name === 'Clients' && <BiGroup className="h-5 w-5" />}
+                          
+                       
+                      </span>
+                      {item.name} */}
+                      <span className="relative top-1 mr-4 inline-block max-lg:hidden ">
+                        {translations[item.name] && (
+                          <>
+                            {item.name === 'Dashboard' && <MdDashboard className="h-5 w-5" />}
+                            {item.name === 'Campaigns' && <BiSolidMegaphone className="h-5 w-5" />}
+                            {item.name === 'Accounts' && <AiOutlineUser className="h-5 w-5" />}
+                            {item.name === 'Clients' && <BiGroup className="h-5 w-5" />}
+                          </>
                         )}
-                        onClick={() => setActivePage(item.href)}
-                      >
-                    <span className="relative top-1 mr-4 inline-block max-lg:hidden ">
-                      {item.name === 'Dashboard' && <MdDashboard className="h-5 w-5" />}
-                      {item.name === 'Campaigns' && <BiSolidMegaphone className="h-5 w-5" />}
-                      {item.name === 'Accounts' && <AiOutlineUser className="h-5 w-5" />}
-                      {item.name === 'Clients' && <BiGroup className="h-5 w-5" />}
-                    </span>
-                        {item.name}
-                      </Link>
-                    ))}
-                  </div>
+                      </span>
+                      {translations[item.name] || item.name}
+                    </Link>
+                  ))}
                 </div>
+              </div>
 
-            
 
+              <select onChange={toggleLanguage}>
+                <option value="english">
+                  <img src={uk} alt="English" className="w-6 h-6 mr-2" />
+                  English
+                </option>
+                <option value="indonesia">
+                  <img src={indonesia} alt="Indonesia" className="w-6 h-6 mr-2" />
+                  Indonesia
+                </option>
+              </select>
+
+              {/* <select onChange={toggleLanguage}>
+                  <option value="english">
+                    <img src={uk} alt="uk" className="w-4 h-4 mr-2" /> English
+                  </option>
+                  <option value="indonesia">
+                    <img src={indonesia} alt="Indonesia" className="w-4 h-4 mr-2" /> Indonesia
+                  </option>
+                </select> */}
 
               <div className="absolute  inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                 
-                 {/* tombol mode gelap */}
-                 <label htmlFor="darkModeToggle" className="relative right-7 flex items-center cursor-pointer">
-  <div className="relative">
-    <input
-      type="checkbox"
-      id="darkModeToggle"
-      className="sr-only"
-      onChange={toggleDarkMode}
-      checked={darkMode}
-    />
-    <div className={`w-14 h-7 bg-white rounded-full p-1 flex items-center bordernya transition-transform ease-in-out duration-300`}>
-      <div
-        className={`dot w-5 h-5 bg-cyan-100 rounded-full shadow transition-transform ease-in-out duration-300`}
-        style={{
-          transform: darkMode ? 'translateX(100%)' : 'translateX(0)',
-          opacity: darkMode ? '1' : '1',
-        }}
-      >
-        {darkMode ? (
-          <FiMoon className="h-5 w-5 text-sky-600 absolute left-0" />
-        ) : (
-          <FiSun className="h-5 w-5 text-sky-600 absolute right-0" />
-        )}
-      </div>
-    </div>
-  </div>
-</label>
+
+
+                {/* tombol mode gelap */}
+                <label htmlFor="darkModeToggle" className="relative right-7 flex items-center cursor-pointer">
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      id="darkModeToggle"
+                      className="sr-only"
+                      onChange={toggleDarkMode}
+                      checked={darkMode}
+                    />
+                    <div className={`w-14 h-7 bg-white rounded-full p-1 flex items-center bordernya transition-transform ease-in-out duration-300`}>
+                      <div
+                        className={`dot w-5 h-5 bg-cyan-100 rounded-full shadow transition-transform ease-in-out duration-300`}
+                        style={{
+                          transform: darkMode ? 'translateX(100%)' : 'translateX(0)',
+                          opacity: darkMode ? '1' : '1',
+                        }}
+                      >
+                        {darkMode ? (
+                          <FiMoon className="h-5 w-5 text-sky-600 absolute left-0" />
+                        ) : (
+                          <FiSun className="h-5 w-5 text-sky-600 absolute right-0" />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </label>
 
 
 
 
 
 
-                          {/* tombol notif */}
-              <button
-            type="button"
-            className="relative right-3 text-gray-500 hover:text-gray-800"
-            onClick={toggleNotifications}
-            >
-            {notificationCount > 0 && (
-              <span className="absolute  -top-1 -right-1 -mt-1 -mr-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center">
-                {notificationCount}
-              </span>
-            )}
-            <span className="sr-only">View notifications</span>
-            <BiBell className="h-6 w-6"  aria-hidden="true" />
-            </button>
-
-            {showNotifications && (
-                <Transition
-                show={showNotifications}
-                enter="transition ease-out duration-200 transform"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="transition ease-in duration-100 transform"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
+                {/* tombol notif */}
+                <button
+                  type="button"
+                  className="relative right-3 text-gray-500 hover:text-gray-800"
+                  onClick={toggleNotifications}
                 >
-                  <Menu as="div" className="absolute z-10 -ml-48 mt-8 w-48 rounded-md bg-white py-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transition-transform">
-                    {/* Notifikasi Dropdown */}
-                    <Menu.Item>
-                      {({ active }) => (
-                        <a
-                          href="#"
-                          className={classNames(
-                            'relative bottom-2 rounded-t-md block px-4 py-2 text-sm bg-red-500 text-white'
-                          )}
-                        >
-                          Notification
-                        </a>
-                      )}
-                    </Menu.Item>
-                    <Menu.Item>
-                      {({ active }) => (
-                        <a
-                          href="#"
-                          className={classNames(
-                            active ? 'bg-gray-100' : '',
-                            'block px-4 py-2 text-sm text-gray-700'
-                          )}
-                        >
-                          Notification 1
-                        </a>
-                      )}
-                    </Menu.Item>
-                    <Menu.Item>
-                      {({ active }) => (
-                        <a
-                          href="#"
-                          className={classNames(
-                            active ? 'bg-gray-100' : '',
-                            'block px-4 py-2 text-sm text-gray-700'
-                          )}
-                        >
-                          Notification 2
-                        </a>
-                      )}
-                    </Menu.Item>
-                  </Menu>
-                </Transition>
-              )}
+                  {notificationCount > 0 && (
+                    <span className="absolute  -top-1 -right-1 -mt-1 -mr-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center">
+                      {notificationCount}
+                    </span>
+                  )}
+                  <span className="sr-only">View notifications</span>
+                  <BiBell className="h-6 w-6" aria-hidden="true" />
+                </button>
 
-                            {/* profile */}
+                {showNotifications && (
+                  <Transition
+                    show={showNotifications}
+                    enter="transition ease-out duration-200 transform"
+                    enterFrom="opacity-0 scale-95"
+                    enterTo="opacity-100 scale-100"
+                    leave="transition ease-in duration-100 transform"
+                    leaveFrom="opacity-100 scale-100"
+                    leaveTo="opacity-0 scale-95"
+                  >
+                    <Menu as="div" className="absolute z-10 -ml-48 mt-8 w-48 rounded-md bg-white py-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transition-transform">
+                      {/* Notifikasi Dropdown */}
+                      <Menu.Item>
+                        {({ active }) => (
+                          <a
+                            href="#"
+                            className={classNames(
+                              'relative bottom-2 rounded-t-md block px-4 py-2 text-sm bg-red-500 text-white'
+                            )}
+                          >
+                            Notification
+                          </a>
+                        )}
+                      </Menu.Item>
+                      <Menu.Item>
+                        {({ active }) => (
+                          <a
+                            href="#"
+                            className={classNames(
+                              active ? 'bg-gray-100' : '',
+                              'block px-4 py-2 text-sm text-gray-700'
+                            )}
+                          >
+                            Notification 1
+                          </a>
+                        )}
+                      </Menu.Item>
+                      <Menu.Item>
+                        {({ active }) => (
+                          <a
+                            href="#"
+                            className={classNames(
+                              active ? 'bg-gray-100' : '',
+                              'block px-4 py-2 text-sm text-gray-700'
+                            )}
+                          >
+                            Notification 2
+                          </a>
+                        )}
+                      </Menu.Item>
+                    </Menu>
+                  </Transition>
+                )}
+
+                {/* profile */}
                 <Menu as="div" className="relative ml-3">
                   <div>
                     <Menu.Button className="relative flex rounded-full  text-sm">
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">Open user menu</span>
                       <div className='rounded-full  border-black/10 bg-black/10 p-1'>
-                      <img
-                        className="h-8 w-8 object-cover rounded-full"
-                        src={`data:image/jpeg;base64,${profileData.image}`}
-                        alt="profile"
-                      />
+                        <img
+                          className="h-8 w-8 object-cover rounded-full"
+                          src={`data:image/jpeg;base64,${profileData.image}`}
+                          alt="profile"
+                        />
                       </div>
                     </Menu.Button>
                   </div>
@@ -298,13 +340,13 @@ const Navbar=() => {
                   >
                     <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <Menu.Item>
-                          <a
-                            href="#"
-                            className={classNames('bg-slate-500 rounded-t-md block px-4 py-2 text-sm text-white')}
-                          >
-                            Hallo, {profileData.name}
-                          </a>
-                      </Menu.Item>  
+                        <a
+                          href="#"
+                          className={classNames('bg-slate-500 rounded-t-md block px-4 py-2 text-sm text-white')}
+                        >
+                          Hallo, {profileData.name}
+                        </a>
+                      </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
                           <a
@@ -312,7 +354,7 @@ const Navbar=() => {
                             onClick={profilePage}
                             className={classNames(active ? 'bg-gray-100' : '', 'flex items-center px-4 py-2 text-sm text-gray-700  ')}
                           >
-                           < AiOutlineUser className="mr-2"/> Profile
+                            < AiOutlineUser className="mr-2" /> Profile
                           </a>
                         )}
                       </Menu.Item>
@@ -322,24 +364,24 @@ const Navbar=() => {
                             href="#"
                             className={classNames(active ? 'bg-gray-100' : '', 'flex items-center px-4 py-2 text-sm text-gray-700')}
                           >
-                            <CiSettings className="mr-2"/>Settings
+                            <CiSettings className="mr-2" />Settings
                           </a>
                         )}
                       </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
-                           <button
-                           onClick={handleSignOut}
-                           className={classNames(active ? 'bg-gray-100' : '', 'flex items-center px-4 py-2 text-sm text-gray-700')}
-                         >
-                           <BiLogOut className="mr-2" /> Sign out
-                         </button>
+                          <button
+                            onClick={handleSignOut}
+                            className={classNames(active ? 'bg-gray-100' : '', 'flex items-center px-4 py-2 text-sm text-gray-700')}
+                          >
+                            <BiLogOut className="mr-2" /> Sign out
+                          </button>
                         )}
                       </Menu.Item>
                     </Menu.Items>
                   </Transition>
                 </Menu>
-                          
+
               </div>
             </div>
           </div>
@@ -360,7 +402,7 @@ const Navbar=() => {
                   {item.name}
                 </Disclosure.Button>
               ))}
-  
+
 
             </div>
           </Disclosure.Panel>

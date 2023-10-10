@@ -12,9 +12,11 @@ import History from '../components/History';
 import { FiAlertTriangle } from 'react-icons/fi';
 import { AiOutlineInfoCircle } from 'react-icons/ai';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
-import { google, meta, tiktok } from "../assets";
+import { google, meta, tiktok, } from "../assets";
 import '../styles.css';
 import { setActiveItem, updateSelectedName } from '../components/Sidebar'
+import { useLanguage } from '../LanguageContext'; // Import the useLanguage hook
+import Translation from '../translation/Translation.json'; 
 
 import axios from 'axios';
 
@@ -29,6 +31,8 @@ const Dashboard = () => {
   const [activeItem, setActiveItem] = useState(null);
   const [selectedData, setSelectedData] = useState(null);
   const [selectedName, setSelectedName] = useState('');
+  const { selectedLanguage } = useLanguage(); // Get selectedLanguage from context
+  const translations = Translation[selectedLanguage];
 
 
   const handleItemClick = (itemName) => {
@@ -126,7 +130,7 @@ const Dashboard = () => {
 
   const metrixDatas = [
     {
-      title: "Amount Spent",
+      title: translations["Amount Spent"],
       value: selectedData ? selectedData.amountspent : null,
       chart: [
         { name: "Day1", value: 5 },
@@ -143,7 +147,7 @@ const Dashboard = () => {
         "Jumlah total biaya yang kita keluarkan untuk pemasangan iklan",
     },
     {
-      title: "Reach",
+      title:  translations["Reach"],
       value: selectedData ? selectedData.reach : null,
       chart: [
         { name: "Day1", value: 10 },
@@ -160,7 +164,7 @@ const Dashboard = () => {
         "Jumlah user yang melihat iklan kita pada platform iklan yang kita pasang",
     },
     {
-      title: "Impression",
+      title: translations["Impression"],
       value: selectedData ? selectedData.impressions : null,
       chart: [
         { name: "Day1", value: 10 },
@@ -177,7 +181,7 @@ const Dashboard = () => {
         "Jumlah iklan kita ditayangkan. Bedanya dengan Reach, user yang sama bisa dihitung melihat iklan yang sama lebih dari satu kali",
     },
     {
-      title: "Frequency",
+      title: translations["Frequency"],
       value: selectedData ? selectedData.frequency : null,
       chart: [
         { name: "Day1", value: 10 },
@@ -194,7 +198,7 @@ const Dashboard = () => {
         "Berapa kali rata-rata seorang user melihat iklan kita ditampilkan dalam rentang waktu tertentu. Dihitung dari jumlah Impressions dibagi dengan jumlah Reach",
     },
     {
-      title: "Reach Amount Ratio",
+      title: translations["Reach Amount Ratio"],
       value: selectedData ? selectedData.rar : null,
       chart: [
         { name: "Day1", value: 10 },
@@ -211,7 +215,7 @@ const Dashboard = () => {
         "Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut",
     },
     {
-      title: "Cost Per Click",
+      title: translations["Cost Per Click"],
       value: selectedData ? selectedData.cpc : null,
       chart: [
         { name: "Day1", value: 10 },
@@ -228,7 +232,7 @@ const Dashboard = () => {
         "Perhitungan biaya yang kita keluarkan untuk setiap Link Clicks. Dihitung dari jumlah Amount Spent dibagi dengan jumlah Link Clicks",
     },
     {
-      title: "Click Through Rate",
+      title: translations["Click Through Rate"],
       value: selectedData ? selectedData.ctr : null,
       chart: [
         { name: "Day1", value: 10 },
@@ -245,7 +249,7 @@ const Dashboard = () => {
         "Rasio jumlah klik pada iklan kita dibandingkan dengan jumlah iklan ditayangkan. Dihitung dari jumlah Link Click dibagi dengan jumlah Impressions",
     },
     {
-      title: "Outbont Click Landing Page",
+      title: translations["Outbont Click Landing Page"],
       value: selectedData ? selectedData.oclp : null,
       chart: [
         { name: "Day1", value: 10 },
@@ -262,7 +266,7 @@ const Dashboard = () => {
         "Mendorong pengunjung untuk mengklik tautan atau tombol yang mengarahkan mereka ke halaman atau situs web eksternal yang relevan",
     },
     {
-      title: "Cost per Result",
+      title: translations["Cost Per Result"],
       value: selectedData ? selectedData.cpr : null,
       chart: [
         { name: "Day1", value: 10 },
@@ -279,7 +283,7 @@ const Dashboard = () => {
         "Perhitungan biaya yang kita keluarkan untuk setiap hasil yang kita dapatkan",
     },
     {
-      title: "Add to Cart",
+      title: translations["Add To Cart"],
       value: selectedData ? selectedData.atc : null,
       chart: [
         { name: "Day1", value: 10 },
@@ -296,7 +300,7 @@ const Dashboard = () => {
         "Menambahkan produk atau barang ke dalam keranjang belanja saat berbelanja secara online di situs web e-commerce atau toko online",
     },
     {
-      title: "Return on ADD Spent",
+      title: translations["Return on Ad Spent"],
       value: selectedData ? selectedData.roas : null,
       chart: [
         { name: "Day1", value: 10 },
@@ -313,7 +317,7 @@ const Dashboard = () => {
         "Mengukur seberapa banyak pendapatan atau hasil yang dihasilkan dari setiap unit pengeluaran iklan",
     },
     {
-      title: "Real ROAS",
+      title: translations["Real ROAS"],
       value: selectedData ? selectedData.realroas : null,
       chart: [
         { name: "Day1", value: 10 },
@@ -386,7 +390,8 @@ const Dashboard = () => {
   //format style description
   const formatDescMetrix = (metrixData) => {
     const formatMap = {
-      "Amount Spent": (description) => (
+      "Amount Spent": 
+      (description) => (
         <p
           style={{
             fontSize: "10.5px",
@@ -410,7 +415,8 @@ const Dashboard = () => {
           {description}
         </p>
       ),
-      "Reach Amount Ratio": (description) => (
+      "Reach Amount Ratio": 
+      (description) => (
         <p
           style={{
             fontSize: "9.5px",
@@ -422,7 +428,8 @@ const Dashboard = () => {
           {description}
         </p>
       ),
-      "Cost per Click": (description) => (
+      "Cost per Click":
+       (description) => (
         <p
           style={{
             fontSize: "10.4px",
@@ -434,7 +441,8 @@ const Dashboard = () => {
           {description}
         </p>
       ),
-      "Click Through Rate": (description) => (
+      "Click Through Rate": 
+      (description) => (
         <p
           style={{
             fontSize: "9.5px",
@@ -494,9 +502,9 @@ const Dashboard = () => {
                   Feb 4, 20:12
                 </div>
                 <select name="" id="" className='focus:outline-none p-2 px-5 border border-gray-300 text-gray-500 rounded-md'>
-                  <option value="">Last Week</option>
-                  <option value="">Last Month</option>
-                  <option value="">Last Year</option>
+                  <option value="">{translations['Last Week']}</option>
+                  <option value="">{translations['Last Month']}</option>
+                  <option value="">{translations['Last Year']}</option>
                 </select>
               </div>
             </div>
@@ -510,19 +518,19 @@ const Dashboard = () => {
                 {selectedData && (
                   <div className="md:w-8/12 w-full flex flex-col h-full gap-5">
                     <CardInfo
-                      title="Amount Spent"
+                      title={translations['Amount Spent']}
                       value={selectedData.amountspent}
                       color="text-sky-500"
                       popupContent="Jumlah total biaya yang kita keluarkan untuk pemasangan iklan"
-                    />
+                      />
                     <CardInfo
-                      title="Reach Amount Ratio"
+                      title={translations['Reach Amount Ratio']} 
                       value={selectedData.rar}
                       color="text-yellow-500"
                       popupContent="Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut"
                     />
                     <CardInfo
-                      title='Click Through Rate'
+                      title={translations['Click Through Rate']}
                       value={selectedData.ctr}
                       color='text-green-500'
                       popupContent='Rasio jumlah klik pada iklan kita dibandingkan dengan jumlah iklan ditayangkan'
@@ -574,7 +582,7 @@ const Dashboard = () => {
             {/* bagian sugesti */}
             <div>
               <div className='relative top-5 border-t-2 border-gray-600 p-5 px-10 pb-5'>
-                <h1 className='text-xl font-bold text-gray-700'>Suggestion</h1>
+                <h1 className='text-xl font-bold text-gray-700'>{translations['Suggestion']}</h1>
                 <div className='flex flex-col mt-5 md:flex-row gap-5'>
                   <Card color='yellow'>
                     <div className='max-w-sm'>
@@ -583,13 +591,13 @@ const Dashboard = () => {
                           <FiAlertTriangle size={25} className='text-yellow-500' />
                         </div>
                         <div>
-                          <div className='font-medium mb-2'>Nilai CTR rendah</div>
-                          <p>Pastikan iklan atau tautan Anda memiliki judul atau gambar yang menarik</p>
+                          <div className='font-medium mb-2'>{translations['CTR Value']}</div>
+                          <p>{translations['Message CTR']}</p>
                         </div>
                       </div>
                       <a href="https://chat.openai.com/share/3bb35f6a-4b3b-4182-b6f9-c880722b3c72" target="_blank" rel="noopener noreferrer">
                         <div className='mt-2 hover:underline  text-end text-sm'>
-                          learn more
+                        {translations['Learn More']}
                         </div>
                       </a>
                     </div>
@@ -601,13 +609,13 @@ const Dashboard = () => {
                           <AiOutlineCloseCircle size={25} className='text-red-500' />
                         </div>
                         <div>
-                          <div className='font-medium mb-2'>Nilai OCL rendah</div>
-                          <p>Pastikan bahwa landing page Anda memiliki konten yang relavan, menarik, dan informatif</p>
+                          <div className='font-medium mb-2'>{translations['OCLP Value']}</div>
+                          <p>{translations['Message OCLP']}</p>
                         </div>
                       </div>
                       <a href="https://chat.openai.com/share/cb290ced-08a9-4153-93dc-470a1e0fd126" target="_blank" rel="noopener noreferrer">
                         <div className='mt-2 hover:underline  text-end text-sm'>
-                          learn more
+                        {translations['Learn More']}
                         </div>
                       </a>
                     </div>
@@ -809,28 +817,28 @@ const Dashboard = () => {
                     }`}
                   onClick={() => handleTabClick('performance')}
                 >
-                  Performance
+                  {translations['Performance']}
                 </li>
                 <li
                   className={`p-3 px-5 ${activeTab === 'metrics' ? 'text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
                     }`}
                   onClick={() => handleTabClick('metrics')}
                 >
-                  Metrics
+                  {translations['Metrics']}
                 </li>
                 <li
                   className={`p-3 px-5 ${activeTab === 'history' ? 'text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
                     }`}
                   onClick={() => handleTabClick('history')}
                 >
-                  History
+                  {translations['History']}
                 </li>
                 <li
                   className={`p-3 px-5 ${activeTab === 'setting' ? 'text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors' : 'text-gray-500'
                     }`}
                   onClick={() => handleTabClick('setting')}
                 >
-                  Setting
+                  {translations['Setting']}
                 </li>
               </ul>
             </div>
