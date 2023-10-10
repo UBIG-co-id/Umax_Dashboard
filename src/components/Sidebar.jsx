@@ -4,7 +4,7 @@ import { google, meta, tiktok } from "../assets";
 import { BiSearch } from 'react-icons/bi';
 import { Context } from '../context';
 import { useLanguage } from '../LanguageContext'; // Import the useLanguage hook
-import Translation from '../translation/Translation.json'; 
+import Translation from '../translation/Translation.json';
 
 const Sidebar = ({ updateSelectedName }) => {
   const [activeTab, setActiveTab] = useState('all');
@@ -17,6 +17,7 @@ const Sidebar = ({ updateSelectedName }) => {
   const [selectedData, setSelectedData] = useState([])
   const { selectedLanguage } = useLanguage(); // Get selectedLanguage from context
   const translations = Translation[selectedLanguage];
+  const [searchKeyword, setSearchKeyword] = useState('');
 
   const [filteredCampaigns, setFilteredCampaigns] = useState([]);
   useEffect(() => {
@@ -165,10 +166,15 @@ const Sidebar = ({ updateSelectedName }) => {
     const filtered = filteredItems(items);
 
     if (filtered.length === 0) {
-      return <li className="mb-6 text-center ">Tidak ada hasil</li>
+      return <li className="mb-6 text-center">Tidak ada hasil</li>;
     }
-
-    return filtered.slice(0, itemsToShow).map((item, index) => {
+  
+    // Tambahkan baris berikut untuk melakukan filtering berdasarkan kata kunci pencarian
+    const filteredByKeyword = filtered.filter((item) =>
+      item.name.toLowerCase().includes(searchKeyword.toLowerCase())
+    );
+  
+    return filteredByKeyword.slice(0, itemsToShow).map((item, index) => {
       let circleColor;
 
       // Tambahkan pemeriksaan status item dan atur warna lingkaran sesuai dengan status
@@ -298,9 +304,9 @@ const Sidebar = ({ updateSelectedName }) => {
           <input
             type="text"
             placeholder={translations['Search']}
-            className="w-full pl-8 px-2 py-1 bg-white border-searc text-slate-600 rounded-lg"
-            value={searchText}
-            onChange={handleSearchChange}
+            className="w-full pl-8 px-2 py-1 bg-white border-search text-slate-600 rounded-lg"
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
           />
         </div>
 

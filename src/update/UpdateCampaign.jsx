@@ -32,7 +32,7 @@ const UpdateCampaign = () => {
     // GET DATA CLIENT
     async function fetchClientData() {
         try {
-            const response = await fetch("https://umax-1-z7228928.deta.app/clients");
+            const response = await fetch("https://umax-1-z7228928.deta.app/clients",{headers});
             if (!response.ok) {
                 throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
             }
@@ -50,7 +50,7 @@ const UpdateCampaign = () => {
     // GET DATA ACCOUNT
     async function fetchAccountData() {
         try {
-          const response = await fetch("https://umax-1-z7228928.deta.app/accounts");
+          const response = await fetch("https://umax-1-z7228928.deta.app/accounts",{headers});
           if (!response.ok) {
             throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
           }
@@ -65,7 +65,7 @@ const UpdateCampaign = () => {
       }, []);
 // END GET DATA ACCOUNT
     useEffect(() => {
-        axios.get('https://umax-1-z7228928.deta.app/campaigns/' + _id)
+        axios.get('https://umax-1-z7228928.deta.app/campaigns/' + _id,{headers})
             .then(res =>
                 setValues({
                     ...values,
@@ -86,7 +86,7 @@ const UpdateCampaign = () => {
         e.preventDefault();
         axios.put('https://umax-1-z7228928.deta.app/campaigns/' + _id, values, { headers })
             .then(res => {
-                navigate('/campaigns');
+                navigate('/Campaigns');
             })
             .catch(err => console.log(err))
     }

@@ -13,7 +13,7 @@ const UpdateAccount = () => {
     const [values, setValues] = useState({
         _id: _id,
         name: '',
-        client: '',
+        id_client: '',
         platform: '',
         email: '',
         password: '',
@@ -29,7 +29,7 @@ const UpdateAccount = () => {
     // GET DATA CLIENT
     async function fetchClientData() {
         try {
-            const response = await fetch("https://umax-1-z7228928.deta.app/clients");
+            const response = await fetch("https://umax-1-z7228928.deta.app/clients",{headers});
             if (!response.ok) {
                 throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
             }
@@ -45,12 +45,12 @@ const UpdateAccount = () => {
     // END GET DATA CLIENT
 
     useEffect(() => {
-        axios.get('https://umax-1-z7228928.deta.app/accounts/' + _id)
+        axios.get('https://umax-1-z7228928.deta.app/accounts/' + _id, {headers})
             .then(res =>
                 setValues({
                     ...values,
                     name: res.data.name,
-                    client: res.data.client,
+                    id_client: res.data.id_client,
                     platform: res.data.platform,
                     email: res.data.email,
                     password: res.data.password,
@@ -64,7 +64,7 @@ const UpdateAccount = () => {
         e.preventDefault();
         axios.put('https://umax-1-z7228928.deta.app/accounts/' + _id, values, { headers })
             .then(res => {
-                navigate('/accounts');
+                navigate('/Accounts');
             })
             .catch(err => console.log(err))
     }
@@ -97,13 +97,13 @@ const UpdateAccount = () => {
                         <select
                             name="client"
                             id="client"
-                            value={values.client}
-                            onChange={e => setValues({ ...values, client: e.target.value })}
+                            value={values.id_client}
+                            onChange={e => setValues({ ...values, id_client: e.target.value })}
                             className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
                         >
                             <option hidden>Select Client</option>
                             {clientList.map((client) => (
-                                <option key={client.id} value={client.id}>
+                                <option key={client._id} value={client._id}>
                                     {client.name}
                                 </option>
                             ))}

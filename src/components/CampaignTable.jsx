@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useTable, useGlobalFilter, usePagination } from "react-table";
 // import data from "./CampaignData";
 import { BsTrash3, BsPlus } from "react-icons/bs";
@@ -19,11 +19,12 @@ import Swal from 'sweetalert2';
 
 function DataTable() {
   const [tableData, setTableData] = useState([]);
-  const [selectedPlatform, setSelectedPlatform] = useState("");
   const [showAddPopup, setShowAddPopup] = useState(false);
   const navigate = useNavigate();
   const [clientList, setClientList] = useState([]);
   const [accountList, setAccountList] = useState([]);
+  const [selectedPlatform, setSelectedPlatform] = useState("");
+  const [selectedObjective, setSelectedObjective] = useState("");
   
   // GET DATA CLIENT
   async function fetchClientData() {
@@ -269,11 +270,11 @@ const handleDelete = async (_id) => {
   const getPlatFormString = (platform) => {
     switch (platform) {
       case 1:
-        return "MetaAds";
+        return "Meta Ads";
       case 2:
-        return "GoogleAds";
+        return "Google Ads";
       case 3:
-        return "TiktokAds";
+        return "Tiktok Ads";
       default:
         return "Unknown";
     }
@@ -290,6 +291,21 @@ const handleDelete = async (_id) => {
         return "Unknown";
     }
   };
+
+  const filteredData = useMemo(() => {
+    return tableData.filter((item) => {
+      const objectiveFilter =
+      selectedObjective === "1" ? item.objective === 1 : selectedObjective === "2" ? item.objective === 2 :selectedObjective === "3" ? item.objective === 3 : true;
+  
+      const platformFilter =
+      selectedPlatform === "1" ? item.platform === 1 : selectedPlatform === "2" ? item.platform === 2 :selectedPlatform === "3" ? item.platform === 3 : true;
+        // selectedPlatform === "" ? true : item.platform === parseInt(selectedPlatform);
+  
+      return objectiveFilter && platformFilter;
+    });
+  }, [ selectedObjective, selectedPlatform, tableData]);
+
+
   const columns = React.useMemo(
     () => [
       
@@ -319,7 +335,7 @@ const handleDelete = async (_id) => {
         accessor: "objective",
         Cell: ({ row }) => (
           <div className="flex justify-center">
-            {getPlatFormString(row.original.objective)}
+            {getObjectiveString(row.original.objective)}
           </div>
         ),
       },
@@ -367,6 +383,7 @@ const handleDelete = async (_id) => {
     getTableBodyProps,
     headerGroups,
     prepareRow,
+    data,
     page, // Replace 'rows' with 'page' for paginated data
     state: { pageIndex, pageSize, globalFilter }, // Add these state properties
     setGlobalFilter, // Add this function
@@ -380,13 +397,24 @@ const handleDelete = async (_id) => {
   } = useTable(
     {
       columns,
-      data: tableData,
+      data: filteredData,
       initialState: { pageIndex: 0, pageSize: 5 }, // Initial page settings
     },
     useGlobalFilter,
     usePagination // Add this hook
   );
-
+  const handleFilterChangeObjective = (e) => {
+    const newValue = e.target.value;
+    if (newValue !== selectedObjective) {
+      setSelectedObjective(newValue);
+    }
+  };
+  const handleFilterChangePlatform = (e) => {
+    const newValue = e.target.value;
+    if (newValue !== selectedPlatform) {
+      setSelectedPlatform(newValue);
+    }
+  };
   // const { globalFilter } = state;
 
   const handleEdit = (rowId) => {
@@ -398,12 +426,7 @@ const handleDelete = async (_id) => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const filteredData = tableData.filter((row) => {
-      return selectedPlatform === "" || row.platform === selectedPlatform;
-    });
-    setTableData(filteredData);
-  }, [selectedPlatform]);
+
 
   const toggleAddPopup = () => {
     setShowAddPopup(!showAddPopup);
@@ -534,12 +557,12 @@ const handleDelete = async (_id) => {
               <select
                 className="w-full p-2 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
                 value={selectedPlatform}
-                onChange={(e) => setSelectedPlatform(e.target.value)}
+                onChange={handleFilterChangePlatform}
               >
                 <option hidden>Platform</option>
-                <option value="Facebook">Meta Ads</option>
-                <option value="Instagram">Google Ads</option>
-                <option value="Google">Tiktok Ads</option>
+                <option value="1">Meta Ads</option>
+                <option value="2">Google Ads</option>
+                <option value="3">Tiktok Ads</option>
               </select>
             </div>
 
@@ -547,13 +570,13 @@ const handleDelete = async (_id) => {
             <div className="relative col-span-6 lg:col-span-2">
               <select
                 className="w-full p-2 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
-                value={selectedPlatform}
-                onChange={(e) => setSelectedPlatform(e.target.value)}
+                value={selectedObjective}
+                onChange={handleFilterChangeObjective}
               >
                 <option hidden>Objective</option>
-                <option value="Awareness">Awareness</option>
-                <option value="Conversion">Conversion</option>
-                <option value="Consideration">Consideration</option>
+                <option value="1">Awareness</option>
+                <option value="2">Conversion</option>
+                <option value="3">Consideration</option>
               </select>
             </div>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTable, useGlobalFilter, usePagination } from 'react-table';
 // import data from './DataAccount';
 import jsPDF from "jspdf";
@@ -18,13 +18,15 @@ import Swal from 'sweetalert2';
 
 function AccountTable() {
   const [tableData, setTableData] = useState([]);
-  const [selectedPlatform, setSelectedPlatform] = useState('');
   const tableRef = useRef(null);
   const navigate = useNavigate();
   const [showAddPopup, setShowAddPopup] = useState(false);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [clientList, setClientList] = useState([]);
+  const [selectedFilter, setSelectedFilter] = useState("");
+  const [selectedPlatform, setSelectedPlatform] = useState("");
+
 
   // GET DATA CLIENT
   async function fetchClientData() {
@@ -207,6 +209,7 @@ function AccountTable() {
         return (
           <span style={statusStyle}>Active</span>
         );
+      
       case 2:
         statusStyle = {
           color: '#8F8F8F', 
@@ -215,17 +218,7 @@ function AccountTable() {
           fontWeight: '500', 
         };
         return (
-          <span style={statusStyle}>Draft</span>
-        );
-      case 3:
-        statusStyle = {
-          color: '#FF8A00', 
-          padding: '2px',
-          borderRadius: '7px',
-          fontWeight: '500', 
-        };
-        return (
-          <span style={statusStyle}>Completed</span>
+          <span style={statusStyle}>Deactive</span>
         );
       default:
         return "Unknown";
@@ -234,11 +227,11 @@ function AccountTable() {
   const getPlatFormString = (platform) => {
     switch (platform) {
       case 1:
-        return "MetaAds";
+        return "Meta Ads";
       case 2:
-        return "GoogleAds";
+        return "Google Ads";
       case 3:
-        return "TiktokAds";
+        return "Tiktok Ads";
       default:
         return "Unknown";
     }
@@ -278,6 +271,18 @@ function AccountTable() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+  const filteredData = useMemo(() => {
+    return tableData.filter((item) => {
+      const statusFilter =
+        selectedFilter === "1" ? item.status === 1 : selectedFilter === "2" ? item.status === 2 : true;
+  
+      const platformFilter =
+      selectedPlatform === "1" ? item.platform === 1 : selectedPlatform === "2" ? item.platform === 2 :selectedPlatform === "3" ? item.platform === 3 : true;
+        // selectedPlatform === "" ? true : item.platform === parseInt(selectedPlatform);
+  
+      return statusFilter && platformFilter;
+    });
+  }, [selectedFilter, selectedPlatform, tableData]);
   
 
   const columns = React.useMemo(
@@ -343,6 +348,7 @@ function AccountTable() {
     getTableBodyProps,
     headerGroups,
     prepareRow,
+    data,
     page, // Replace 'rows' with 'page' for paginated data
     state: { pageIndex, pageSize, globalFilter }, // Add these state properties
     setGlobalFilter, // Add this function
@@ -356,7 +362,7 @@ function AccountTable() {
   } = useTable(
     {
       columns,
-      data: tableData,
+      data: filteredData,
       initialState: { pageIndex: 0, pageSize: 5 },
     },
     useGlobalFilter,
@@ -371,12 +377,20 @@ function AccountTable() {
 
   
 
-  useEffect(() => {
-    const filteredData = tableData.filter((row) => {
-      return selectedPlatform === "" || row.platform === selectedPlatform;
-    });
-    setTableData(filteredData);
-  }, [selectedPlatform]);
+  const handleFilterChange = (e) => {
+    const newValue = e.target.value;
+    if (newValue !== selectedFilter) {
+      setSelectedFilter(newValue);
+    }
+  };
+  const handleFilterChangePlatform = (e) => {
+    const newValue = e.target.value;
+    if (newValue !== selectedPlatform) {
+      setSelectedPlatform(newValue);
+    }
+  };
+
+  
 
   // const toggleAddPopup = () => {
   //   setShowAddPopup(!showAddPopup);
@@ -412,28 +426,10 @@ function AccountTable() {
 
 
   // select 2
-  const options = [
-    { value: 'option1', label: 'PT.Makmur	' },
-    { value: 'option2', label: 'Pondok Nurul Huda	' },
-    { value: 'option3', label: 'PT Haji Umar Barokah' },
-    { value: 'option3', label: 'Pondok Nurul Huda' },
-    { value: 'option3', label: 'PT.Makmur' },
-    { value: 'option3', label: 'PT.Ubig.co.id' },
-  ];
 
-  const [selectedOption, setSelectedOption] = useState(null);
 
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      width: 225,
-      backgroundColor: '#F1F5F9',
-    }),
-  };
 
-  const handleSelectChange = (selectedOption) => {
-    setSelectedOption(selectedOption);
-  };
+
 
   const componentPDF = useRef();
 
@@ -492,24 +488,25 @@ function AccountTable() {
             <select
               className="w-full min-w-0 px-1 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
               value={selectedPlatform}
-              onChange={(e) => setSelectedPlatform(e.target.value)}
+              onChange={handleFilterChangePlatform}
             >
               <option hidden>Platform</option>
-              <option value="Facebook">Facebook</option>
-              <option value="Instagram">Instagram</option>
-              <option value="Google">Google</option>
+              {/* <option value="">All</option> */}
+              <option value="1">Meta Ads</option>
+              <option value="2">Google Ads</option>
+              <option value="3">Tiktok Ads</option>
             </select>
           </div>
           {/* bagian status */}
           <div className="relative col-span-4 lg:col-span-2">
             <select
               className="w-full min-w-0 px-1 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
-              value={selectedPlatform}
-              onChange={(e) => setSelectedPlatform(e.target.value)}
+              value={selectedFilter}
+              onChange={handleFilterChange}
             >
               <option hidden>Status</option>
-              <option value="Facebook">Active</option>
-              <option value="Instagram">DeActive</option>
+              <option value="1">Active</option>
+              <option value="2">DeActive</option>
             </select>
           </div>
           {/* End */}
