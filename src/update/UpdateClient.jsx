@@ -1,5 +1,7 @@
 import axios from 'axios';
 import React, { useEffect } from 'react'
+import Navbar from '../components/Navbar';
+import ClientsTable from '../components/ClientsTable';
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom'
 
@@ -40,14 +42,19 @@ const UpdateClient = () => {
         e.preventDefault();
         axios.put ('https://umax-1-z7228928.deta.app/clients/'+_id,values,{headers})
         .then(res => {
-            navigate('/clients');
+            navigate('/Clients');
         })
         .catch(err => console.log(err))
     }
     
     return (
-        <div>
-        
+      <main className='bg-slate-100 min-h-screen'>
+      <div>
+          <Navbar />
+          <div className='bg-white h-screen w-auto m-2 border rounded-lg'>
+              <span className='p-10 relative top-4 text-gray-600 font-medium text-2xl'>Clients</span>
+              <ClientsTable />
+          </div>
             <div className="fixed z-50 inset-0 flex items-center justify-center">
             <div className="fixed -z-10 inset-0 bg-black bg-opacity-50"></div>
             <form
@@ -121,7 +128,7 @@ const UpdateClient = () => {
                   </div>
                   <div className="flex justify-end">
                     {/* Tombol Save */}
-                    <Link to="/clients">
+                    <Link to="/Clients">
                     <button
                       type="button"
                       // onClick={toggleEditPopup}
@@ -140,8 +147,8 @@ const UpdateClient = () => {
                   </div>
               </form>
               </div>
-          
           </div>
+          </main>
     )
 }
 
