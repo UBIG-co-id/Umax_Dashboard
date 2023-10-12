@@ -219,7 +219,7 @@ const Sidebar = ({ updateSelectedName }) => {
               />
 
               <span
-                className={`truncate w-52 ${activeItem === item.name ? 'text-black' : ''
+                className={`truncate w-52 ${activeItem === item.name ? 'text-gray-700 font-medium' : 'text-gray-600 font-medium'
                   }`}
                 title={item.name}
               >
@@ -262,7 +262,7 @@ const Sidebar = ({ updateSelectedName }) => {
 
         </div>
       </button>
-      <div className={`relative bayangan max-w-70 top-5 -left-1  w-72 max-h-full bg-white  rounded-t-xl  max-sm:left-0 text-slate-700 p-4 transform ${state.toggleNavbar ? 'block' : 'hidden'} transition-transform duration-300 ease-in-out`}>
+      <div className={`relative bayangan max-w-70 top-5 -left-1  w-72 max-h-full bg-white  rounded-t-xl  max-sm:left-0 text-slate-500 p-4 transform ${state.toggleNavbar ? 'block' : 'hidden'} transition-transform duration-300 ease-in-out`}>
 
         <div className=" bg-gray-200 mx-1 p-1 rounded-lg flex justify-center mb-4 ">
           <button
@@ -304,7 +304,7 @@ const Sidebar = ({ updateSelectedName }) => {
           <input
             type="text"
             placeholder={translations['Search']}
-            className="w-full pl-8 px-2 py-1 bg-white border-search text-slate-600 rounded-lg"
+            className="w-full pl-8 px-2 py-1 bg-white border-searc border focus:outline-none focus:border-gray-500 text-slate-600 rounded-lg"
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
           />

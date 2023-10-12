@@ -1,336 +1,142 @@
-import React, { useState, useRef, useMemo } from "react";
-import { useReactToPrint } from "react-to-print";
-// import { useDownloadExcel } from "react-export-table-to-excel"
-import { Box, Button } from '@mui/material';
-import pdfImage from '../assets/pdf.png';
-import excelImage from '../assets/excel.png';
-import Data from "../components/DataHistory";
-import { MaterialReactTable } from 'material-react-table'
-import { darken } from '@mui/material';
-// import XLSX from 'xlsx';
-import { CSVLink, CSVDownload } from "react-csv";
-// import { mkConfig, generateCsv, download } from "export-to-csv";
+import React, { useState } from 'react';
+
+const items = [
+  { LastUpdate: "28 Jul 2023, 09:20", 
+    AmountSpent: 'Rp 4.000.000',
+    Reach: '97.000',
+    Impressions: '85.000' ,
+    Frequency: '2,3' ,
+    RAR: '6,1%' ,
+    CPC: 'Rp 2.000' ,
+    CTR: '1,0%' ,
+    OCLP: '30%' ,
+    CPR: 'Rp 5.000' ,
+    ATC: '2,5%' ,
+    ROAS: '3,1x' ,
+  },
+  { LastUpdate: "28 Jul 2023, 09:20", 
+    AmountSpent: 'Rp 4.000.000',
+    Reach: '97.000',
+    Impressions: '85.000' ,
+    Frequency: '2,3' ,
+    RAR: '6,1%' ,
+    CPC: 'Rp 2.000' ,
+    CTR: '1,0%' ,
+    OCLP: '30%' ,
+    CPR: 'Rp 5.000' ,
+    ATC: '2,5%' ,
+    ROAS: '3,1x' ,
+  },
+  
+];
+
+const itemsPerPage = 8;
+
+const columnDefinitions = [
+  { key: "LastUpdate", title: "LastUpdate" },
+  { key: "AmountSpent", title: "AmountSpent" },
+  { key: "Reach", title: "Reach" },
+  { key: "Impressions", title: "Impressions" },
+  { key: "Frequency", title: "Frequency" },
+  { key: "RAR", title: "RAR" },
+  { key: "CPC", title: "CPC" },
+  { key: "CTR", title: "CTR" },
+  { key: "OCLP", title: "OCLP" },
+  { key: "CPR", title: "CPR" },
+  { key: "ATC", title: "ATC" },
+  { key: "ROAS", title: "ROAS" },
+];
 
 const History = () => {
+  const [sortDirection, setSortDirection] = useState('asc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastUpdateFilter, setLastUpdateFilter] = useState(''); 
+  const totalPages = Math.ceil(items.length / itemsPerPage);
 
+  const filteredItems = items
+    .filter((item) =>
+      item.AmountSpent.toLowerCase()
+    )
+    .filter((item) => 
+      lastUpdateFilter === '' || item.LastUpdate.toString() === lastUpdateFilter
+    )
+    .sort((a, b) => {
+      if (sortDirection === 'asc') {
+        return a.LastUpdate - b.LastUpdate; 
+      } else {
+        return b.LastUpdate - a.LastUpdate;
+      }
+    });
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
 
-  // MENGGUNAKAN LIBRARY DARI MATERIAL REACT TABLE
-  const columns = useMemo(
-    () => [
-      {
-        accessorKey: 'update',
-        enableColumnFilter: false,
-        header: 'Last Update',
-      },
-      {
-        accessorKey: 'amount',
-        header: 'Amount Spent',
-      },
-      {
-        accessorKey: 'reach',
-        header: 'Reach',
-      },
-      {
-        accessorKey: 'impressions',
-        header: 'Impressions',
-      },
-      {
-        accessorKey: 'frequency',
-        header: 'Frequency',
-      },
-      {
-        accessorKey: 'rar',
-        header: 'RAR',
-      },
-      {
-        accessorKey: 'cpc',
-        header: 'CPC',
-      },
-      {
-        accessorKey: 'ctr',
-        header: 'CTR',
-      },
-      {
-        accessorKey: 'oclp',
-        header: 'OCLP',
-      },
-      {
-        accessorKey: 'cpr',
-        header: 'CPR',
-      },
-      {
-        accessorKey: 'atc',
-        header: 'ATC',
-      },
-      {
-        accessorKey: 'roas',
-        header: 'ROAS',
-      },
-    ],
-    [],
-  );
-
-  const data = useMemo(
-    () => [
-      {
-        update: '28 Jul 2023, 09:20',
-        amount: 'Rp. 2.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '28 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '28 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '28 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '28 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '28 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '28 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '28 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '28 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '27 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '27 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-    ]
-  )
-
-  // SORTING
-  const [sortBy, setSortBy] = useState({
-    column: 'key',
-    ascending: true,
-  });
-  const handleSort = (column) => {
-    if (column === sortBy.column) {
-      setSortBy({ column, ascending: !sortBy.ascending });
-    } else {
-      setSortBy({ column, ascending: true });
-    }
+  const toggleSortDirection = () => {
+    setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
   };
-  const sortedData = [...Data].sort((a, b) => {
-    const keyA = a[sortBy.column];
-    const keyB = b[sortBy.column];
-    if (sortBy.ascending) {
-      return keyA.localeCompare(keyB);
-    } else {
-      return keyB.localeCompare(keyA);
-    }
-  });
 
-  // EXPORT EXCEL
+  const onPageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
-  // const tableRef = useRef(null);
-  // const { onDownload } = useDownloadExcel({
-  //   tableRef: tableRef, // Use 'tableRef' instead of 'currentTableRef'
-  //   data: data,
-  //   filename: "Data",
-  //   sheet: "Data",
-  // });
-
-  // EXPORT PDF
-  const componentPDF = useRef();
-  const generatePDF = useReactToPrint({
-    content: () => componentPDF.current,
-    documentTitle: "Data",
-    onAfterPrint: () => alert("Data Saved in PDF")
-  });
-
+  const handleLastUpdateFilterChange = (e) => {
+    setLastUpdateFilter(e.target.value);
+  };
 
 
   return (
-    <div className="relative w-full">
-    <div className='flex justify-end'>
-      <div className="container mx-auto p-4">
-        <div className="flex gap-5 items-center justify-end">
-          <div className='flex gap-5 items-center'>
-            <button onClick={generatePDF}>
-              <img
-                className="h-8 w-auto"
-                src={pdfImage}
-                alt="pdfImage"
-              />
-            </button>
-            <CSVLink data={data}>
-              <img
-                className="h-8 w-auto"
-                src={excelImage}
-                alt="excelImage"
-              />
-            </CSVLink>
-
-            <select name="" id="" className='focus:outline-none p-2 px-5 border border-gray-300 text-gray-500 rounded-md'>
-              <option value="">Today</option>
-            </select>
-
-          </div>
-        </div>
-        <div ref={componentPDF} >
-          <MaterialReactTable
-            columns={columns}
-            data={data}
-            muiTableHeadCellProps={{
-              sx: (theme) => ({
-                backgroundColor: theme.palette.primary.main, 
-                color: theme.palette.common.white, 
-              })
-            }}
-            muiTablePaperProps={{
-              elevation: 0,
-              sx: {
-                borderRadius: '10px',
-                border: '1px dashed #e0e0e0',
-              },
-            }}
-            muiTableBodyProps={{
-              sx: (theme) => ({
-                '& tr:nth-of-type(odd)': {
-                  backgroundColor: darken(theme.palette.background.default, 0.1),
-                },
-              }),
-            }}
-          />
-
-
-        </div>
+    <div className="max-w-4xl mx-auto p-4">
+      <div style={{ overflowX: "auto", maxHeight: "300px" }}> {/* Menambahkan max-height pada elemen yang mengelilingi tabel */}
+        <table className="w-max mt-4 border-collapse">
+          <thead>
+            <tr>
+              {columnDefinitions.map((column) => (
+                <th key={column.key} className="border text-left px-4 py-2 bg-blue-500 text-white">
+                {column.title}
+                  {column.key === "LastUpdate" && (
+                    <button
+                      className="ml-2"
+                      onClick={toggleSortDirection}
+                    >
+                      {sortDirection === 'asc' ? '↓' : '↑'}
+                    </button>
+                  )}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {currentItems.map((item, index) => (
+              <tr key={index}>
+                {columnDefinitions.map((column) => (
+                  <td key={column.key} className="border px-4 py-2">
+                    {item[column.key]}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="mt-4 flex justify-between">
+        <button
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg mr-2"
+        >
+          Previous
+        </button>
+        <button
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+        >
+          Next
+        </button>
       </div>
     </div>
-    </div>
-  )
-}
+  );
+};
 
-export default History
+export default History;

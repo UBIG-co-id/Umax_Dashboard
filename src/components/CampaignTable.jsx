@@ -162,7 +162,6 @@ const handleDelete = async (_id) => {
 
     onSubmit: (values) => {
       const token = localStorage.getItem('jwtToken');
-      // Send a POST request to your FastAPI backend with form data
       fetch('https://umax-1-z7228928.deta.app/campaigns', {
         method: 'POST',
         headers: {
@@ -172,22 +171,19 @@ const handleDelete = async (_id) => {
         },
         body: new URLSearchParams(values).toString(),
       })
-
-        .then(response => response.json())
-        .then(data => {
-          // Handle the response from the backend (e.g., success message or error)
-          console.log(data);
-          if (data.message === 'data berhasil ditambah') {
-            // Redirect to the dashboard page
-            navigate('/Campaigns');
-          }
-        })
-        .catch(error => {
-          // Handle errors, e.g., network errors
-          console.error(error);
-        });
-
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        if (data.message === 'data berhasil ditambah') {
+          toggleAddPopup();
+          fetchData();
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
     },
+        
   });
   
 

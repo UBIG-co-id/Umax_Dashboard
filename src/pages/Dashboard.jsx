@@ -18,6 +18,7 @@ import { setActiveItem, updateSelectedName } from '../components/Sidebar'
 import { useLanguage } from '../LanguageContext'; // Import the useLanguage hook
 import Translation from '../translation/Translation.json'; 
 
+
 import axios from 'axios';
 
 
@@ -667,9 +668,7 @@ const Dashboard = () => {
       case 'history':
         return (
           <div>
-
-            <History />
-
+            <History/>
           </div>
         );
       case 'setting':
@@ -806,7 +805,7 @@ const Dashboard = () => {
                 } alt="icon" width={30} />
               )
               }
-              <h1 className='text-2xl pl-3 font-bold text-gray-700'> {selectedName ? selectedName : ''}</h1>
+              <h1 className='text-2xl pl-3 font-bold text-gray-600'> {selectedName ? selectedName : ''}</h1>
             </div>
 
 

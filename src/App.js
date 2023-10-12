@@ -12,7 +12,7 @@ import UpdateAccount from './update/UpdateAccount';
 import UpdateCampaign from './update/UpdateCampaign';
 import Profile from './Profile/Profile';
 import EditProfile from './Profile/EditProfile';
-
+import History from './components/History';
 
 
 const App = () => {
@@ -24,6 +24,7 @@ const App = () => {
         <Route path='/updateaccount/:_id' element={<UpdateAccount/>}/>
         <Route path='/updateclient/:_id' element={<UpdateClient/>}/>
         <Route path='/data' element={<DataTable/>}/>
+        <Route path='/History' element={<History/>}/>
         <Route path='/register' element={<Register/>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/Dashboard' element={<Dashboard/> }  />
