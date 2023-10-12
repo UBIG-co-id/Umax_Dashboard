@@ -251,6 +251,11 @@ const handleDelete = async (_id) => {
       {
         Header: "Start Date",
         accessor: "startdate",
+        Cell: ({ value }) => {
+          const date = new Date(value);
+          const formattedTime = date.toLocaleTimeString('id-ID', { year:'numeric', day: '2-digit',month: '2-digit', hour: '2-digit', minute: '2-digit' });
+          return <div className="flex justify-center">{formattedTime}</div>;
+        },
       },
       {
         Header: "Status",
