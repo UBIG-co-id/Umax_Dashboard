@@ -14,6 +14,7 @@ const Sidebar = ({ updateSelectedName }) => {
   let { state, dispatch } = useContext(Context);
   const [itemsToShow, setItemsToShow] = useState(10);
   const [campaigns, setCampaigns] = useState([]);
+  const [data, setData] = useState([]);
   const [selectedData, setSelectedData] = useState([])
   const { selectedLanguage } = useLanguage(); // Get selectedLanguage from context
   const translations = Translation[selectedLanguage];
@@ -23,20 +24,20 @@ const Sidebar = ({ updateSelectedName }) => {
   useEffect(() => {
     // Fungsi ini akan dipanggil setiap kali activeTab atau campaigns berubah
     filterCampaignsByStatus();
-  }, [activeTab, campaigns]);
+  }, [activeTab, data]);
 
   const filterCampaignsByStatus = () => {
     if (activeTab === 'all') {
-      setFilteredCampaigns(campaigns);
+      setFilteredCampaigns(data);
     } else {
-      const filtered = campaigns.filter((item) => {
-        if (activeTab === 'draft' && item.status === 2) {
+      const filtered = data.filter((item) => {
+        if (activeTab === 'draft' && item.campaign_status === 2) {
           return true;
         }
-        if (activeTab === 'active' && item.status === 1) {
+        if (activeTab === 'active' && item.campaign_status === 1) {
           return true;
         }
-        if (activeTab === 'completed' && item.status === 3) {
+        if (activeTab === 'completed' && item.campaign_status === 3) {
           return true;
         }
         return false;
@@ -48,7 +49,7 @@ const Sidebar = ({ updateSelectedName }) => {
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch('https://umax-1-z7228928.deta.app/campaignslistt', {
+      const response = await fetch('https://umaxdashboard-1-w0775359.deta.app/metrics', {
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -56,10 +57,8 @@ const Sidebar = ({ updateSelectedName }) => {
         },
       });
       if (response.ok) {
-        const data = await response.json();
-        // Assuming that the API response includes an "id" field for each campaign
-        const campaignsWithId = data.map((campaign, index) => ({ ...campaign, id: index + 1 }));
-        setCampaigns(campaignsWithId);
+        const responseData = await response.json(); // Rename to avoid conflict with 'data' state
+        setData(responseData); // Set the response data
       } else {
         console.error('Gagal mengambil data');
       }
@@ -69,9 +68,7 @@ const Sidebar = ({ updateSelectedName }) => {
   };
   useEffect(() => {
     fetchData();
-
   }, []);
-
 
   const handleScroll = () => {
     const container = document.querySelector('.lebar-list');
@@ -97,12 +94,12 @@ const Sidebar = ({ updateSelectedName }) => {
 
   const handleItemClick = (itemName) => {
     // Temukan kampanye yang sesuai dengan nama yang diklik
-    const selectedCampaign = campaigns.find((campaign) => campaign.name === itemName);
+    const selectedData = data.find((data) => data.campaign_name === itemName);
 
-    if (selectedCampaign) {
+    if (selectedData) {
       setActiveItem(itemName);
       updateSelectedName(itemName);
-      setSelectedData(selectedCampaign);
+      setSelectedData(selectedData);
     }
   };
 
@@ -110,9 +107,16 @@ const Sidebar = ({ updateSelectedName }) => {
   // menyimpan warna array
   const customCircleColors = ['#8F8F8F', '#00FF00', '#00FF00', '#FF8A00', '#FF8A00'];
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    const parts = dateString.split('/');
+    if (parts.length === 3) {
+      const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+      const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+      return new Date(formattedDate).toLocaleDateString('id-ID', options);
+    }
+    return "Invalid Date";
   };
+  
+  
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -171,24 +175,24 @@ const Sidebar = ({ updateSelectedName }) => {
   
     // Tambahkan baris berikut untuk melakukan filtering berdasarkan kata kunci pencarian
     const filteredByKeyword = filtered.filter((item) =>
-      item.name.toLowerCase().includes(searchKeyword.toLowerCase())
+      item.campaign_name.toLowerCase().includes(searchKeyword.toLowerCase())
     );
   
     return filteredByKeyword.slice(0, itemsToShow).map((item, index) => {
       let circleColor;
 
       // Tambahkan pemeriksaan status item dan atur warna lingkaran sesuai dengan status
-      if (item.status === 1) { // Status 'active'
+      if (item.campaign_status === 1) { // campaign_status 'active'
         circleColor = '#00FF00'; // Hijau
-      } else if (item.status === 2) { // Status 'draft'
+      } else if (item.campaign_status === 2) { // campaign_status 'draft'
         circleColor = '#8F8F8F'; // Abu-abu
-      } else if (item.status === 3) { // Status 'completed'
+      } else if (item.campaign_status === 3) { // campaign_status 'completed'
         circleColor = '#FF8A00'; // Orange
       } else {
         circleColor = '#8F8F8F'; // Default: Abu-abu
       }
 
-      const isItemActive = activeItem === item.name; // Menggunakan 'name' alih-alih 'title'
+      const isItemActive = activeItem === item.campaign_name; // Menggunakan 'name' alih-alih 'title'
       const listItemClasses = `flex flex-col h-24 mb-0 -ml-2 ${isItemActive ? 'bg-blue-200 ' : ''
         } ${!isItemActive ? nonActiveHoverClass : ''}`;
 
@@ -196,21 +200,21 @@ const Sidebar = ({ updateSelectedName }) => {
         <li
           key={index}
           className={listItemClasses}
-          onClick={() => handleItemClick(item.name)}
+          onClick={() => handleItemClick(item.campaign_name)}
         >
           {index > 0 && <hr className="border-gray-300 " />}
           <div
-            className={`${activeTab === item.name.toLowerCase() ? 'bg-blue-200' : ''}`}
+            className={`${activeTab === item.campaign_name.toLowerCase() ? 'bg-blue-200' : ''}`}
           />
           <div className="relative mt-2 pl-3 flex items-center w-20">
             <div className="flex items-center">
               <img
                 src={
-                  item.platform === 1
-                    ? meta // Import meta from assets when platform is 1
-                    : item.platform === 2
-                      ? google // Import google from assets when platform is 2
-                      : item.platform === 3
+                  item.campaign_platform === 1
+                    ? meta // Import meta from assets when campaign_platform is 1
+                    : item.campaign_platform === 2
+                      ? google // Import google from assets when campaign_platform is 2
+                      : item.campaign_platform === 3
                         ? tiktok // Import tiktok from assets when platform is 3
                         : '' // Default value if platform doesn't match 1, 2, or 3
                 }
@@ -219,11 +223,11 @@ const Sidebar = ({ updateSelectedName }) => {
               />
 
               <span
-                className={`truncate w-52 ${activeItem === item.name ? 'text-black' : ''
+                className={`truncate w-52 ${activeItem === item.campaign_name ? 'text-black' : ''
                   }`}
-                title={item.name}
+                title={item.campaign_name}
               >
-                {item.name}
+                {item.campaign_name}
               </span>
             </div>
             <div className="absolute left-64 flex items-center">
@@ -245,7 +249,7 @@ const Sidebar = ({ updateSelectedName }) => {
             </div>
             <div>
               <p >{translations['Start Date']}</p>
-              <p >{formatDate(item.startdate)}</p>
+              <p >{formatDate(item.campaign_startdate)}</p>
             </div>
           </div>
         </li>
