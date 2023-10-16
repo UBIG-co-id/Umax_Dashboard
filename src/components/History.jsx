@@ -87,7 +87,7 @@ const History = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-4">
-      <div style={{ overflowX: "auto", maxHeight: "300px" }}> {/* Menambahkan max-height pada elemen yang mengelilingi tabel */}
+      {/* <div style={{ overflowX: "auto", maxHeight: "300px" }}>
         <table className="w-max mt-4 border-collapse">
           <thead>
             <tr>
@@ -134,7 +134,7 @@ const History = () => {
         >
           Next
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef  } from 'react';
-import { defaultProfile, overlay, security } from '../assets';
+import { defaultProfile, cover, security } from '../assets';
 import { MdOutlineAccountCircle } from 'react-icons/md';
 import { BiLockOpenAlt } from 'react-icons/bi';
 import { IoIosArrowBack } from 'react-icons/io';
@@ -222,9 +222,16 @@ export default function CheckoutForm() {
   return (
     <div className="bg-gray-200 flex justify-center items-center w-screen">
     <Card className="w-full">
-      <div
-        className=" m-0 bg-gradient-to-tr from-gray-700 via-gray-800 to-gray-900  grid place-items-start rounded-b-[20px] py-8 px-4 text-center"
-      >
+    <div
+    className="m-0 grid place-items-start rounded-b-[20px] py-8 px-4 text-center"
+    style={{ 
+      backgroundImage: `url(${cover})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      height: '210px',
+    }}
+  >
+    <div className=" bg-opacity-40 w-full h-[210px] rounded-b-[20px] absolute top-0 left-0"></div>
       <h1 className='relative -mt-5 mx-auto text-lg text-white'>Edit Profile</h1>
         {/* button back */}
         <Link to="/profile">

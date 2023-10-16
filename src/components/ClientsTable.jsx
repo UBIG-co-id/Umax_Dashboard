@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef,useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTable, useGlobalFilter, usePagination } from 'react-table';
 // import data from './DataClient';
 import { Link, useNavigate, useParams, } from 'react-router-dom';
@@ -22,24 +22,14 @@ function ClientsTable() {
   const tableRef = useRef(null);
   const [showAddPopup, setShowAddPopup] = useState(false);
   const navigate = useNavigate();
+
   const [selectedFilter, setSelectedFilter] = useState("");
 
+  const handleAddClick = () => {
+    navigate('/AddClients');
+  };
 
-  const { _id } = useParams();
-  const token = localStorage.getItem('jwtToken');
-  const [values, setValues] = useState({
-    _id: _id,
-    name: '',
-    address: '',
-    contact: '',
-    status: '',
-    notes: ''
-  })
-  const headers = {
-    'accept': 'application/json',
-    'Content-Type': 'application/x-www-form-urlencoded',
-    'Authorization': `Bearer ${token}`,
-  }
+ 
   // UPDATE DATA
 
   // END UPDATE
@@ -95,46 +85,7 @@ function ClientsTable() {
 
   // END DELETE
 
-  // ADD DATA
-  const formik = useFormik({
-    initialValues: {
-      name: '',
-      address: '',
-      contact: '',
-      notes: '',
-      status: '',
-      is_admin: false,
-    },
-
-    onSubmit: (values) => {
-      const token = localStorage.getItem('jwtToken');
-      fetch('https://umax-1-z7228928.deta.app/clients', {
-        method: 'POST',
-        headers: {
-          'accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: new URLSearchParams(values).toString(),
-      })
-
-        .then(response => response.json())
-        .then(data => {
-          // Handle the response from the backend (e.g., success message or error)
-          console.log(data);
-          if (data.message === 'data berhasil ditambah') {
-            // Redirect to the dashboard page
-            navigate('/Accounts');
-          }
-        })
-        .catch(error => {
-          // Handle errors, e.g., network errors
-          console.error(error);
-        });
-
-    },
-  });
-  // END ADD DATA
+ 
 
   // GET DATA
   async function fetchData() {
@@ -275,16 +226,16 @@ function ClientsTable() {
         accessor: 'action',
         Cell: ({ row }) => (
           <div className="flex space-x-2 justify-center">
-            <button
+            {/* <button
               onClick={() => handleDelete(row.original._id)}
               className="bg-red-200 hover:bg-red-300 text-red-600 py-1 px-1 rounded"
             >
               <BsTrash3 />
-            </button>
+            </button> */}
             <Link to={`/updateclient/${row.original._id}`}>
               <button
 
-                className="bg-blue-200 hover:bg-blue-300 text-blue-600 py-1 px-1 rounded"
+                className="bg-sky-500 hover:bg-blue-500 text-white py-1 px-1 rounded"
               >
                 <AiOutlineEdit />
               </button>
@@ -327,25 +278,7 @@ function ClientsTable() {
     usePagination
   );
 
-  // const { globalFilter } = state;
 
-  // const handleEdit = (rowId) => {
-  //   console.log('Editing row with ID:', rowId);
-  // };
-
-  // const handleDelete = (rowId) => {
-  //   const updatedData = tableData.filter((row) => row.id !== rowId);
-  //   setTableData(updatedData);
-  // };
-
-  // useEffect(() => {
-  //   console.log('Selected Status:', selectedStatus);
-  //   const filteredData = tableData.filter((row) => {
-  //     return selectedStatus === "" || row.status.toString() === selectedStatus;
-  //   });
-  //   console.log('Filtered Data:', filteredData);
-  //   setTableData(filteredData);
-  // }, [selectedStatus]);
 
   const handleFilterChange = (e) => {
     const newValue = e.target.value;
@@ -413,11 +346,11 @@ function ClientsTable() {
 
 
   return (
-    <div className="border-2 border-slate-200 bg-white p-0 lg:p-5 m-2 lg:m-10 mt-10 rounded-lg relative">
-      <div className="container mx-auto p-4 px-0">
-        <div className="grid grid-cols-12 gap-2 px-2 md:px-0 -mt-5 mb-2">
+    <div className="border-2 border-slate-200 bg-white p-0 m-2 lg:m-10 mt-8 rounded-lg relative">
+        <div className="container mx-auto p-4">
+        <div className="grid grid-cols-12 gap-2 px-2 md:px-0 mb-2">
           {/* Search bar */}
-          <div className="relative col-span-12 lg:col-span-3">
+          <div className="relative col-span-4 lg:col-span-2">
             <input
               type="text"
               value={globalFilter}
@@ -432,18 +365,7 @@ function ClientsTable() {
           {/* End */}
 
           {/* bagian status */}
-          <div className="relative col-span-12 lg:col-span-3">
-            {/* <select
-              
-              value={globalFilter}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-              placeholder="Search"
-              className="p-2 w-full min-w-0 h-9 pl-8 text-xs border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
-            >
-              <option hidden>Status</option>
-              <option value="1">Active</option>
-              <option value="2">Deactive</option>
-            </select> */}
+          <div className="relative col-span-4 lg:col-span-2">
             <select
               className="w-full min-w-0 px-1 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
               value={selectedFilter}
@@ -460,20 +382,24 @@ function ClientsTable() {
           {/* End */}
 
           {/* div kosong untuk memberi jarak */}
-          <div className="hidden lg:block col-span-2"></div>
+          <div className="hidden lg:flex col-span-7"></div>
 
-          {/* Button add data */}
+          <div className="gap-2 flex lg:justify-end">
           <button
-            type="button"
-            data-te-ripple-init
-            data-te-ripple-color="light"
-            data-te-ripple-centered="true"
-            className="col-span-8 lg:col-span-2 flex items-center gap-2 border border-slate-300 h-9 rounded-md focus:border-gray-500 focus:outline-none focus:ring-0 bg-white p-2 text-xs font-medium leading-normal text-gray-800 hover:bg-gray-50"
-            onClick={toggleAddPopup} // Memanggil fungsi toggleAddPopup saat tombol "Add" diklik
-          >
-            <BsPlus className="font-medium text-lg" />
-            <span>Add</span>
-          </button>
+              type="button"
+              data-te-ripple-init
+              data-te-ripple-color="light"
+              data-te-ripple-centered="true"
+              className="col-span-4 max-sm:col-span-4 lg:col-span-1 inline-flex flex-1 items-center border border-slate-300 h-9 rounded-md bg-white px-6 pb-2.5 pt-2 text-xs font-medium leading-normal text-gray-800 hover:bg-gray-50"
+              onClick={handleAddClick}
+
+            >
+
+              <BsPlus className="font-medium text-lg" />
+              <span >Add</span>
+            </button>
+
+
 
           {/* menu add data */}
 
@@ -481,101 +407,7 @@ function ClientsTable() {
 
 
           {/* Pop-up menu */}
-          {showAddPopup && (
-            <div className="fixed z-50 inset-0 flex items-center justify-center">
-              <div className="fixed -z-10 inset-0 bg-black bg-opacity-50"></div>
-              <form onSubmit={formik.handleSubmit} className="bg-white p-5 rounded-lg shadow-lg max-h-[80vh] overflow-y-auto">
-                <h2 className="text-xl font-semibold mb-4" >Client</h2>
-                <div className="flex flex-col md:flex-row gap-4 mb-4">
-                  <div className="flex flex-col">
-                    <label className='pb-2 text-sm ' htmlFor="name">Name</label>
-                    <input
-                      type="text"
-                      name='name'
-                      id="name"
-                      onChange={formik.handleChange}
-                      value={formik.values.name}
-                      className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <label className='pb-2 text-sm ' htmlFor="address">Address</label>
-                    <input
-                      type="text"
-                      name='address'
-                      id="address"
-                      onChange={formik.handleChange}
-                      value={formik.values.address}
-                      className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col md:flex-row gap-4 mb-4">
-                  <div className="flex flex-col">
-                    <label className='pb-2 text-sm ' htmlFor="contact">Contact</label>
-                    <input
-                      type="number"
-                      id="contact"
-                      name='contact'
-                      onChange={formik.handleChange}
-                      value={formik.values.contact}
-                      className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
-                    />
-                  </div>
-
-                  <div className="flex flex-col">
-                    <label className='pb-2 text-sm' htmlFor="status">Status</label>
-                    <select
-                      name="status"
-                      id="status"
-                      onChange={formik.handleChange}
-                      value={formik.values.status}
-                      className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
-                    >
-                      <option value="1">Active</option>
-                      <option value="2">Deactive</option>
-                    </select>
-                  </div>
-
-                </div>
-
-                <div className="flex flex-col md:flex-row gap-4 mb-4">
-                  <div className="flex flex-col">
-                    <label className='pb-2 text-sm ' htmlFor="notes">Notes</label>
-                    <textarea
-                      type='text'
-                      name='notes'
-                      id="notes"
-                      onChange={formik.handleChange}
-                      value={formik.values.notes}
-                      className="p-2 max-h-md select-custom-width text-slate-500 border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
-                    ></textarea>
-                  </div>
-                </div>
-
-                <div className="flex justify-end">
-                  {/* Tombol Save */}
-                  <button
-                    type="button"
-                    onClick={toggleAddPopup}
-                    className="text-gray-500 mr-4"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-
-                    className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
-                  >
-
-                    Save
-
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
+         
 
 
 
@@ -584,7 +416,7 @@ function ClientsTable() {
           {/* Button export excel */}
           <button
             type="button"
-            className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
+            className="col-span-2 max-sm:col-span-4 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
             onClick={onDownload}
           >
             <RiFileExcel2Line className="relative font-medium text-lg" />
@@ -598,11 +430,12 @@ function ClientsTable() {
           {/* End */}
           <button
             type="button"
-            className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
+            className="col-span-2 max-sm:col-span-4 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
             onClick={generatePDF}
           >
             <AiOutlineFilePdf className="relative font-medium text-lg" />
           </button>
+          </div>
         </div>
 
         <div className="w-full bg-white max-md:overflow-x-scroll" ref={componentPDF}>
@@ -618,7 +451,7 @@ function ClientsTable() {
                   {headerGroup.headers.map((column) => (
                     <th
                       {...column.getHeaderProps()}
-                      className={`p-2 text-white bg-sky-700 font-medium border-slate-300 border ${column.id === 'action' || column.id === 'status'
+                      className={`p-2 text-white bg-sky-500 font-medium border-slate-300 border ${column.id === 'action' || column.id === 'status'
                         ? 'text-center' // Untuk rata tengah
                         : 'text-left' // Untuk kolom lainnya
                         }`}
@@ -636,7 +469,7 @@ function ClientsTable() {
                 return (
                   <tr
                     {...row.getRowProps()}
-                    className={`border border-slate-300 text-gray-600 hover:bg-blue-300 hover:text-gray-700 ${i % 2 === 0 ? 'bg-gray-100' : 'bg-white' // Memberikan latar belakang selang-seling
+                    className={`border border-slate-300 text-gray-600 hover:bg-blue-300 hover:text-gray-700 ${i % 2 === 1 ? 'bg-gray-100' : 'bg-white' // Memberikan latar belakang selang-seling
                       }`}                  >
                     {row.cells.map((cell) => {
                       return (

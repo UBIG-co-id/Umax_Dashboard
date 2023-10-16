@@ -4,9 +4,10 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { MdDashboard } from 'react-icons/md';
 import { BiSolidMegaphone, BiGroup, BiBell, BiLogOut } from 'react-icons/bi';
 import { AiOutlineUser } from 'react-icons/ai';
-import { CiSettings } from 'react-icons/ci';
+import { CiSettings, CiGlobe } from 'react-icons/ci';
 import { logo, defaultProfile } from '../assets';
 import { FiSun, FiMoon } from 'react-icons/fi';
+import { RxCross2 } from 'react-icons/rx';
 import '../styles.css';
 import React from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
@@ -15,7 +16,13 @@ import Axios from 'axios';
 import Translation from "../translation/Translation.json"
 import { useLanguage } from '../LanguageContext';
 import { uk, indonesia } from '../assets';
+import { Suspense } from 'react';
+import LazyLoad from 'react-lazyload';
 
+import {
+  Drawer,
+
+} from "@material-tailwind/react";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -30,6 +37,67 @@ const navigation = [
 
 const Navbar = () => {
   const { selectedLanguage, toggleLanguage } = useLanguage();
+
+   //draweer
+  const [openRight, setOpenRight] = React.useState(false);
+
+
+  useEffect(() => {
+    if (openRight) {
+      document.body.classList.add('no-scroll');
+    } else {
+      document.body.classList.remove('no-scroll');
+    }
+
+    // Membersihkan efek
+    return () => {
+      document.body.classList.remove('no-scroll');
+    };
+  }, [openRight]);
+
+  const openDrawerRight = () => setOpenRight(true);
+  const closeDrawerRight = () => setOpenRight(false);
+const theme = {
+  drawer: {
+    defaultProps: {
+      size: 300,
+      overlay: true,
+      placement: "left",
+      overlayProps: undefined,
+      className: "",
+      dismiss: undefined,
+      onClose: undefined,
+      transition: {
+        type: "tween",
+        duration: 0.3,
+      },
+    },
+    styles: {
+      base: {
+        drawer: {
+          position: "fixed",
+          zIndex: "z-[9999]",
+          pointerEvents: "pointer-events-auto",
+          backgroundColor: "bg-white",
+          boxSizing: "box-border",
+          width: "w-full",
+          boxShadow: "shadow-2xl shadow-blue-gray-900/10",
+        },
+        overlay: {
+          position: "absolute",
+          inset: "inset-0",
+          width: "w-full",
+          height: "h-full",
+          pointerEvents: "pointer-events-auto",
+          zIndex: "z-[9995]",
+          backgroundColor: "bg-black",
+          backgroundOpacity: "bg-opacity-60",
+          backdropBlur: "none",
+        },
+      },
+    },
+  },
+};
 
   const translations = Translation[selectedLanguage];
   const navigate = useNavigate();
@@ -47,11 +115,8 @@ const Navbar = () => {
     dispatch({ type: 'SET_TOGGLE_NAVBAR', payload: !state.toggleNavbar })
   }
 
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+
   // const toggleLanguage = () => {
   //   setSelectedLanguage(selectedLanguage === 'english' ? 'indonesia' : 'english');
   // };
@@ -78,6 +143,16 @@ const Navbar = () => {
   };
 
   // ambil data gambar dan nama
+
+  function PlaceholderProfileImage() {
+    return (
+      <div className='rounded-full border-black/10 bg-black/10 p-1'>
+        <div className="h-8 w-8 bg-gray-300 rounded-full"></div>
+      </div>
+    );
+  }
+
+
   const [profileData, setProfileData] = useState({
     name: "Your Name",
     image: defaultProfile,
@@ -116,6 +191,7 @@ const Navbar = () => {
     fetchData();
   }, []);
 
+  
 
   return (
     <Disclosure as="nav" className="bg-white shadow-md">
@@ -188,17 +264,7 @@ const Navbar = () => {
                 </div>
               </div>
 
-
-              <select onChange={toggleLanguage}>
-                <option value="english">
-                  <img src={uk} alt="English" className="w-6 h-6 mr-2" />
-                  English
-                </option>
-                <option value="indonesia">
-                  <img src={indonesia} alt="Indonesia" className="w-6 h-6 mr-2" />
-                  Indonesia
-                </option>
-              </select>
+              
 
               {/* <select onChange={toggleLanguage}>
                   <option value="english">
@@ -212,43 +278,12 @@ const Navbar = () => {
               <div className="absolute  inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
 
 
-                {/* tombol mode gelap */}
-                <label htmlFor="darkModeToggle" className="relative right-7 flex items-center cursor-pointer">
-                  <div className="relative">
-                    <input
-                      type="checkbox"
-                      id="darkModeToggle"
-                      className="sr-only"
-                      onChange={toggleDarkMode}
-                      checked={darkMode}
-                    />
-                    <div className={`w-14 h-7 bg-white rounded-full p-1 flex items-center bordernya transition-transform ease-in-out duration-300`}>
-                      <div
-                        className={`dot w-5 h-5 bg-cyan-100 rounded-full shadow transition-transform ease-in-out duration-300`}
-                        style={{
-                          transform: darkMode ? 'translateX(100%)' : 'translateX(0)',
-                          opacity: darkMode ? '1' : '1',
-                        }}
-                      >
-                        {darkMode ? (
-                          <FiMoon className="h-5 w-5 text-sky-600 absolute left-0" />
-                        ) : (
-                          <FiSun className="h-5 w-5 text-sky-600 absolute right-0" />
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </label>
-
-
-
-
-
+               
 
                 {/* tombol notif */}
                 <button
                   type="button"
-                  className="relative right-3 text-gray-500 hover:text-gray-800"
+                  className="relative right-20 text-gray-500 hover:text-gray-800"
                   onClick={toggleNotifications}
                 >
                   {notificationCount > 0 && (
@@ -313,20 +348,42 @@ const Navbar = () => {
                     </Menu>
                   </Transition>
                 )}
+                
 
                 {/* profile */}
-                <Menu as="div" className="relative ml-3">
+                <Menu as="div" className="relative ml-3 right-16">
                   <div>
                     <Menu.Button className="relative flex rounded-full  text-sm">
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">Open user menu</span>
-                      <div className='rounded-full  border-black/10 bg-black/10 p-1'>
-                        <img
-                          className="h-8 w-8 object-cover rounded-full"
-                          src={`data:image/jpeg;base64,${profileData.image}`}
-                          alt="profile"
-                        />
-                      </div>
+
+                     <LazyLoad height={200} offset={100}>
+                <div className='rounded-full flex  border-black/10 bg-black/10 p-1'>
+                  {profileData.image ? (
+                    <img
+                      className="h-8  w-8 object-cover rounded-full"
+                      src={`data:image/jpeg;base64,${profileData.image}`}
+                      alt="profile"
+                    />
+
+                  ) : (
+                    <img
+                      className="h-8 w-8 object-cover rounded-full"
+                      src={defaultProfile} 
+                      alt="profile"
+                    />
+                  )}
+
+                    {/* <span className='absolute left-14 flex-col font-medium flex items-start text-gray-800'>
+                    {profileData.name} 
+                    <a className='font-normal text-gray-600'>Admin</a>
+                    </span> */}
+                </div>
+
+              </LazyLoad>
+
+
+
                     </Menu.Button>
                   </div>
                   <Transition
@@ -338,11 +395,10 @@ const Navbar = () => {
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <Menu.Items className="absolute -left-16 z-50 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <Menu.Item>
                         <a
-                          href="#"
-                          className={classNames('bg-slate-500 rounded-t-md block px-4 py-2 text-sm text-white')}
+                          className={classNames('bg-slate-500 rounded-t-md block px-4 -mt-1 py-2 text-sm text-white')}
                         >
                           Hallo, {profileData.name}
                         </a>
@@ -360,19 +416,23 @@ const Navbar = () => {
                       </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(active ? 'bg-gray-100' : '', 'flex items-center px-4 py-2 text-sm text-gray-700')}
+                          <button
+                            onClick={openDrawerRight}
+                            className={classNames(active ? 'bg-gray-100' : '', 'flex items-center w-full px-4 py-2 text-sm text-gray-700')}
                           >
                             <CiSettings className="mr-2" />Settings
-                          </a>
+                          </button>
                         )}
+                        
                       </Menu.Item>
+      
+                    
+
                       <Menu.Item>
                         {({ active }) => (
                           <button
                             onClick={handleSignOut}
-                            className={classNames(active ? 'bg-gray-100' : '', 'flex items-center px-4 py-2 text-sm text-gray-700')}
+                            className={classNames(active ? 'bg-gray-100' : '', 'flex items-center w-full px-4 py-2 text-sm text-gray-700')}
                           >
                             <BiLogOut className="mr-2" /> Sign out
                           </button>
@@ -380,12 +440,82 @@ const Navbar = () => {
                       </Menu.Item>
                     </Menu.Items>
                   </Transition>
+
+                  
                 </Menu>
+
+
+
 
               </div>
             </div>
           </div>
 
+                          
+                <Drawer
+                placement="right"
+                open={openRight}
+                onClose={closeDrawerRight}
+                className="pl-4 pt-3"
+                overlay={true}
+                >
+                <button 
+                onClick={closeDrawerRight}
+                className='flex items-center text-lg gap-2'>
+                <RxCross2 className='text-gray-400  hover:text-gray-600'/>
+                <h1 className='font-medium text-gray-700'>Settings</h1>
+                </button>
+                <hr className='relative -ml-4 top-2 mx-0'/>
+
+
+                 {/* tombol mode gelap */}
+                   <div className='flex justify-end mx-5 pt-10'>
+                 <label htmlFor="darkModeToggle" className="flex items-center cursor-pointer">
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      id="darkModeToggle"
+                      className="sr-only"
+                      onChange={toggleDarkMode}
+                      checked={darkMode}
+                    />
+                    <div className={`w-14 h-7 bg-white rounded-full p-1 flex items-center bordernya transition-transform ease-in-out duration-300`}>
+                      <div
+                        className={`dot w-5 h-5 bg-cyan-100 rounded-full shadow transition-transform ease-in-out duration-300`}
+                        style={{
+                          transform: darkMode ? 'translateX(100%)' : 'translateX(0)',
+                          opacity: darkMode ? '1' : '1',
+                        }}
+                      >
+                        {darkMode ? (
+                          <FiMoon className="h-5 w-5 text-sky-600 absolute left-0" />
+                        ) : (
+                          <FiSun className="h-5 w-5 text-sky-600 absolute right-0" />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </label>
+                    </div>
+
+                {/* ganti bahasa */}
+                <div className="p-4">
+                <select onChange={toggleLanguage}>
+                  <option value="english">
+                    <img src={uk} alt="English" className="w-6 h-6 mr-2" />
+                    English
+                  </option>
+                  <option value="indonesia">
+                    <img src={indonesia} alt="Indonesia" className="w-6 h-6 mr-2" />
+                    Indonesia
+                  </option>
+                </select>
+                <div className="flex justify-end">
+                
+                </div>
+                </div>
+                </Drawer>
+                      
           <Disclosure.Panel className="sm:hidden">
             <div className="space-y-1 px-2 pb-3 pt-2">
               {navigation.map((item) => (
@@ -402,8 +532,7 @@ const Navbar = () => {
                   {item.name}
                 </Disclosure.Button>
               ))}
-
-
+        
             </div>
           </Disclosure.Panel>
         </>

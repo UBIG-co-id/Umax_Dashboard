@@ -3,6 +3,8 @@ import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { AiOutlineEdit, AiOutlineFilePdf, AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import Navbar from "../components/Navbar";
+import CampaignTable from "../components/CampaignTable";
 
 const UpdateCampaign = () => {
     const { _id } = useParams();
@@ -91,8 +93,33 @@ const UpdateCampaign = () => {
             .catch(err => console.log(err))
     }
    
+    
+  // close menggunakan esc
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+        if (e.key === "Escape") {
+            console.log("Esc key pressed");
+            navigate(-1); 
+        };
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+        window.removeEventListener("keydown", handleKeyDown);
+    };
+}, [navigate]);
 
   return (
+    <main className="bg-slate-100 min-h-screen">
+    <div>
+        <Navbar />
+        <div className="bg-white min-h-[100vh] w-auto m-2 border rounded-lg">
+            <span className="p-10 relative top-4 text-gray-600 font-medium text-2xl">
+                Campaigns
+            </span>
+            <CampaignTable />
+        </div>
     <div className="fixed z-50 inset-0 flex items-center justify-center">
                 <div className="fixed -z-10 inset-0 bg-black bg-opacity-50"></div>
                 <form onSubmit={handleSubmit} className=" bg-white p-5 rounded-lg shadow-lg max-h-[80vh] overflow-y-auto">
@@ -259,7 +286,7 @@ const UpdateCampaign = () => {
                     <Link to="/Campaigns">
                         <button
                             type="button"
-                            // onClick={toggleEditPopup}
+                            onClick={() => navigate(-1)}
                             className="text-gray-500 mr-4"
                         >
                             Cancel
@@ -274,7 +301,8 @@ const UpdateCampaign = () => {
                   </div>
                 </form>
               </div>
-       
+              </div>
+       </main>
 
   )
 }

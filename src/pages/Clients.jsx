@@ -2,6 +2,7 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 import ClientsTable from '../components/ClientsTable';
 
+
   
 
 const Campaigns = () => {

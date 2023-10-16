@@ -8,6 +8,9 @@
 .lebarcard{
   with: 88%;
 }
+.no-scroll {
+  overflow: hidden;
+}
 
 /* CSS untuk header "Action" */
 .action-column {
