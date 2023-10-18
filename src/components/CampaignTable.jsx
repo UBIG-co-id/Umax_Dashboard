@@ -16,6 +16,8 @@ import { useFormik } from 'formik';
 import { Link, useNavigate, useParams, } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import '../styles.css';
+
 
 
 function DataTable() {
@@ -74,7 +76,14 @@ const handleDelete = async (_id) => {
             },
           });
         } else {
-          Swal.fire('Error', 'An error occurred while deleting the data.', 'error');
+          Swal.fire({
+            title: 'Error!',
+            text: 'Terjadi kesalahan saat menghapus data.',
+            icon: 'error',
+            customClass: {
+              confirmButton: 'custom-error-button-class',
+            },
+          });
         }
       } catch (error) {
         Swal.fire('Error', 'An error occurred while deleting the data.', 'error');
@@ -190,9 +199,11 @@ const handleDelete = async (_id) => {
     switch (status) {
       case 1:
         statusStyle = {
-          color: '#00CA00', 
-          padding: '2px',
-          borderRadius: '7px',
+          backgroundColor: "#22C55E",
+          color: '#ffff',
+          padding: '5px 13px',
+          fontSize: "12px",
+          borderRadius: '6px',
           fontWeight: '500', 
         };
         return (
@@ -200,9 +211,11 @@ const handleDelete = async (_id) => {
         );
       case 2:
         statusStyle = {
-          color: '#8F8F8F', 
-          padding: '2px',
-          borderRadius: '7px',
+          backgroundColor: "#ADB5BD",
+          color: '#ffff', 
+          padding: '5px 13px',
+          fontSize: "12px",
+          borderRadius: '6px',
           fontWeight: '500', 
         };
         return (
@@ -210,8 +223,10 @@ const handleDelete = async (_id) => {
         );
       case 3:
         statusStyle = {
-          color: '#FF8A00', 
-          padding: '2px',
+          backgroundColor: "#F59E0B",
+          color: '#ffff', 
+          padding: '5px 13px',
+          fontSize: "10px",
           borderRadius: '7px',
           fontWeight: '500', 
         };
@@ -279,8 +294,10 @@ const handleDelete = async (_id) => {
         accessor: "platform",
         Cell: ({ row }) => (
           <div className="flex justify-center">
+          <span className="text-blue-700 underline cursor-pointer">
             {getPlatFormString(row.original.platform)}
-          </div>
+          </span>
+        </div>
         ),
       },
       {
@@ -289,6 +306,11 @@ const handleDelete = async (_id) => {
       },
       {
         Header: "Objective",
+        Cell: ({ row }) => (
+          <div className="flex text-red-900 justify-center">
+            {getObjectiveString(row.original.objective)}
+          </div>
+        ),
         accessor: "objective",
         Cell: ({ row }) => (
           <div className="flex justify-center">
@@ -300,24 +322,9 @@ const handleDelete = async (_id) => {
         Header: "Start Date",
         accessor: "startdate",
         Cell: ({ value }) => {
-          // Konversi format tanggal "15/10/2023" menjadi "2023-10-15"
-          const parts = value.split("/");
-          if (parts.length === 3) {
-            const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-        
-            // Buat objek Date dari tanggal yang sudah diubah formatnya
-            const date = new Date(formattedDate);
-        
-            // Periksa apakah tanggal valid sebelum mencoba mengurai
-            if (!isNaN(date)) {
-              const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-              const formattedTime = date.toLocaleDateString('id-ID', options);
-              return <div className="flex justify-center">{formattedTime}</div>;
-            }
-          }
-          
-          // Tanggal tidak valid, mungkin perlu ditangani dengan cara khusus
-          return <div className="flex justify-center">Invalid Date</div>;
+          const date = new Date(value);
+          const formattedTime = date.toLocaleTimeString('id-ID', { year:'numeric', day: '2-digit',month: '2-digit', hour: '2-digit', minute: '2-digit' });
+          return <div className="flex justify-center">{formattedTime}</div>;
         },
       },
       {
@@ -454,8 +461,7 @@ const handleDelete = async (_id) => {
 
 
   return (
-    <div>
-    <div className="border-2 border-slate-200 bg-white p-0 m-2 lg:m-10 mt-8 rounded-lg relative">
+    <div className="border-2 border-slate-200  p-0 m-2 lg:m-10 mt-8 rounded-lg relative">
         <div className="container mx-auto p-4">
         <div className="grid grid-cols-12 gap-3 px-2 md:px-0 mb-2">
             {/* Search bar */}
@@ -540,7 +546,7 @@ const handleDelete = async (_id) => {
             {/* Button export pdf */}
             <button
               type="button"
-              className="center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
+              className="center  border border-slate-300 h-9 rounded-md  bg-white p-2 hover:bg-gray-50"
               onClick={generatePDF}
             >
               <AiOutlineFilePdf className="relative font-medium text-lg" />
@@ -548,12 +554,12 @@ const handleDelete = async (_id) => {
             </div>
             {/* End */}
           </div>
-
-          <div className="w-full bg-white overflow-x-scroll" ref={componentPDF}>
+{/*  */}
+          <div className=" w-full rounded-md overflow-hidden outline-none shadow-lg shadow-slate-900/10 border-none max-md:overflow-x-auto" ref={componentPDF}>
             <table
               {...getTableProps()}
               ref={tableRef}
-              className="table-auto border-collapse border w-full "
+              className="table-auto w-full"
             >
               <thead>
                 {headerGroups.map((headerGroup) => (
@@ -562,7 +568,7 @@ const handleDelete = async (_id) => {
                     {headerGroup.headers.map((column) => (
                       <th
                         {...column.getHeaderProps()}
-                        className={` p-2 text-white bg-sky-500 font-medium border-slate-300 border ${column.id === "status" || column.id === "id"
+                        className={` p-2 text-white bg-sky-500 font-normal  border-t-0  border-gray-300 ${column.id === "status" || column.id === "id"
                             ? "place-items-center"
                             : "text-left"
                           }`}
@@ -579,7 +585,7 @@ const handleDelete = async (_id) => {
                   return (
                     <tr
                       {...row.getRowProps()}
-                      className={`border border-slate-300 text-gray-600 hover:bg-blue-200 hover:text-gray-700 ${i % 2 === 1 ? "bg-gray-100" : "bg-white"
+                      className={` text-gray-600 hover:bg-blue-200 hover:text-gray-700 ${i % 2 === 1 ? "bg-gray-100" : "bg-white"
                         } `}
                     >
                       {row.cells.map((cell) => {
@@ -587,7 +593,7 @@ const handleDelete = async (_id) => {
                           <td
                             {...cell.getCellProps()}
 
-                            className={`p-2 border-none border-slate-300 ${cell.column.id === "status" ||
+                            className={`p-2 border-gray-300 border-b-0 border-x-0  ${cell.column.id === "status" ||
                                 cell.column.id === "action"
                                 ? "text-center"
                                 : "text-left"
@@ -655,8 +661,6 @@ const handleDelete = async (_id) => {
         </div>
         {/* End Pagination */}
       </div>
-
-    </div>
 
   );
 }

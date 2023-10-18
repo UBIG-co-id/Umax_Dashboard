@@ -9,9 +9,9 @@ import meta from "../assets/meta.svg"
 import cover from "../assets/cover.jpg"; 
 import security from "../assets/security.svg"; 
 import security2 from "../assets/security2.svg";
-import uk from "../assets/uk.png"
+import us from "../assets/us.png"
 import indonesia from "../assets/indonesia.png"
 
 export {
-  logo, profile, tiktok, google, facebook, silang, meta,security, security2, defaultProfile, uk, indonesia, cover
+  logo, profile, tiktok, google, facebook, silang, meta,security, security2, defaultProfile, us, indonesia, cover
 }

@@ -159,20 +159,24 @@ function ClientsTable() {
     switch (status) {
       case 1:
         statusStyle = {
-          color: '#00CA00',
-          padding: '2px',
-          borderRadius: '7px',
-          fontWeight: '500',
+          backgroundColor: "#22C55E",
+          color: '#ffff',
+          padding: '5px 13px',
+          fontSize: "12px",
+          borderRadius: '6px',
+          fontWeight: '500', 
         };
         return (
           <span style={statusStyle}>Active</span>
         );
       case 2:
         statusStyle = {
-          color: '#8F8F8F',
-          padding: '2px',
-          borderRadius: '7px',
-          fontWeight: '500',
+          backgroundColor: "#ADB5BD",
+          color: '#ffff', 
+          padding: '5px 13px',
+          fontSize: "12px",
+          borderRadius: '6px',
+          fontWeight: '500', 
         };
         return (
           <span style={statusStyle}>Deactive</span>
@@ -346,6 +350,7 @@ function ClientsTable() {
 
 
   return (
+    <div>
     <div className="border-2 border-slate-200 bg-white p-0 m-2 lg:m-10 mt-8 rounded-lg relative">
         <div className="container mx-auto p-4">
         <div className="grid grid-cols-12 gap-2 px-2 md:px-0 mb-2">
@@ -438,7 +443,7 @@ function ClientsTable() {
           </div>
         </div>
 
-        <div className="w-full bg-white max-md:overflow-x-scroll" ref={componentPDF}>
+        <div className=" w-full rounded-md overflow-hidden outline-none shadow-lg shadow-slate-900/10 border-none max-md:overflow-x-auto" ref={componentPDF}>
 
           <table
             {...getTableProps()}
@@ -451,7 +456,7 @@ function ClientsTable() {
                   {headerGroup.headers.map((column) => (
                     <th
                       {...column.getHeaderProps()}
-                      className={`p-2 text-white bg-sky-500 font-medium border-slate-300 border ${column.id === 'action' || column.id === 'status'
+                      className={`p-2 text-white bg-sky-500 font-normal border-slate-300 border ${column.id === 'action' || column.id === 'status'
                         ? 'text-center' // Untuk rata tengah
                         : 'text-left' // Untuk kolom lainnya
                         }`}
@@ -469,7 +474,7 @@ function ClientsTable() {
                 return (
                   <tr
                     {...row.getRowProps()}
-                    className={`border border-slate-300 text-gray-600 hover:bg-blue-300 hover:text-gray-700 ${i % 2 === 1 ? 'bg-gray-100' : 'bg-white' // Memberikan latar belakang selang-seling
+                    className={` text-gray-600 hover:bg-blue-300 hover:text-gray-700 ${i % 2 === 1 ? 'bg-gray-100' : 'bg-white' // Memberikan latar belakang selang-seling
                       }`}                  >
                     {row.cells.map((cell) => {
                       return (
@@ -479,7 +484,7 @@ function ClientsTable() {
 
                           {...cell.getCellProps()}
 
-                          className={`p-2 border border-slate-300 ${cell.column.id === 'status' || cell.column.id === 'action'
+                          className={`p-2  border-b-0 border-x-0 border-slate-300 ${cell.column.id === 'status' || cell.column.id === 'action'
                             ? 'text-center action-column' // Terapkan kelas CSS khusus
                             : 'text-left'
                             }`}
@@ -545,6 +550,7 @@ function ClientsTable() {
         </div>
         {/* End Pagination */}
       </div>
+    </div>
     </div>
   );
 }

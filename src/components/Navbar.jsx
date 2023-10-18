@@ -1,5 +1,5 @@
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { Fragment, useState, useEffect, useContext } from 'react';
+import { Fragment, useState ,useEffect, useContext } from 'react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { MdDashboard } from 'react-icons/md';
 import { BiSolidMegaphone, BiGroup, BiBell, BiLogOut } from 'react-icons/bi';
@@ -15,8 +15,7 @@ import { Context } from '../context'
 import Axios from 'axios';
 import Translation from "../translation/Translation.json"
 import { useLanguage } from '../LanguageContext';
-import { uk, indonesia } from '../assets';
-import { Suspense } from 'react';
+import { us, indonesia } from '../assets';
 import LazyLoad from 'react-lazyload';
 
 import {
@@ -28,6 +27,9 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
+
+  
+  
 const navigation = [
   { name: 'Dashboard', href: '/Dashboard' },
   { name: 'Campaigns', href: '/Campaigns' },
@@ -36,7 +38,17 @@ const navigation = [
 ];
 
 const Navbar = () => {
-  const { selectedLanguage, toggleLanguage } = useLanguage();
+  const [selectedLanguage, setSelectedLanguage] = useState('english');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const toggleLanguage = (language) => {
+    setSelectedLanguage(language);
+    setIsDropdownOpen(false);
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
 
    //draweer
   const [openRight, setOpenRight] = React.useState(false);
@@ -117,12 +129,6 @@ const theme = {
 
 
 
-  // const toggleLanguage = () => {
-  //   setSelectedLanguage(selectedLanguage === 'english' ? 'indonesia' : 'english');
-  // };
-  // const translations = Translation[selectedLanguage];
-
-
   const [darkMode, setDarkMode] = useState(false);
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -154,7 +160,7 @@ const theme = {
 
 
   const [profileData, setProfileData] = useState({
-    name: "Your Name",
+    name: "‎",
     image: defaultProfile,
   });
 
@@ -191,8 +197,7 @@ const theme = {
     fetchData();
   }, []);
 
-  
-
+ 
   return (
     <Disclosure as="nav" className="bg-white shadow-md">
       {({ open }) => (
@@ -283,11 +288,11 @@ const theme = {
                 {/* tombol notif */}
                 <button
                   type="button"
-                  className="relative right-20 text-gray-500 hover:text-gray-800"
+                  className="relative right-24 text-gray-500 hover:text-gray-800"
                   onClick={toggleNotifications}
                 >
                   {notificationCount > 0 && (
-                    <span className="absolute  -top-1 -right-1 -mt-1 -mr-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center">
+                    <span className="absolute  -top-1 -right-1 -mt-1 p-[10px] -mr-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center">
                       {notificationCount}
                     </span>
                   )}
@@ -351,7 +356,7 @@ const theme = {
                 
 
                 {/* profile */}
-                <Menu as="div" className="relative ml-3 right-16">
+                <Menu as="div" className="relative ml-3 right-20">
                   <div>
                     <Menu.Button className="relative flex rounded-full  text-sm">
                       <span className="absolute -inset-1.5" />
@@ -374,10 +379,10 @@ const theme = {
                     />
                   )}
 
-                    {/* <span className='absolute left-14 flex-col font-medium flex items-start text-gray-800'>
+                    <span className='absolute left-12 bottom-[3px] leading-5 flex-col font-medium flex items-start text-gray-800'>
                     {profileData.name} 
-                    <a className='font-normal text-gray-600'>Admin</a>
-                    </span> */}
+                    <a className='font-normal text-xs text-gray-700'>Admin</a>
+                    </span>
                 </div>
 
               </LazyLoad>
@@ -469,7 +474,8 @@ const theme = {
 
 
                  {/* tombol mode gelap */}
-                   <div className='flex justify-end mx-5 pt-10'>
+                   <div className='flex justify-between mx-5 pt-10'>
+                 <h1 className='text-gray-700 relative right-3 font-medium'>Theme:</h1>
                  <label htmlFor="darkModeToggle" className="flex items-center cursor-pointer">
                   <div className="relative">
                     <input
@@ -499,21 +505,68 @@ const theme = {
                     </div>
 
                 {/* ganti bahasa */}
-                <div className="p-4">
-                <select onChange={toggleLanguage}>
-                  <option value="english">
-                    <img src={uk} alt="English" className="w-6 h-6 mr-2" />
-                    English
-                  </option>
-                  <option value="indonesia">
-                    <img src={indonesia} alt="Indonesia" className="w-6 h-6 mr-2" />
-                    Indonesia
-                  </option>
-                </select>
-                <div className="flex justify-end">
-                
-                </div>
-                </div>
+              
+                <div className="flex mx-5 mt-14 gap-10 justify-around">
+      <h1 className="text-gray-700 relative right-4 font-medium">Language:</h1>
+      <div className="relative left-1">
+        <div className="relative inline-block text-left">
+          <button
+            onClick={toggleDropdown}
+            className="btn dropdown-toggle flex items-center"
+          >
+            <img
+              src={selectedLanguage === 'english' ? us : indonesia}
+              className="w-6 h-6 mr-2"
+              alt={selectedLanguage === 'english' ? 'English Flag' : 'Indonesia Flag'}
+            />
+            <span className="mr-2">
+              {selectedLanguage === 'english' ? 'English' : 'Indonesia'}
+            </span>
+            <svg
+              className={`w-4 h-4 transition-transform ${
+                isDropdownOpen ? 'transform -rotate-180' : ''
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+          {isDropdownOpen && (
+            <ul className="dropdown-menu right-2 absolute mt-3  py-2 w-32 bg-white border border-gray-300 rounded-lg shadow-lg">
+              <li>
+                <button
+                  onClick={() => toggleLanguage('english')}
+                  className="w-full text-left py-2 px-4 hover:bg-gray-100 pt-1 flex items-center"
+                >
+                  <img src={us} className="w-6 h-6 relative right-2" alt="English Flag" />
+                  <span className='text-sm font-normal text-gray-900'>English</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => toggleLanguage('indonesia')}
+                  className="w-full text-left  py-2 px-4 hover:bg-gray-100 flex items-center"
+                >
+                  <img src={indonesia} className="w-6 h-6 relative right-2" alt="Indonesia Flag" />
+                  <span className='text-sm font-normal text-gray-900'>Indonesia</span>
+                </button>
+              </li>
+            </ul>
+          )}
+        </div>
+      </div>
+    </div>
+
+
+
                 </Drawer>
                       
           <Disclosure.Panel className="sm:hidden">
