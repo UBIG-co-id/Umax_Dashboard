@@ -25,7 +25,7 @@ const UpdateClient = () => {
     const navigate = useNavigate();
     
    useEffect(()=> {
-    axios.get('https://umax-1-z7228928.deta.app/clients/'+_id,{
+    axios.get('https://umaxdashboard-1-w0775359.deta.app/clients/'+_id,{
       headers:headers,
     })
     .then(res => 
@@ -40,7 +40,7 @@ const UpdateClient = () => {
 
     const handleSubmit =(e) => {
         e.preventDefault();
-        axios.put ('https://umax-1-z7228928.deta.app/clients/'+_id,values,{headers})
+        axios.put ('https://umaxdashboard-1-w0775359.deta.app/clients/'+_id,values,{headers})
         .then(res => {
             navigate('/Clients');
         })

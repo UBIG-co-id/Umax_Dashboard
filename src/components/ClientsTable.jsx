@@ -54,7 +54,7 @@ function ClientsTable() {
         try {
           const token = localStorage.getItem('jwtToken');
           const response = await axios.delete(
-            `https://umax-1-z7228928.deta.app/clients/${_id}`,
+            `https://umaxdashboard-1-w0775359.deta.app/clients/${_id}`,
             {
               headers: {
                 'Authorization': `Bearer ${token}`,
@@ -91,7 +91,7 @@ function ClientsTable() {
   async function fetchData() {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch("https://umax-1-z7228928.deta.app/clients", {
+      const response = await fetch("https://umaxdashboard-1-w0775359.deta.app/clients", {
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',

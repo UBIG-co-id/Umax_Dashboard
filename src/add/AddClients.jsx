@@ -19,7 +19,7 @@ const AddDataClients = () => {
 
         onSubmit: (values) => {
             const token = localStorage.getItem('jwtToken');
-            fetch('https://umax-1-z7228928.deta.app/clients', {
+            fetch('https://umaxdashboard-1-w0775359.deta.app/clients', {
                 method: 'POST',
                 headers: {
                     'accept': 'application/json',

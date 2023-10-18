@@ -22,6 +22,11 @@ function DataTable() {
   const [tableData, setTableData] = useState([]);
   const [showAddPopup, setShowAddPopup] = useState(false);
   const navigate = useNavigate();
+  const [currentLocale, setCurrentLocale] = useState("en-US"); // Default to English
+  const toggleLocale = () => {
+    const newLocale = currentLocale === "en-US" ? "id-ID" : "en-US";
+    setCurrentLocale(newLocale);
+  };
   
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [selectedObjective, setSelectedObjective] = useState("");
@@ -49,7 +54,7 @@ const handleDelete = async (_id) => {
       try {
         const token = localStorage.getItem('jwtToken');
         const response = await axios.delete(
-          `https://umax-1-z7228928.deta.app/campaigns/${_id}`,
+          `https://umaxdashboard-1-w0775359.deta.app/campaigns/${_id}`,
           {
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -84,7 +89,7 @@ const handleDelete = async (_id) => {
   async function fetchData() {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch("https://umax-1-z7228928.deta.app/campaigns",{
+      const response = await fetch("https://umaxdashboard-1-w0775359.deta.app/campaigns",{
       headers: {
         'accept': 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -295,9 +300,24 @@ const handleDelete = async (_id) => {
         Header: "Start Date",
         accessor: "startdate",
         Cell: ({ value }) => {
-          const date = new Date(value);
-          const formattedTime = date.toLocaleTimeString('id-ID', { year:'numeric', day: '2-digit',month: '2-digit', hour: '2-digit', minute: '2-digit' });
-          return <div className="flex justify-center">{formattedTime}</div>;
+          // Konversi format tanggal "15/10/2023" menjadi "2023-10-15"
+          const parts = value.split("/");
+          if (parts.length === 3) {
+            const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+        
+            // Buat objek Date dari tanggal yang sudah diubah formatnya
+            const date = new Date(formattedDate);
+        
+            // Periksa apakah tanggal valid sebelum mencoba mengurai
+            if (!isNaN(date)) {
+              const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+              const formattedTime = date.toLocaleDateString('id-ID', options);
+              return <div className="flex justify-center">{formattedTime}</div>;
+            }
+          }
+          
+          // Tanggal tidak valid, mungkin perlu ditangani dengan cara khusus
+          return <div className="flex justify-center">Invalid Date</div>;
         },
       },
       {

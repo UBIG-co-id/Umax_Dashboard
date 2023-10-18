@@ -14,7 +14,7 @@ const AddDataAccounts = () => {
   async function fetchClientData() {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch("https://umax-1-z7228928.deta.app/clients", {
+      const response = await fetch("https://umaxdashboard-1-w0775359.deta.app/clients", {
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -50,7 +50,7 @@ const AddDataAccounts = () => {
     onSubmit: (values) => {
       const token = localStorage.getItem('jwtToken');
       // Send a POST request to your FastAPI backend with form data
-      fetch('https://umax-1-z7228928.deta.app/accounts', {
+      fetch('https://umaxdashboard-1-w0775359.deta.app/accounts', {
         method: 'POST',
         headers: {
           'accept': 'application/json',

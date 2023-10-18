@@ -31,7 +31,7 @@ const UpdateAccount = () => {
     // GET DATA CLIENT
     async function fetchClientData() {
         try {
-            const response = await fetch("https://umax-1-z7228928.deta.app/clients",{headers});
+            const response = await fetch("https://umaxdashboard-1-w0775359.deta.app/clients",{headers});
             if (!response.ok) {
                 throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
             }
@@ -47,7 +47,7 @@ const UpdateAccount = () => {
     // END GET DATA CLIENT
 
     useEffect(() => {
-        axios.get('https://umax-1-z7228928.deta.app/accounts/' + _id, {headers})
+        axios.get('https://umaxdashboard-1-w0775359.deta.app/accounts/' + _id, {headers})
             .then(res =>
                 setValues({
                     ...values,
@@ -64,7 +64,7 @@ const UpdateAccount = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.put('https://umax-1-z7228928.deta.app/accounts/' + _id, values, { headers })
+        axios.put('https://umaxdashboard-1-w0775359.deta.app/accounts/' + _id, values, { headers })
             .then(res => {
                 navigate('/Accounts');
             })

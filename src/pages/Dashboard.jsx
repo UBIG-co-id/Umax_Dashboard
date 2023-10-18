@@ -34,12 +34,13 @@ const Dashboard = () => {
   const [selectedName, setSelectedName] = useState('');
   const { selectedLanguage } = useLanguage(); // Get selectedLanguage from context
   const translations = Translation[selectedLanguage];
+  const [data, setData] = useState([]);
 
 
   const handleItemClick = (itemName) => {
     console.log(itemName)
     // Temukan kampanye yang sesuai dengan nama yang diklik
-    const selectedCampaign = campaigns.find((campaign) => campaign.name === itemName);
+    const selectedCampaign = data.find((data) => data.campaign_name === itemName);
 
     if (selectedCampaign) {
       setActiveItem(itemName);
@@ -56,7 +57,7 @@ const Dashboard = () => {
   const fetchCampaignData = async () => {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch('https://umax-1-z7228928.deta.app/campaignslistt', {
+      const response = await fetch('https://umaxdashboard-1-w0775359.deta.app/metrics', {
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -65,7 +66,7 @@ const Dashboard = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        setCampaigns(data);
+        setData(data);
       } else {
         console.error('Gagal mengambil data');
       }
@@ -795,11 +796,11 @@ const Dashboard = () => {
             <div className='flex p-4 ml-3 pb-1 items-center'>
               {selectedData && (
                 <img src={
-                  selectedData.platform === 1
-                    ? meta // Import meta from assets when platform is 1
-                    : selectedData.platform === 2
-                      ? google // Import google from assets when platform is 2
-                      : selectedData.platform === 3
+                  selectedData.campaign_platform === 1
+                    ? meta // Import meta from assets when campaign_platform is 1
+                    : selectedData.campaign_platform === 2
+                      ? google // Import google from assets when campaign_platform is 2
+                      : selectedData.campaign_platform === 3
                         ? tiktok // Import tiktok from assets when platform is 3
                         : '' // Default value if platform doesn't match 1, 2, or 3
                 } alt="icon" width={30} />
