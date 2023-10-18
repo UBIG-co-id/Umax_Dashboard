@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from "react";
+import React, { useState, useRef, useMemo,useEffect } from "react";
 import { useReactToPrint } from "react-to-print";
 // import { useDownloadExcel } from "react-export-table-to-excel"
 import { Box, Button } from '@mui/material';
@@ -11,224 +11,288 @@ import { darken } from '@mui/material';
 import { CSVLink, CSVDownload } from "react-csv";
 // import { mkConfig, generateCsv, download } from "export-to-csv";
 
-const History = () => {
+const History = ({ metric_id }) => {
+  const [data, setData] = useState([]); // Store the fetched data
+  const [selectedData, setSelectedData] = useState([]);
+  const [error, setError] = useState(null);
 
+  const fetchCampaignData = async () => {
+    try {
+      const token = localStorage.getItem('jwtToken');
+      const response = await fetch('https://umaxdashboard-1-w0775359.deta.app/metrics', {
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setData(data);
+      } else {
+        console.error('Gagal mengambil data');
+      }
+    } catch (error) {
+      console.error('Terjadi kesalahan:', error);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchCampaignData();
+  }, []);
+  const handleRowSelection = (selectedRowData) => {
+    // This function will be called when a row is selected or deselected
+    setSelectedData(selectedRowData);
+  };
+
+  useEffect(() => {
+    // Fetch data when the component mounts
+    fetchHistoryData(metric_id); // Panggil dengan metric_id
+  }, [metric_id]); // Tambahkan metric_id sebagai dependency
+
+  const fetchHistoryData = async (metric_id) => {
+    try {
+      const token = localStorage.getItem('jwtToken');
+      const apiUrl = `https://umaxdashboard-1-w0775359.deta.app/history/6524c2edb3c4faf2ea90f51a`; // Sesuaikan URL dengan metric_id
+
+      const response = await fetch(apiUrl, {
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setData(data);
+      } else {
+        // Tambahkan penanganan kesalahan untuk status non-OK
+        const errorData = await response.json();
+        setError(errorData.detail);
+      }
+    } catch (error) {
+      console.error('Terjadi kesalahan:', error);
+      setError('Terjadi kesalahan dalam mengambil data.');
+    }
+  };  
 
 
   // MENGGUNAKAN LIBRARY DARI MATERIAL REACT TABLE
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'update',
+        accessorKey: 'perubahan.TglUpdate',
         enableColumnFilter: false,
         header: 'Last Update',
       },
       {
-        accessorKey: 'amount',
+        accessorKey: 'perubahan.amountspent',
         header: 'Amount Spent',
       },
       {
-        accessorKey: 'reach',
+        accessorKey: 'perubahan.reach',
         header: 'Reach',
       },
       {
-        accessorKey: 'impressions',
+        accessorKey: 'perubahan.impressions',
         header: 'Impressions',
       },
       {
-        accessorKey: 'frequency',
+        accessorKey: 'perubahan.frequency',
         header: 'Frequency',
       },
       {
-        accessorKey: 'rar',
+        accessorKey: 'perubahan.rar',
         header: 'RAR',
       },
       {
-        accessorKey: 'cpc',
+        accessorKey: 'perubahan.cpc',
         header: 'CPC',
       },
       {
-        accessorKey: 'ctr',
+        accessorKey: 'perubahan.ctr',
         header: 'CTR',
       },
       {
-        accessorKey: 'oclp',
+        accessorKey: 'perubahan.oclp',
         header: 'OCLP',
       },
       {
-        accessorKey: 'cpr',
+        accessorKey: 'perubahan.cpr',
         header: 'CPR',
       },
       {
-        accessorKey: 'atc',
+        accessorKey: 'perubahan.atc',
         header: 'ATC',
       },
       {
-        accessorKey: 'roas',
+        accessorKey: 'perubahan.roas',
         header: 'ROAS',
       },
     ],
     [],
   );
 
-  const data = useMemo(
-    () => [
-      {
-        update: '28 Jul 2023, 09:20',
-        amount: 'Rp. 2.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '28 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '28 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '28 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '28 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '28 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '28 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '28 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '28 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '27 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-      {
-        update: '27 Jul 2023, 09:20',
-        amount: 'Rp. 4.000.000',
-        reach: '97.000',
-        impressions: '230.000',
-        frequency: '2,3',
-        rar: '6,1% ',
-        cpc: 'Rp. 2.000',
-        ctr: '1,0%',
-        oclp: '30%',
-        cpr: 'Rp. 5.000',
-        atc: '2,5%',
-        roas: '3,1x'
-      },
-    ]
-  )
+  // const data = useMemo(
+  //   () => [
+  //     {
+  //       update: '28 Jul 2023, 09:20',
+  //       amount: 'Rp. 2.000.000',
+  //       reach: '97.000',
+  //       impressions: '230.000',
+  //       frequency: '2,3',
+  //       rar: '6,1% ',
+  //       cpc: 'Rp. 2.000',
+  //       ctr: '1,0%',
+  //       oclp: '30%',
+  //       cpr: 'Rp. 5.000',
+  //       atc: '2,5%',
+  //       roas: '3,1x'
+  //     },
+  //     {
+  //       update: '28 Jul 2023, 09:20',
+  //       amount: 'Rp. 4.000.000',
+  //       reach: '97.000',
+  //       impressions: '230.000',
+  //       frequency: '2,3',
+  //       rar: '6,1% ',
+  //       cpc: 'Rp. 2.000',
+  //       ctr: '1,0%',
+  //       oclp: '30%',
+  //       cpr: 'Rp. 5.000',
+  //       atc: '2,5%',
+  //       roas: '3,1x'
+  //     },
+  //     {
+  //       update: '28 Jul 2023, 09:20',
+  //       amount: 'Rp. 4.000.000',
+  //       reach: '97.000',
+  //       impressions: '230.000',
+  //       frequency: '2,3',
+  //       rar: '6,1% ',
+  //       cpc: 'Rp. 2.000',
+  //       ctr: '1,0%',
+  //       oclp: '30%',
+  //       cpr: 'Rp. 5.000',
+  //       atc: '2,5%',
+  //       roas: '3,1x'
+  //     },
+  //     {
+  //       update: '28 Jul 2023, 09:20',
+  //       amount: 'Rp. 4.000.000',
+  //       reach: '97.000',
+  //       impressions: '230.000',
+  //       frequency: '2,3',
+  //       rar: '6,1% ',
+  //       cpc: 'Rp. 2.000',
+  //       ctr: '1,0%',
+  //       oclp: '30%',
+  //       cpr: 'Rp. 5.000',
+  //       atc: '2,5%',
+  //       roas: '3,1x'
+  //     },
+  //     {
+  //       update: '28 Jul 2023, 09:20',
+  //       amount: 'Rp. 4.000.000',
+  //       reach: '97.000',
+  //       impressions: '230.000',
+  //       frequency: '2,3',
+  //       rar: '6,1% ',
+  //       cpc: 'Rp. 2.000',
+  //       ctr: '1,0%',
+  //       oclp: '30%',
+  //       cpr: 'Rp. 5.000',
+  //       atc: '2,5%',
+  //       roas: '3,1x'
+  //     },
+  //     {
+  //       update: '28 Jul 2023, 09:20',
+  //       amount: 'Rp. 4.000.000',
+  //       reach: '97.000',
+  //       impressions: '230.000',
+  //       frequency: '2,3',
+  //       rar: '6,1% ',
+  //       cpc: 'Rp. 2.000',
+  //       ctr: '1,0%',
+  //       oclp: '30%',
+  //       cpr: 'Rp. 5.000',
+  //       atc: '2,5%',
+  //       roas: '3,1x'
+  //     },
+  //     {
+  //       update: '28 Jul 2023, 09:20',
+  //       amount: 'Rp. 4.000.000',
+  //       reach: '97.000',
+  //       impressions: '230.000',
+  //       frequency: '2,3',
+  //       rar: '6,1% ',
+  //       cpc: 'Rp. 2.000',
+  //       ctr: '1,0%',
+  //       oclp: '30%',
+  //       cpr: 'Rp. 5.000',
+  //       atc: '2,5%',
+  //       roas: '3,1x'
+  //     },
+  //     {
+  //       update: '28 Jul 2023, 09:20',
+  //       amount: 'Rp. 4.000.000',
+  //       reach: '97.000',
+  //       impressions: '230.000',
+  //       frequency: '2,3',
+  //       rar: '6,1% ',
+  //       cpc: 'Rp. 2.000',
+  //       ctr: '1,0%',
+  //       oclp: '30%',
+  //       cpr: 'Rp. 5.000',
+  //       atc: '2,5%',
+  //       roas: '3,1x'
+  //     },
+  //     {
+  //       update: '28 Jul 2023, 09:20',
+  //       amount: 'Rp. 4.000.000',
+  //       reach: '97.000',
+  //       impressions: '230.000',
+  //       frequency: '2,3',
+  //       rar: '6,1% ',
+  //       cpc: 'Rp. 2.000',
+  //       ctr: '1,0%',
+  //       oclp: '30%',
+  //       cpr: 'Rp. 5.000',
+  //       atc: '2,5%',
+  //       roas: '3,1x'
+  //     },
+  //     {
+  //       update: '27 Jul 2023, 09:20',
+  //       amount: 'Rp. 4.000.000',
+  //       reach: '97.000',
+  //       impressions: '230.000',
+  //       frequency: '2,3',
+  //       rar: '6,1% ',
+  //       cpc: 'Rp. 2.000',
+  //       ctr: '1,0%',
+  //       oclp: '30%',
+  //       cpr: 'Rp. 5.000',
+  //       atc: '2,5%',
+  //       roas: '3,1x'
+  //     },
+  //     {
+  //       update: '27 Jul 2023, 09:20',
+  //       amount: 'Rp. 4.000.000',
+  //       reach: '97.000',
+  //       impressions: '230.000',
+  //       frequency: '2,3',
+  //       rar: '6,1% ',
+  //       cpc: 'Rp. 2.000',
+  //       ctr: '1,0%',
+  //       oclp: '30%',
+  //       cpr: 'Rp. 5.000',
+  //       atc: '2,5%',
+  //       roas: '3,1x'
+  //     },
+  //   ]
+  // )
 
   // SORTING
   const [sortBy, setSortBy] = useState({
@@ -303,6 +367,7 @@ const History = () => {
           <MaterialReactTable
             columns={columns}
             data={data}
+             onRowSelection={handleRowSelection}
             muiTableHeadCellProps={{
               sx: (theme) => ({
                 backgroundColor: theme.palette.primary.main, 

@@ -1,42 +1,62 @@
-import ReactApexChart from "react-apexcharts";
+import React, { useEffect, useState } from 'react';
+import ReactApexChart from 'react-apexcharts';
 
 export default function Chart() {
+  const [chartData, setChartData] = useState(null);
 
-    const series = [{
-        name: 'Amount Spent',
-        data: [60, 110, 60, 50, 70, 30, 110]
-    }, {
-        name: 'RAR',
-        data: [60, 50, 30, 37, 90, 40, 20]
+  useEffect(() => {
+    // Fetch data from the provided URL
+    fetch('https://umaxdashboard-1-w0775359.deta.app/history/6524c2edb3c4faf2ea90f51a')
+      .then((response) => response.json())
+      .then((data) => {
+        setChartData(data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+
+  const options = {
+    chart: {
+      height: 'auto',
+      type: 'area',
+      group: 'social',
+      width: '100%',
     },
-    {
-        name: 'CTR',
-        data: [20, 40, 60, 40, 40, 28, 51]
-    }
-    
-    ];
+    dataLabels: {
+      enabled: false,
+    },
+    colors: ['#008FFB', '#FEB019', '#00E396'],
+    legend: {
+      show: false,
+    },
+  };
 
-    // line area chart
-    const option = {
-        chart: {
-            height: 'auto',
-            type: 'area',
-            group: 'social',
-            width: '100%',
+  // Extracting data with decimal values
+  const series = chartData
+    ? [
+        {
+          name: 'Amount Spent',
+          data: chartData.map((item) => parseFloat(item.perubahan.amountspent.replace(/[^0-9.]/g, ''))),
         },
-        dataLabels: {
-            enabled: false
+        {
+          name: 'RAR',
+          data: chartData.map((item) => parseFloat(item.perubahan.rar.replace(/[^0-9.]/g, ''))),
         },
-        colors: ['#008FFB', '#FEB019', '#00E396'],
-        legend: {
-            show: false
+        {
+          name: 'CTR',
+          data: chartData.map((item) => parseFloat(item.perubahan.ctr.replace(/[^0-9.]/g, ''))),
         },
-    }
+      ]
+    : [];
 
-    return (
-        <div className='w-[99%] h-fit'>
-            <ReactApexChart options={option} series={series} type="area" height={'350px'} />
-        </div>
-    )
-
+  return (
+    <div className='w-[99%] h-fit'>
+      {chartData ? (
+        <ReactApexChart options={options} series={series} type='area' height={'350px'} />
+      ) : (
+        <p>Loading chart data...</p>
+      )}
+    </div>
+  );
 }

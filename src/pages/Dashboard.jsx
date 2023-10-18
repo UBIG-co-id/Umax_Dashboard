@@ -16,8 +16,8 @@ import { google, meta, tiktok, } from "../assets";
 import '../styles.css';
 import { setActiveItem, updateSelectedName } from '../components/Sidebar'
 import { useLanguage } from '../LanguageContext'; // Import the useLanguage hook
-import Translation from '../translation/Translation.json'; 
-
+import Translation from '../translation/Translation.json';
+import { useParams } from "react-router-dom";
 import axios from 'axios';
 
 
@@ -34,7 +34,37 @@ const Dashboard = () => {
   const { selectedLanguage } = useLanguage(); // Get selectedLanguage from context
   const translations = Translation[selectedLanguage];
   const [data, setData] = useState([]);
+  const [metrics, setMetrics] = useState([]);
+  const { metric_id } = useParams();
 
+  useEffect(() => {
+    // Fetch metrics data and set it in the state
+    fetchMetricsData();
+  }, []);
+
+  const fetchMetricsData = async () => {
+    try {
+      const token = localStorage.getItem('jwtToken');
+      const apiUrl = "https://umaxdashboard-1-w0775359.deta.app/metrics";
+
+      const response = await fetch(apiUrl, {
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setMetrics(data);
+      } else {
+        console.error('Gagal mengambil data metrics');
+      }
+    } catch (error) {
+      console.error('Terjadi kesalahan:', error);
+    }
+  };
 
   const handleItemClick = (itemName) => {
     console.log(itemName)
@@ -148,7 +178,7 @@ const Dashboard = () => {
         "Jumlah total biaya yang kita keluarkan untuk pemasangan iklan",
     },
     {
-      title:  translations["Reach"],
+      title: translations["Reach"],
       value: selectedData ? selectedData.reach : null,
       chart: [
         { name: "Day1", value: 10 },
@@ -391,19 +421,19 @@ const Dashboard = () => {
   //format style description
   const formatDescMetrix = (metrixData) => {
     const formatMap = {
-      "Amount Spent": 
-      (description) => (
-        <p
-          style={{
-            fontSize: "10.5px",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {description}
-        </p>
-      ),
+      "Amount Spent":
+        (description) => (
+          <p
+            style={{
+              fontSize: "10.5px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {description}
+          </p>
+        ),
       "Frequency": (description) => (
         <p
           style={{
@@ -416,45 +446,45 @@ const Dashboard = () => {
           {description}
         </p>
       ),
-      "Reach Amount Ratio": 
-      (description) => (
-        <p
-          style={{
-            fontSize: "9.5px",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {description}
-        </p>
-      ),
+      "Reach Amount Ratio":
+        (description) => (
+          <p
+            style={{
+              fontSize: "9.5px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {description}
+          </p>
+        ),
       "Cost per Click":
-       (description) => (
-        <p
-          style={{
-            fontSize: "10.4px",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {description}
-        </p>
-      ),
-      "Click Through Rate": 
-      (description) => (
-        <p
-          style={{
-            fontSize: "9.5px",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {description}
-        </p>
-      ),
+        (description) => (
+          <p
+            style={{
+              fontSize: "10.4px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {description}
+          </p>
+        ),
+      "Click Through Rate":
+        (description) => (
+          <p
+            style={{
+              fontSize: "9.5px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {description}
+          </p>
+        ),
       "Outbont Click Landing Page": (description) => (
         <p
           style={{
@@ -523,9 +553,9 @@ const Dashboard = () => {
                       value={selectedData.amountspent}
                       color="text-sky-500"
                       popupContent="Jumlah total biaya yang kita keluarkan untuk pemasangan iklan"
-                      />
+                    />
                     <CardInfo
-                      title={translations['Reach Amount Ratio']} 
+                      title={translations['Reach Amount Ratio']}
                       value={selectedData.rar}
                       color="text-yellow-500"
                       popupContent="Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut"
@@ -598,7 +628,7 @@ const Dashboard = () => {
                       </div>
                       <a href="https://chat.openai.com/share/3bb35f6a-4b3b-4182-b6f9-c880722b3c72" target="_blank" rel="noopener noreferrer">
                         <div className='mt-2 hover:underline  text-end text-sm'>
-                        {translations['Learn More']}
+                          {translations['Learn More']}
                         </div>
                       </a>
                     </div>
@@ -616,7 +646,7 @@ const Dashboard = () => {
                       </div>
                       <a href="https://chat.openai.com/share/cb290ced-08a9-4153-93dc-470a1e0fd126" target="_blank" rel="noopener noreferrer">
                         <div className='mt-2 hover:underline  text-end text-sm'>
-                        {translations['Learn More']}
+                          {translations['Learn More']}
                         </div>
                       </a>
                     </div>
@@ -669,7 +699,7 @@ const Dashboard = () => {
         return (
           <div>
 
-            <History />
+            <History metric_id={metric_id} />
 
           </div>
         );
@@ -685,90 +715,90 @@ const Dashboard = () => {
     }
   };
 
- 
+
   const cardData = [
     {
       title: 'Amount Spent',
       value: 'Rp. 4.000.000',
       color: 'text-sky-500',
-      popupContent: 'Jumlah total biaya yang kita keluarkan untuk pemasangan iklan' 
+      popupContent: 'Jumlah total biaya yang kita keluarkan untuk pemasangan iklan'
     },
     {
       title: 'Reach Amount Ratio',
       value: '6.1%',
       color: 'text-yellow-500',
-      popupContent: 'Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut' 
+      popupContent: 'Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut'
     },
     {
       title: 'Click Through Rate',
       value: '1.0%',
       color: 'text-green-500',
-      popupContent: 'Rasio jumlah klik pada iklan kita dibandingkan dengan jumlah iklan ditayangkan' 
+      popupContent: 'Rasio jumlah klik pada iklan kita dibandingkan dengan jumlah iklan ditayangkan'
     },
     {
       title: 'OCLP',
       value: '30%',
-      popupContent: 'Mendorong pengunjung untuk mengklik tautan atau tombol yang mengarahkan mereka ke halaman atau situs web eksternal yang relevan' 
+      popupContent: 'Mendorong pengunjung untuk mengklik tautan atau tombol yang mengarahkan mereka ke halaman atau situs web eksternal yang relevan'
     }
   ];
 
-  
+
   const cardData2 = [
     {
       title: 'CPR',
       value: 'Rp. 5.000',
-      popupContent: ' Perhitungan biaya yang kita keluarkan untuk setiap hasil yang kita dapatkan' 
+      popupContent: ' Perhitungan biaya yang kita keluarkan untuk setiap hasil yang kita dapatkan'
     },
     {
       title: 'ATC',
       value: '2,5%',
-      popupContent: ' Menambahkan produk atau barang ke dalam keranjang belanja saat berbelanja secara online di situs web e-commerce atau toko online' 
+      popupContent: ' Menambahkan produk atau barang ke dalam keranjang belanja saat berbelanja secara online di situs web e-commerce atau toko online'
     },
     {
       title: 'ROAS',
       value: '1.0%',
-      popupContent: 'Mengukur seberapa banyak pendapatan atau hasil yang dihasilkan dari setiap unit pengeluaran iklan' 
+      popupContent: 'Mengukur seberapa banyak pendapatan atau hasil yang dihasilkan dari setiap unit pengeluaran iklan'
     },
     {
       title: 'Real ROAS',
       value: '1.0%',
-      popupContent: 'Mengukur banyak pendapatan asli yang di hasilkan tiap pengeluaran iklan' 
+      popupContent: 'Mengukur banyak pendapatan asli yang di hasilkan tiap pengeluaran iklan'
     },
   ];
 
 
- 
+
   const renderCardInfo = () => {
     return cardData.map((item, index) => {
-      return <CardInfo key={index} title={item.title} value={item.value} color={item.color} className='relative w-full flex top-5 flex-col justify-between h-24'          
-      popupContent={item.popupContent}
+      return <CardInfo key={index} title={item.title} value={item.value} color={item.color} className='relative w-full flex top-5 flex-col justify-between h-24'
+        popupContent={item.popupContent}
       />
     })
   }
 
   const renderCardInfo2 = () => {
     return cardData2.map((item, index) => {
-      return <CardInfo  key={index} title={item.title} value={item.value} color={item.color} className='w-full flex flex-col justify-between h-24' 
-      popupContent={item.popupContent} 
+      return <CardInfo key={index} title={item.title} value={item.value} color={item.color} className='w-full flex flex-col justify-between h-24'
+        popupContent={item.popupContent}
       />
     })
   }
 
-   useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('jwtToken');
         const response = await axios.get('https://umax-1-z7228928.deta.app/metrics/',
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          }
         );
         if (response.status === 200) {
           const data = response.data;
-          console.log(data); 
+          console.log(data);
           setMetricsData(data);
         } else {
           console.error('Failed to fetch data from API');
@@ -776,7 +806,7 @@ const Dashboard = () => {
       } catch (error) {
         console.error('An error occurred', error);
       }
-      
+
     };
 
     fetchData();
