@@ -19,12 +19,17 @@ import Swal from 'sweetalert2';
 function AccountTable() {
   const [tableData, setTableData] = useState([]);
   const tableRef = useRef(null);
+  const navigate = useNavigate();
+
  
   const [showAddPopup, setShowAddPopup] = useState(false);
 
   const [selectedFilter, setSelectedFilter] = useState("");
   const [selectedPlatform, setSelectedPlatform] = useState("");
 
+  const handleAddClick = () => {
+    navigate('/AddAccounts');
+  };
 
   // GET DATA CLIENT
 
@@ -119,9 +124,11 @@ function AccountTable() {
     switch (status) {
       case 1:
         statusStyle = {
-          color: '#00CA00', 
-          padding: '2px',
-          borderRadius: '7px',
+          backgroundColor: "#22C55E",
+          color: '#ffff',
+          padding: '5px 13px',
+          fontSize: "12px",
+          borderRadius: '6px',
           fontWeight: '500', 
         };
         return (
@@ -130,9 +137,11 @@ function AccountTable() {
       
       case 2:
         statusStyle = {
-          color: '#8F8F8F', 
-          padding: '2px',
-          borderRadius: '7px',
+          backgroundColor: "#ADB5BD",
+          color: '#ffff', 
+          padding: '5px 13px',
+          fontSize: "12px",
+          borderRadius: '6px',
           fontWeight: '500', 
         };
         return (
@@ -216,8 +225,10 @@ function AccountTable() {
         accessor: 'platform',
         Cell: ({ row }) => (
           <div className="flex justify-center">
+          <span className="text-blue-700 underline cursor-pointer">
             {getPlatFormString(row.original.platform)}
-          </div>
+          </span>
+        </div>
         ),
       },
       {
@@ -238,16 +249,16 @@ function AccountTable() {
         accessor: 'action',
         Cell: ({ row }) => (
           <div className="flex space-x-2 justify-center">
-            <button
+            {/* <button
               onClick={() => handleDelete(row.original._id)}
               className="bg-red-200 hover:bg-red-300 text-red-600 py-1 px-1 rounded"
             >
               <BsTrash3 />
-            </button>
+            </button> */}
             <Link to={`/updateaccount/${row.original._id}`}>
             <button
               
-              className="bg-blue-200 hover:bg-blue-300 text-blue-600 py-1 px-1 rounded"
+              className="bg-sky-500 hover:bg-blue-500 text-white py-1 px-1 rounded"
             >
               <AiOutlineEdit />
             </button>
@@ -368,11 +379,12 @@ function AccountTable() {
 
 
   return (
+    <div>
     <div className="border-2 border-slate-200 bg-white p-0 m-2 lg:m-10 mt-8 rounded-lg relative">
       <div className="container mx-auto p-4">
         <div className="grid grid-cols-12 gap-2 px-2 md:px-0 mb-2">
           {/* Search bar */}
-          <div className="relative col-span-12 lg:col-span-3">
+          <div className="relative col-span-4 lg:col-span-2">
             <input
               type="text"
               value={globalFilter}
@@ -419,29 +431,34 @@ function AccountTable() {
           </div>
           {/* End */}
 
-          <div className="hidden lg:block col-span-2"></div>
+          <div className="hidden lg:flex col-span-5"></div>
 
 
           {/* Button add data */}
-          <Link to={`/AddAccounts`}>
-            <button type="button"
+          <div className="gap-2 flex lg:justify-end">
+          <button
+              type="button"
               data-te-ripple-init
               data-te-ripple-color="light"
               data-te-ripple-centered="true"
-              className="col-span-8 lg:col-span-2 flex items-center gap-2 border border-slate-300 h-9 rounded-md focus:border-gray-500 focus:outline-none focus:ring-0 bg-white p-2 text-xs font-medium leading-normal text-gray-800 hover:bg-gray-50">
+              className="col-span-4 max-sm:col-span-4 lg:col-span-1 inline-flex flex-1 items-center border border-slate-300 h-9 rounded-md bg-white px-6 pb-2.5 pt-2 text-xs font-medium leading-normal text-gray-800 hover:bg-gray-50"
+              onClick={handleAddClick}
+
+            >
+
               <BsPlus className="font-medium text-lg" />
               <span >Add</span>
             </button>
-          </Link>
 
           {/* menu add data */}
           {/* Pop-up menu */}
-          
+
+
 
           {/* Button export excel */}
           <button
             type="button"
-            className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
+            className=" col-span-2 max-sm:col-span-4 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
             onClick={onDownload}
           >
             <RiFileExcel2Line className="relative font-medium text-lg" />
@@ -451,11 +468,12 @@ function AccountTable() {
           {/* Button export pdf */}
           <button
             type="button"
-            className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
+            className="col-span-2 max-sm:col-span-4 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
             onClick={generatePDF}
           >
             <AiOutlineFilePdf className="relative font-medium text-lg" />
           </button>
+          </div>
           {/* End */}
         </div>
 
@@ -463,7 +481,7 @@ function AccountTable() {
 
         </div>
 
-        <div className="w-full bg-white max-md:overflow-x-scroll" ref={componentPDF}>
+        <div className=" w-full rounded-md overflow-hidden outline-none shadow-lg shadow-slate-900/10 border-none max-md:overflow-x-auto" ref={componentPDF}>
           <table
             {...getTableProps()}
             ref={tableRef}
@@ -475,7 +493,7 @@ function AccountTable() {
                   {headerGroup.headers.map((column) => (
                     <th
                       {...column.getHeaderProps()}
-                      className={`p-2 text-white bg-sky-700 font-medium border-slate-300 border ${column.id === 'status' || column.id === 'action'
+                      className={`p-2 text-white bg-sky-500 font-normal border-t-0  border-gray-300 border ${column.id === 'status' || column.id === 'action'
                         ? 'text-center' //  untuk rata tengah
                         : 'text-left' //  untuk kolom lainnya
                         }`}
@@ -492,13 +510,13 @@ function AccountTable() {
                 return (
                   <tr
                     {...row.getRowProps()}
-                    className={`border border-slate-300 text-gray-600 hover:bg-blue-300 hover:text-gray-700 ${i % 2 === 0 ? 'bg-gray-100' : 'bg-white' // Memberikan latar belakang selang-seling
+                    className={`text-gray-600 hover:bg-blue-300 hover:text-gray-700 ${i % 2 === 1 ? 'bg-gray-100' : 'bg-white' // Memberikan latar belakang selang-seling
                       }`}                   >
                     {row.cells.map((cell) => {
                       return (
                         <td
                           {...cell.getCellProps()}
-                          className={`p-2 border border-slate-300 ${cell.column.id === 'status' || cell.column.id === 'action'
+                          className={`p-2  border-gray-200 border-b-0 border-x-0  ${cell.column.id === 'status' || cell.column.id === 'action'
                             ? 'text-center' //  untuk rata tengah
                             : 'text-left' //  untuk sel lainnya
                             }`}
@@ -564,7 +582,7 @@ function AccountTable() {
         </div>
         {/* End Pagination */}
       </div>
-
+    </div>
     </div>
   );
 }

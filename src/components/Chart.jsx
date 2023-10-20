@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 
-export default function Chart() {
+export default function Chart({ metricId }) {
   const [chartData, setChartData] = useState(null);
 
   useEffect(() => {
-    // Fetch data from the provided URL
-    fetch('https://umaxdashboard-1-w0775359.deta.app/history/6524c2edb3c4faf2ea90f51a')
+    // Fetch data from the dynamic URL using metricId
+    fetch(`https://umaxdashboard-1-w0775359.deta.app/history/${metricId}`)
       .then((response) => response.json())
       .then((data) => {
         setChartData(data);
@@ -14,7 +14,8 @@ export default function Chart() {
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
-  }, []);
+  }, [metricId]);
+  
 
   const options = {
     chart: {
@@ -33,22 +34,28 @@ export default function Chart() {
   };
 
   // Extracting data with decimal values
-  const series = chartData
-    ? [
-        {
-          name: 'Amount Spent',
-          data: chartData.map((item) => parseFloat(item.perubahan.amountspent.replace(/[^0-9.]/g, ''))),
-        },
-        {
-          name: 'RAR',
-          data: chartData.map((item) => parseFloat(item.perubahan.rar.replace(/[^0-9.]/g, ''))),
-        },
-        {
-          name: 'CTR',
-          data: chartData.map((item) => parseFloat(item.perubahan.ctr.replace(/[^0-9.]/g, ''))),
-        },
-      ]
-    : [];
+  const series = Array.isArray(chartData) && chartData.length > 0
+  ? [
+    {
+      name: 'Amount Spent',
+      data: chartData.map((item) =>
+        parseFloat(item.perubahan.amountspent.replace(/[^0-9.]/g, ''))
+      ),
+    },
+    {
+      name: 'RAR',
+      data: chartData.map((item) =>
+        parseFloat(item.perubahan.rar.replace(/[^0-9.]/g, ''))
+      ),
+    },
+    {
+      name: 'CTR',
+      data: chartData.map((item) =>
+        parseFloat(item.perubahan.ctr.replace(/[^0-9.]/g, ''))
+      ),
+    },
+  ]
+  : [];
 
   return (
     <div className='w-[99%] h-fit'>

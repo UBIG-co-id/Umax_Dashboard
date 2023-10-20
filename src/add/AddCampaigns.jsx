@@ -2,12 +2,14 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import Navbar from "../components/Navbar";
 import CampaignTable from "../components/CampaignTable";
 import { useFormik } from 'formik';
-import { Link, useNavigate, useParams, } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { BsTrash3, BsPlus } from "react-icons/bs";
 
 const AddCampaigns = () => {
     const navigate = useNavigate();
     const [clientList, setClientList] = useState([]);
     const [accountList, setAccountList] = useState([]);
+    
     // GET DATA CLIENT
     async function fetchClientData() {
         try {
@@ -101,6 +103,26 @@ const AddCampaigns = () => {
         },
     });
     // END ADD DATA Campaigns
+
+
+     // close menggunakan esc
+     useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === "Escape") {
+                console.log("Esc key pressed"); 
+                navigate(-1);
+            };
+        };
+    
+        window.addEventListener("keydown", handleKeyDown);
+    
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [navigate]);
+    
+
+        
     return (
         <main className="bg-slate-100 min-h-screen">
             <div>
@@ -277,15 +299,20 @@ const AddCampaigns = () => {
 
                         <div className="flex justify-end">
                             {/* Tombol Save */}
-                            <Link to="/Campaigns">
-                                <button
-                                    type="button"
-                                    // onClick={toggleEditPopup}
-                                    className="text-gray-500 mr-4"
-                                >
-                                    Cancel
-                                </button>
-                            </Link>
+                            {/* <button
+
+                            className="bg-red-200 hover:bg-red-300 text-red-600 py-1 px-1 rounded"
+                            >
+                            <BsTrash3 />
+                            </button> */}
+
+                            <button
+                                type="button"
+                                onClick={() => navigate(-1)}
+                                className="text-gray-500 mr-4"
+                            >
+                                Cancel
+                            </button>
                             <button
                                 type="submit"
                                 className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"

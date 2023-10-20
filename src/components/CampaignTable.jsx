@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useTable, useGlobalFilter, usePagination } from "react-table";
 // import data from "./CampaignData";
 import { BsTrash3, BsPlus } from "react-icons/bs";
+import { IoIosArrowForward } from "react-icons/io";
 import { CiSearch } from "react-icons/ci";
 import { AiOutlineEdit, AiOutlineFilePdf } from "react-icons/ai";
 import { RiFileExcel2Line } from "react-icons/ri";
@@ -15,6 +16,8 @@ import { useFormik } from 'formik';
 import { Link, useNavigate, useParams, } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import '../styles.css';
+
 
 
 function DataTable() {
@@ -31,6 +34,9 @@ function DataTable() {
   const [selectedObjective, setSelectedObjective] = useState("");
   
 
+  const handleAddClick = () => {
+    navigate('/AddCampaigns');
+  };
 
 // Make a DELETE request to the FastAPI endpoint
 const handleDelete = async (_id) => {
@@ -70,7 +76,14 @@ const handleDelete = async (_id) => {
             },
           });
         } else {
-          Swal.fire('Error', 'An error occurred while deleting the data.', 'error');
+          Swal.fire({
+            title: 'Error!',
+            text: 'Terjadi kesalahan saat menghapus data.',
+            icon: 'error',
+            customClass: {
+              confirmButton: 'custom-error-button-class',
+            },
+          });
         }
       } catch (error) {
         Swal.fire('Error', 'An error occurred while deleting the data.', 'error');
@@ -102,7 +115,46 @@ const handleDelete = async (_id) => {
       console.error("Error fetching data:", error.message);
     }
   }
-  
+  //post data
+
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      objective: '',
+      client: '',
+      account: '',
+      platform: '',
+      startdate: '',
+      enddate: '',
+      status: '',
+     notes: '',
+    },
+
+    onSubmit: (values) => {
+      const token = localStorage.getItem('jwtToken');
+      fetch('https://umax-1-z7228928.deta.app/campaigns', {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: new URLSearchParams(values).toString(),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        if (data.message === 'data berhasil ditambah') {
+          toggleAddPopup();
+          fetchData();
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    },
+        
+  });
   
 
 
@@ -147,9 +199,11 @@ const handleDelete = async (_id) => {
     switch (status) {
       case 1:
         statusStyle = {
-          color: '#00CA00', 
-          padding: '2px',
-          borderRadius: '7px',
+          backgroundColor: "#22C55E",
+          color: '#ffff',
+          padding: '5px 13px',
+          fontSize: "12px",
+          borderRadius: '6px',
           fontWeight: '500', 
         };
         return (
@@ -157,9 +211,11 @@ const handleDelete = async (_id) => {
         );
       case 2:
         statusStyle = {
-          color: '#8F8F8F', 
-          padding: '2px',
-          borderRadius: '7px',
+          backgroundColor: "#ADB5BD",
+          color: '#ffff', 
+          padding: '5px 13px',
+          fontSize: "12px",
+          borderRadius: '6px',
           fontWeight: '500', 
         };
         return (
@@ -167,8 +223,10 @@ const handleDelete = async (_id) => {
         );
       case 3:
         statusStyle = {
-          color: '#FF8A00', 
-          padding: '2px',
+          backgroundColor: "#F59E0B",
+          color: '#ffff', 
+          padding: '5px 13px',
+          fontSize: "10px",
           borderRadius: '7px',
           fontWeight: '500', 
         };
@@ -236,8 +294,10 @@ const handleDelete = async (_id) => {
         accessor: "platform",
         Cell: ({ row }) => (
           <div className="flex justify-center">
+          <span className="text-blue-700 underline cursor-pointer">
             {getPlatFormString(row.original.platform)}
-          </div>
+          </span>
+        </div>
         ),
       },
       {
@@ -246,6 +306,11 @@ const handleDelete = async (_id) => {
       },
       {
         Header: "Objective",
+        Cell: ({ row }) => (
+          <div className="flex text-red-900 justify-center">
+            {getObjectiveString(row.original.objective)}
+          </div>
+        ),
         accessor: "objective",
         Cell: ({ row }) => (
           <div className="flex justify-center">
@@ -257,24 +322,9 @@ const handleDelete = async (_id) => {
         Header: "Start Date",
         accessor: "startdate",
         Cell: ({ value }) => {
-          // Konversi format tanggal "15/10/2023" menjadi "2023-10-15"
-          const parts = value.split("/");
-          if (parts.length === 3) {
-            const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-        
-            // Buat objek Date dari tanggal yang sudah diubah formatnya
-            const date = new Date(formattedDate);
-        
-            // Periksa apakah tanggal valid sebelum mencoba mengurai
-            if (!isNaN(date)) {
-              const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-              const formattedTime = date.toLocaleDateString('id-ID', options);
-              return <div className="flex justify-center">{formattedTime}</div>;
-            }
-          }
-          
-          // Tanggal tidak valid, mungkin perlu ditangani dengan cara khusus
-          return <div className="flex justify-center">Invalid Date</div>;
+          const date = new Date(value);
+          const formattedTime = date.toLocaleTimeString('id-ID', { year:'numeric', day: '2-digit',month: '2-digit', hour: '2-digit', minute: '2-digit' });
+          return <div className="flex justify-center">{formattedTime}</div>;
         },
       },
       {
@@ -291,16 +341,18 @@ const handleDelete = async (_id) => {
         accessor: "id",
         Cell: ({ row }) => (
           <div className="flex space-x-2 justify-center">
-            <button
+           
+           {/* <button
                onClick={() => handleDelete(row.original._id)}
               className="bg-red-200 hover:bg-red-300 text-red-600 py-1 px-1 rounded"
             >
               <BsTrash3 />
-            </button>
+            </button> */}
+
             <Link to={`/updatecampaigns/${row.original._id}`}>
             <button
               
-              className="bg-blue-200 hover:bg-blue-300 text-blue-600 py-1 px-1 rounded"
+              className="bg-sky-500 hover:bg-blue-500 text-white py-1 px-1 rounded"
             >
               <AiOutlineEdit />
             </button>
@@ -362,24 +414,8 @@ const handleDelete = async (_id) => {
     setShowAddPopup(!showAddPopup);
   };
 
+
  
-
-  // close pakai esc
-  useEffect(() => {
-    const closePopupOnEscape = (e) => {
-      if (e.key === "Escape") {
-        toggleAddPopup();
-      }
-    };
-
-    if (showAddPopup) {
-      window.addEventListener("keydown", closePopupOnEscape);
-    }
-
-    return () => {
-      window.removeEventListener("keydown", closePopupOnEscape);
-    };
-  }, [showAddPopup]);
 
   const tableRef = useRef(null);
 
@@ -425,19 +461,18 @@ const handleDelete = async (_id) => {
 
 
   return (
-    <div>
-      <div className="border-2 border-slate-200 bg-white p-0 lg:p-5 mx-2 mt-8 mb-4 lg:m-10 rounded-lg relative">
-        <div className="container mx-auto px-0 p-4">
-          <div className="grid grid-cols-12 gap-4 px-1 -mt-5 mb-4 ">
+    <div className="border-2 border-slate-200  p-0 m-2 lg:m-10 mt-8 rounded-lg relative">
+        <div className="container mx-auto p-4">
+        <div className="grid grid-cols-12 gap-3 px-2 md:px-0 mb-2">
             {/* Search bar */}
-            <div className="relative max-lg:mt-5 mediaquery col-span-12 lg:col-span-3">
+            <div className="relative col-span-4 lg:col-span-2">
               <input
                 type="text"
                 value={globalFilter}
                 onChange={(e) => setGlobalFilter(e.target.value)}
                 placeholder="Search"
-                className="min-w-0 w-full p-2 h-9 pl-8 text-xs border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
-              />
+                className="p-2 w-full min-w-0 h-9 pl-8 text-xs border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
+                />
               <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
                 <CiSearch style={{ color: "#9BA0A8" }} />
               </span>
@@ -445,10 +480,10 @@ const handleDelete = async (_id) => {
             {/* End */}
 
             {/* bagian platform */}
-            <div className="relative col-span-6 lg:col-span-2">
+            <div className="relative col-span-4 lg:col-span-2">
               <select
-                className="w-full p-2 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
-                value={selectedPlatform}
+              className="w-full min-w-0 px-1 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
+              value={selectedPlatform}
                 onChange={handleFilterChangePlatform}
               >
                 <option hidden>Platform</option>
@@ -460,10 +495,10 @@ const handleDelete = async (_id) => {
             </div>
 
             {/* bagian objective */}
-            <div className="relative col-span-6 lg:col-span-2">
+            <div className="relative col-span-4 lg:col-span-2">
               <select
-                className="w-full p-2 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
-                value={selectedObjective}
+              className="w-full min-w-0 px-1 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
+              value={selectedObjective}
                 onChange={handleFilterChangeObjective}
               >
                 <option hidden>Objective</option>
@@ -475,22 +510,24 @@ const handleDelete = async (_id) => {
             </div>
 
             {/* div kosong untuk memberi jarak */}
-            <div className="hidden lg:flex col-span-1"></div>
+            <div className="hidden lg:flex col-span-5 "></div>
+
+
 
             {/* Button add data */}
-            <Link to={`/AddCampaigns`}>
+            <div className="gap-2 flex lg:justify-end">
             <button
               type="button"
               data-te-ripple-init
               data-te-ripple-color="light"
               data-te-ripple-centered="true"
-              className="col-span-8 lg:col-span-2 inline-flex items-center border border-slate-300 h-9 focus:border-gray-500 focus:outline-none focus:ring-0 rounded-md bg-white px-6 pb-2.5 pt-2 text-xs font-medium leading-normal text-gray-800 hover:bg-gray-50"
+              className="inline-flex flex-1 items-center border border-slate-300 h-9 rounded-md bg-white px-6 pb-2.5 pt-2 text-xs font-medium leading-normal text-gray-800 hover:bg-gray-50"
+              onClick={handleAddClick}
 
             >
-              <BsPlus className="relative right-5 font-medium text-lg" />
-              <span className="relative right-4">Add</span>
+              <BsPlus className="font-medium text-lg" />
+              <span >Add</span>
             </button>
-            </Link>
             {/* menu add data */}
 
          
@@ -498,7 +535,7 @@ const handleDelete = async (_id) => {
             {/* Button export excel */}
             <button
               type="button"
-              className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-full rounded-md bg-white hover:bg-gray-50"
+              className="center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
               onClick={onDownload}
             >
               <RiFileExcel2Line className="relative font-medium text-lg" />
@@ -509,19 +546,20 @@ const handleDelete = async (_id) => {
             {/* Button export pdf */}
             <button
               type="button"
-              className="col-span-2 lg:col-span-1 grid place-items-center border border-slate-300 h-full rounded-md bg-white hover:bg-gray-50"
+              className="center  border border-slate-300 h-9 rounded-md  bg-white p-2 hover:bg-gray-50"
               onClick={generatePDF}
             >
               <AiOutlineFilePdf className="relative font-medium text-lg" />
             </button>
+            </div>
             {/* End */}
           </div>
-
-          <div className="w-full bg-white overflow-x-scroll" ref={componentPDF}>
+{/*  */}
+          <div className=" w-full rounded-md overflow-hidden outline-none shadow-lg shadow-slate-900/10 border-none max-md:overflow-x-auto" ref={componentPDF}>
             <table
               {...getTableProps()}
               ref={tableRef}
-              className="table-auto border-collapse border w-full "
+              className="table-auto w-full"
             >
               <thead>
                 {headerGroups.map((headerGroup) => (
@@ -530,7 +568,7 @@ const handleDelete = async (_id) => {
                     {headerGroup.headers.map((column) => (
                       <th
                         {...column.getHeaderProps()}
-                        className={` p-2 text-white bg-sky-700 font-normal border-slate-300 border ${column.id === "status" || column.id === "id"
+                        className={` p-2 text-white bg-sky-500 font-normal  border-t-0  border-gray-300 ${column.id === "status" || column.id === "id"
                             ? "place-items-center"
                             : "text-left"
                           }`}
@@ -547,7 +585,7 @@ const handleDelete = async (_id) => {
                   return (
                     <tr
                       {...row.getRowProps()}
-                      className={`border border-slate-300 text-gray-600 hover:bg-blue-300 hover:text-gray-700 ${i % 2 === 0 ? "bg-gray-100" : "bg-white"
+                      className={` text-gray-600 hover:bg-blue-200 hover:text-gray-700 ${i % 2 === 1 ? "bg-gray-100" : "bg-white"
                         } `}
                     >
                       {row.cells.map((cell) => {
@@ -555,7 +593,7 @@ const handleDelete = async (_id) => {
                           <td
                             {...cell.getCellProps()}
 
-                            className={`p-2 border border-slate-300 ${cell.column.id === "status" ||
+                            className={`p-2 border-gray-300 border-b-0 border-x-0  ${cell.column.id === "status" ||
                                 cell.column.id === "action"
                                 ? "text-center"
                                 : "text-left"
@@ -618,13 +656,11 @@ const handleDelete = async (_id) => {
               ...(canNextPage ? {} : disabledButtonStyle),
             }}
           >
-            {'>>'}
+            <IoIosArrowForward/>
           </button>{' '}
         </div>
         {/* End Pagination */}
       </div>
-
-    </div>
 
   );
 }

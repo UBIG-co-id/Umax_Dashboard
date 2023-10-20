@@ -3,12 +3,39 @@ import Navbar from '../components/Navbar';
 import AccountTable from '../components/AccountTable';
 import { useFormik } from 'formik';
 import { Link, useNavigate, useParams, } from 'react-router-dom';
-import { AiOutlineEdit, AiOutlineFilePdf, AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import { AiOutlineEdit, AiOutlineFilePdf, AiOutlineEye, AiOutlineEyeInvisible,AiOutlineSearch } from 'react-icons/ai';
+import { BiChevronDown } from 'react-icons/bi';
+
 
 const AddDataAccounts = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [clientList, setClientList] = useState([]);
+  const [inputSearch, setInputSearch] = useState('');
+  const [openDropdown, setOpenDropdown] = useState(false);
+  const [filteredClients, setFilteredClients] = useState([]);
+  const [selectedClient, setSelectedClient] = useState(null);
+
+  useEffect(() => {
+    setFilteredClients(clientList); // Inisialisasi dengan seluruh data client
+  }, [clientList]);
+  useEffect(() => {
+    // Filter data berdasarkan input pencarian
+    if (inputSearch) {
+      const filtered = clientList.filter(client =>
+        client.name.toLowerCase().includes(inputSearch.toLowerCase())
+      );
+      setFilteredClients(filtered);
+    } else {
+      setFilteredClients(clientList); // Jika input pencarian kosong, tampilkan semua data
+    }
+  }, [inputSearch, clientList]);
+
+  const handleClientSelect = (client) => {
+    setSelectedClient(client);
+    setInputSearch('');
+    setOpenDropdown(false);
+  };
 
   // GET DATA CLIENT
   async function fetchClientData() {
@@ -80,6 +107,24 @@ const AddDataAccounts = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  // close menggunakan esc
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+        if (e.key === "Escape") {
+            console.log("Esc key pressed");
+            navigate(-1); 
+        };
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+        window.removeEventListener("keydown", handleKeyDown);
+    };
+}, [navigate]);
+
+
   return (
     <main className='bg-slate-100 min-h-screen'>
       <div>
@@ -104,33 +149,60 @@ const AddDataAccounts = () => {
                   className="p-2 h-9 w-56 border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                 />
               </div>
-              <div className="flex flex-col">
+               <div className="flex flex-col relative">
                 <label className="pb-2 text-sm" htmlFor="client">
                   Client
                 </label>
-                <select
-                  name="client"
-                  id="client"
-                  onChange={formik.handleChange}
-                  value={formik.values.client}
-                  className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
+                <div
+                  onClick={() => setOpenDropdown(!openDropdown)}
+                  className={`p-2 h-10 w-56 border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md  ${
+                    !selectedClient && "text-slate-500"
+                  }`}
                 >
-                  <option hidden>Select Client...</option>
-                  {clientList.map((client) => (
-                    <option key={client.id} value={client.id}>
-                      {client.name}
-                    </option>
-                  ))}
-                </select>
+                  {selectedClient ? (
+                    selectedClient.name
+                  ) : (
+                    <>
+                    Select Client... 
+                    <BiChevronDown size={20} className={`ml-2 ${openDropdown && "rotate-180"}`} >
 
-                {/* <Select
-                      options={options}
-                      value={selectedOption}
-                      onChange={handleSelectChange}
-                      styles={customStyles}
-                      isSearchable
-                      placeholder="‎"
-                    /> */}
+                    </BiChevronDown>
+                    </>
+                  )}
+                
+                </div>
+                <ul
+                  className={`  bg-slate-100 border-slate-300 border-t-0 w-[158px] max-w-[160px] left-[1px] z-10 rounded-b-md shadow-md mb-5 overflow-y-auto ${
+                    openDropdown ? "bg-slate-100 border-slate-300 border-t-10 max-h-[160px]" : "max-h-0"
+                  } `}
+                >
+                  <div className="flex items-center px-1 sticky top-0">
+                    <AiOutlineSearch size={18} className="text-gray-700 absolute right-1" />
+                    <input
+                      type="text"
+                      value={inputSearch}
+                      onChange={(e) => setInputSearch(e.target.value)}
+                      placeholder="Search"
+                      className="placeholder:text-gray-500 font-normal p-1 pl-5 relative right-[15px] max-w-[163px] outline-none"
+                    />
+                  </div>
+                  {filteredClients.length > 0 ? (
+                    filteredClients.map((client) => (
+                      <li
+                        key={client.id}
+                        className={`p-2 text-sm hover:bg-sky-400 hover:text-gray-800 ${
+                          selectedClient && client.id === selectedClient.id && "bg-blue-400 text-white"
+                        }`}
+                        onClick={() => handleClientSelect(client)}
+                      >
+                        {client.name}
+                      </li>
+                    ))
+                  ) : (
+                    <li className="p-2 text-sm">No results found</li>
+                  )}
+                </ul>
+               
 
               </div>
             </div>
@@ -238,7 +310,7 @@ const AddDataAccounts = () => {
               <Link to="/Accounts">
                 <button
                   type="button"
-                  // onClick={toggleEditPopup}
+                  onClick={() => navigate(-1)}
                   className="text-gray-500 mr-4"
                 >
                   Cancel

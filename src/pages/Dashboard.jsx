@@ -35,7 +35,10 @@ const Dashboard = () => {
   const translations = Translation[selectedLanguage];
   const [data, setData] = useState([]);
   const [metrics, setMetrics] = useState([]);
-  const { metric_id } = useParams();
+  const [metric_id, setMetricId] = useState(''); // Inisialisasi dengan nilai default jika diperlukan.
+  // const [data, setData] = useState([]); // Store the fetched data
+  // const [selectedData, setSelectedData] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     // Fetch metrics data and set it in the state
@@ -46,7 +49,7 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem('jwtToken');
       const apiUrl = "https://umaxdashboard-1-w0775359.deta.app/metrics";
-
+  
       const response = await fetch(apiUrl, {
         headers: {
           'accept': 'application/json',
@@ -54,10 +57,16 @@ const Dashboard = () => {
           'Authorization': `Bearer ${token}`,
         },
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         setMetrics(data);
+        
+        // Ambil metric_id dari data (misalnya, dari item pertama).
+        const metricIdFromData = data.length > 0 ? data[0]._id : '';
+        
+        // Set metric_id ke dalam state.
+        setMetricId(metricIdFromData);
       } else {
         console.error('Gagal mengambil data metrics');
       }
@@ -65,6 +74,45 @@ const Dashboard = () => {
       console.error('Terjadi kesalahan:', error);
     }
   };
+
+  const fetchHistoryData = async (metric_id) => {
+    try {
+      const token = localStorage.getItem('jwtToken');
+      const apiUrl = `https://umaxdashboard-1-w0775359.deta.app/history/${metric_id}`; // Updated URL with metric_id
+  
+      const response = await fetch(apiUrl, {
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        setData(data);
+      } else {
+        // Handle non-OK status here
+        const errorData = await response.json();
+        setError(errorData.detail);
+      }
+    } catch (error) {
+      console.error('Terjadi kesalahan:', error);
+      setError('Terjadi kesalahan dalam mengambil data.');
+    }
+  };
+
+  useEffect(() => {
+    if (metric_id) {
+      // Fetch data based on metric_id here and set it to selectedData
+      // Example: fetch data for selected metric_id and set it to selectedData state
+      // setSelectedData(data);
+    } else {
+      // Handle the case when no metric_id is selected
+      setSelectedData(null);
+    }
+  }, [metric_id]);
+  
 
   const handleItemClick = (itemName) => {
     console.log(itemName)
@@ -366,15 +414,6 @@ const Dashboard = () => {
     },
   ];
 
-  //ubah integer dari BE ke rupiah
-  const rupiah = (number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(number);
-  };
 
   //ubah nilai float dari BE ke 1 angka dibelakang koma
   const formattedKoma1 = (number) =>
@@ -576,7 +615,7 @@ const Dashboard = () => {
 
                 {/* Chart */}
                 <div className='w-full md:w-full flex flex-col gap-5 justify-between'>
-                  <Chart />
+                <Chart metricId={metric_id} />
 
 
                   {selectedData && (
@@ -695,14 +734,20 @@ const Dashboard = () => {
           </div>
         );
 
-      case 'history':
-        return (
-          <div>
+        case 'history':
+  return (
+    <div>
+      {metric_id ? (
+        <History metric_id={metric_id} />
+      ) : (
+        <p>Select a valid item</p>
+      )}
+    </div>
+  );
 
-            <History metric_id={metric_id} />
 
-          </div>
-        );
+
+        
       case 'setting':
         return (
 
@@ -784,33 +829,7 @@ const Dashboard = () => {
     })
   }
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem('jwtToken');
-        const response = await axios.get('https://umax-1-z7228928.deta.app/metrics/',
-          {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-        if (response.status === 200) {
-          const data = response.data;
-          console.log(data);
-          setMetricsData(data);
-        } else {
-          console.error('Failed to fetch data from API');
-        }
-      } catch (error) {
-        console.error('An error occurred', error);
-      }
 
-    };
-
-    fetchData();
-  }, []);
 
   return (
     <main className='bg-slate-100 min-h-screen ' >
@@ -818,7 +837,7 @@ const Dashboard = () => {
         <Navbar />
       </div>
       <div className='flex gap-5  px-5'>
-        <Sidebar state={state} toggleSidebar={toggleSidebar} updateSelectedName={handleItemClick} />
+        <Sidebar state={state} toggleSidebar={toggleSidebar} updateSelectedName={handleItemClick} setMetricId={setMetricId}/>
 
         <ContainerCard >
 
@@ -837,7 +856,7 @@ const Dashboard = () => {
                 } alt="icon" width={30} />
               )
               }
-              <h1 className='text-2xl pl-3 font-bold text-gray-700'> {selectedName ? selectedName : ''}</h1>
+              <h1 className='text-2xl pl-3 font-bold text-gray-600'> {selectedName ? selectedName : ''}</h1>
             </div>
 
 

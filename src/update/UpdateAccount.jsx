@@ -74,6 +74,22 @@ const UpdateAccount = () => {
         setShowPassword(!showPassword);
     };
 
+    
+  // close menggunakan esc
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+        if (e.key === "Escape") {
+            console.log("Esc key pressed");
+            navigate(-1); 
+        };
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+        window.removeEventListener("keydown", handleKeyDown);
+    };
+}, [navigate]);
 
     return (
         <main className='bg-slate-100 min-h-screen'>
@@ -226,7 +242,7 @@ const UpdateAccount = () => {
                     <Link to="/Accounts">
                         <button
                             type="button"
-                            // onClick={toggleEditPopup}
+                            onClick={() => navigate(-1)}
                             className="text-gray-500 mr-4"
                         >
                             Cancel

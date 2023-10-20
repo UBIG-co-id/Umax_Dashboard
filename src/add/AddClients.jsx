@@ -1,4 +1,4 @@
-import React from 'react'
+import  {useEffect, React} from 'react'
 import { useFormik } from 'formik';
 import { Link, useNavigate, useParams, } from 'react-router-dom';
 import Navbar from '../components/Navbar';
@@ -46,6 +46,23 @@ const AddDataClients = () => {
         },
     });
     // END ADD DATA
+
+    // fungsi untuk menutup page menggunakan esc
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === "Escape") {
+                console.log("Esc key pressed");
+                navigate(-1); 
+            };
+        };
+    
+        window.addEventListener("keydown", handleKeyDown);
+    
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [navigate]);
+
     
     return (
         <main className='bg-slate-100 min-h-screen'>
@@ -133,7 +150,7 @@ const AddDataClients = () => {
                                     <Link to="/Clients">
                                         <button
                                             type="button"
-                                            // onClick={toggleEditPopup}
+                                            onClick={() => navigate(-1)}
                                             className="text-gray-500 mr-4"
                                         >
                                             Cancel

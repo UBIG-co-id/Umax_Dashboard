@@ -1,12 +1,25 @@
+/* Gaya untuk kontainer tabel */
+.table-container {
+  border-radius: 15px;
+  outline: none;
+}
+
+
+
 .custom-confirm-button-class {
     background-color: #DC2626 !important;
   }
   .custom-ok-button-class {
-    background-color: #00FF00 !important; 
+    background-color: #198754 !important; 
   }
+  .custom-error-button-class{
+  background-color: #B91C1C !important};
 
 .lebarcard{
   with: 88%;
+}
+.no-scroll {
+  overflow: hidden;
 }
 
 /* CSS untuk header "Action" */
@@ -422,6 +435,7 @@ th svg.desc{
 .text-left {
   text-align: left;
 }
+
 
 
 /* Gaya scroll bar */

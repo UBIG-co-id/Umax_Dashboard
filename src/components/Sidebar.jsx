@@ -6,7 +6,7 @@ import { Context } from '../context';
 import { useLanguage } from '../LanguageContext'; // Import the useLanguage hook
 import Translation from '../translation/Translation.json';
 
-const Sidebar = ({ updateSelectedName }) => {
+const Sidebar = ({ updateSelectedName, setMetricId }) => {
   const [activeTab, setActiveTab] = useState('all');
   const [searchText, setSearchText] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -54,7 +54,7 @@ const Sidebar = ({ updateSelectedName }) => {
           'accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',
           'Authorization': `Bearer ${token}`,
-        },
+        }, 
       });
       if (response.ok) {
         const responseData = await response.json(); // Rename to avoid conflict with 'data' state
@@ -93,27 +93,27 @@ const Sidebar = ({ updateSelectedName }) => {
   }, [itemsToShow]);
 
   const handleItemClick = (itemName) => {
-    // Temukan kampanye yang sesuai dengan nama yang diklik
+    // Find the campaign that matches the clicked name
     const selectedData = data.find((data) => data.campaign_name === itemName);
-
+  
     if (selectedData) {
       setActiveItem(itemName);
       updateSelectedName(itemName);
       setSelectedData(selectedData);
+  
+      // Add this part to set metric_id based on selectedData
+      const metricIdFromSelectedData = selectedData._id;
+      setMetricId(metricIdFromSelectedData);
     }
   };
+  
 
 
   // menyimpan warna array
   const customCircleColors = ['#8F8F8F', '#00FF00', '#00FF00', '#FF8A00', '#FF8A00'];
   const formatDate = (dateString) => {
-    const parts = dateString.split('/');
-    if (parts.length === 3) {
-      const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
-      const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-      return new Date(formattedDate).toLocaleDateString('id-ID', options);
-    }
-    return "Invalid Date";
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
   };
   
   
@@ -133,23 +133,23 @@ const Sidebar = ({ updateSelectedName }) => {
 
   const tabStyle = {
     all: {
-      backgroundColor: activeTab === 'all' ? '#ffff' : '#EBECF000',
-      color: activeTab === 'all' ? '#494949' : '#6b7280',
+      backgroundColor: activeTab === 'all' ? '#008FFB' : '#EBECF000',
+      color: activeTab === 'all' ? '#ffff' : '#6b7280',
       circleColor: activeTab === 'all' ? '#000' : '#00FF00',
     },
     draft: {
-      backgroundColor: activeTab === 'draft' ? '#ffff' : '#EBECF000',
-      color: activeTab === 'draft' ? '#494949' : '#6b7280',
+      backgroundColor: activeTab === 'draft' ? '#008FFB' : '#EBECF000',
+      color: activeTab === 'draft' ? '#ffff' : '#6b7280',
       circleColor: activeTab === 'draft' ? '#8F8F8F' : '#8F8F8F',
     },
     active: {
-      backgroundColor: activeTab === 'active' ? '#ffff' : '#EBECF000',
-      color: activeTab === 'active' ? '#494949' : '#6b7280',
+      backgroundColor: activeTab === 'active' ? '#008FFB' : '#EBECF000',
+      color: activeTab === 'active' ? '#ffff' : '#6b7280',
       circleColor: activeTab === 'active' ? '#00FF00' : '#00FF00',
     },
     completed: {
-      backgroundColor: activeTab === 'completed' ? '#ffff' : '#EBECF000',
-      color: activeTab === 'completed' ? '#494949' : '#6b7280',
+      backgroundColor: activeTab === 'completed' ? '#008FFB' : '#EBECF000',
+      color: activeTab === 'completed' ? '#ffff' : '#6b7280',
       circleColor: activeTab === 'completed' ? '#FF8A00' : '#FF8A00',
     },
   };
@@ -266,7 +266,7 @@ const Sidebar = ({ updateSelectedName }) => {
 
         </div>
       </button>
-      <div className={`relative bayangan max-w-70 top-5 -left-1  w-72 max-h-full bg-white  rounded-t-xl  max-sm:left-0 text-slate-700 p-4 transform ${state.toggleNavbar ? 'block' : 'hidden'} transition-transform duration-300 ease-in-out`}>
+      <div className={`relative bayangan max-w-70 top-5 -left-1  w-72 max-h-full bg-white  rounded-t-xl  max-sm:left-0 text-slate-500 p-4 transform ${state.toggleNavbar ? 'block' : 'hidden'} transition-transform duration-300 ease-in-out`}>
 
         <div className=" bg-gray-200 mx-1 p-1 rounded-lg flex justify-center mb-4 ">
           <button
@@ -308,7 +308,7 @@ const Sidebar = ({ updateSelectedName }) => {
           <input
             type="text"
             placeholder={translations['Search']}
-            className="w-full pl-8 px-2 py-1 bg-white border-search text-slate-600 rounded-lg"
+            className="w-full pl-8 px-2 py-1 bg-white border-searc border focus:outline-none focus:border-gray-500 text-slate-600 rounded-lg"
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
           />

@@ -14,7 +14,10 @@ import Profile from './Profile/Profile';
 import EditProfile from './Profile/EditProfile';
 import AddClients from './add/AddClients'
 import AddAccounts from './add/AddAccounts'
-import AddCampaigns from './add/AddCampaigns';
+import AddCampaigns from './add/AddCampaigns'
+
+
+
 
 
 const App = () => {
@@ -22,35 +25,23 @@ const App = () => {
 
     <Router>
       <Routes>
-        {/* LOGIN */}
-        <Route path='/register' element={<Register />} />
-        <Route path='/login' element={<Login />} />
-        {/* END LOGIN */}
 
-        {/* DASHBOARD */}
-        <Route path='/Dashboard' element={<Dashboard />} />
-        {/* END DASHBOARD */}
+        <Route path='/updatecampaigns/:_id' element={<UpdateCampaign/>}/>
+        <Route path='/updateaccount/:_id' element={<UpdateAccount/>}/>
+        <Route path='/updateclient/:_id' element={<UpdateClient/>}/>
+        <Route path='/AddClients' element={<AddClients/>}/>
+        <Route path='/AddAccounts' element={<AddAccounts/>}/>
+        <Route path='/AddCampaigns' element={<AddCampaigns/>}/>
+        {/* <Route path='/data' element={<DataTable/>}/> */}
+        <Route path='/register' element={<Register/>}/>
+        <Route path='/login' element={<Login/>}/>
+        <Route path='/Dashboard' element={<Dashboard/> }  />
+        <Route path='/Campaigns' element={<Campaigns/> }  />
+        <Route path='/Accounts' element={<Accounts/> }  />
+        <Route path='/Clients' element={<Clients/> }  />
+        <Route path='/Profile' element={<Profile/> }  />
+        <Route path='/EditProfile' element={<EditProfile/> }  />
 
-        {/*  CLIENT */}
-        <Route path='/AddClient/' element={<AddClients />} />
-        <Route path='/updateclient/:_id' element={<UpdateClient />} />
-        <Route path='/Clients' element={<Clients />} />
-        {/* END CLIENT */}
-
-        {/* ACCOUNTS */}
-        <Route path='/AddAccounts/' element={<AddAccounts />} />
-        <Route path='/updateaccount/:_id' element={<UpdateAccount />} />
-        <Route path='/Accounts' element={<Accounts />} />
-        {/* END ACCOUNTS */}
-
-        {/* CAMPAIGNS */}
-        <Route path='/AddCampaigns/' element={<AddCampaigns />} />
-        <Route path='/updatecampaigns/:_id' element={<UpdateCampaign />} />
-        <Route path='/Campaigns' element={<Campaigns />} />
-        {/* END CAMPAIGNS */}
-
-        <Route path='/Profile' element={<Profile />} />
-        <Route path='/EditProfile' element={<EditProfile />} />
       </Routes>
     </Router>
 

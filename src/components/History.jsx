@@ -1,18 +1,30 @@
-import React, { useState, useRef, useMemo,useEffect } from "react";
-import { useReactToPrint } from "react-to-print";
-// import { useDownloadExcel } from "react-export-table-to-excel"
-import { Box, Button } from '@mui/material';
-import pdfImage from '../assets/pdf.png';
-import excelImage from '../assets/excel.png';
-import Data from "../components/DataHistory";
-import { MaterialReactTable } from 'material-react-table'
-import { darken } from '@mui/material';
-// import XLSX from 'xlsx';
-import { CSVLink, CSVDownload } from "react-csv";
-// import { mkConfig, generateCsv, download } from "export-to-csv";
+
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import { useTable, useGlobalFilter, usePagination } from "react-table";
+// import data from "./CampaignData";
+import { BsTrash3, BsPlus } from "react-icons/bs";
+import { IoIosArrowForward } from "react-icons/io";
+import { CiSearch } from "react-icons/ci";
+import { AiOutlineEdit, AiOutlineFilePdf } from "react-icons/ai";
+import { RiFileExcel2Line } from "react-icons/ri";
+import { useDownloadExcel } from "react-export-table-to-excel";
+import jsPDF from "jspdf";
+import 'jspdf-autotable';
+import { useReactToPrint } from 'react-to-print';
+import "../styles.css";
+import 'react-tabs/style/react-tabs.css';
+import { useFormik } from 'formik';
+import { Link, useNavigate, useParams, } from 'react-router-dom';
+import axios from 'axios';
+import Swal from 'sweetalert2';
+import '../styles.css';
+
+
 
 const History = ({ metric_id }) => {
-  const [data, setData] = useState([]); // Store the fetched data
+  const [tableData, setTableData] = useState([]);
+
+  const [data, setData] = useState([]);
   const [selectedData, setSelectedData] = useState([]);
   const [error, setError] = useState(null);
 
@@ -42,19 +54,13 @@ const History = ({ metric_id }) => {
     fetchCampaignData();
   }, []);
   const handleRowSelection = (selectedRowData) => {
-    // This function will be called when a row is selected or deselected
     setSelectedData(selectedRowData);
   };
-
-  useEffect(() => {
-    // Fetch data when the component mounts
-    fetchHistoryData(metric_id); // Panggil dengan metric_id
-  }, [metric_id]); // Tambahkan metric_id sebagai dependency
 
   const fetchHistoryData = async (metric_id) => {
     try {
       const token = localStorage.getItem('jwtToken');
-      const apiUrl = `https://umaxdashboard-1-w0775359.deta.app/history/6524c2edb3c4faf2ea90f51a`; // Sesuaikan URL dengan metric_id
+      const apiUrl = `https://umaxdashboard-1-w0775359.deta.app/history/${metric_id}`;
 
       const response = await fetch(apiUrl, {
         headers: {
@@ -68,7 +74,6 @@ const History = ({ metric_id }) => {
         const data = await response.json();
         setData(data);
       } else {
-        // Tambahkan penanganan kesalahan untuk status non-OK
         const errorData = await response.json();
         setError(errorData.detail);
       }
@@ -76,326 +81,417 @@ const History = ({ metric_id }) => {
       console.error('Terjadi kesalahan:', error);
       setError('Terjadi kesalahan dalam mengambil data.');
     }
-  };  
+  };
+
+  useEffect(() => {
+    fetchHistoryData(metric_id);
+  }, [metric_id]);
 
 
-  // MENGGUNAKAN LIBRARY DARI MATERIAL REACT TABLE
-  const columns = useMemo(
-    () => [
-      {
-        accessorKey: 'perubahan.TglUpdate',
-        enableColumnFilter: false,
-        header: 'Last Update',
-      },
-      {
-        accessorKey: 'perubahan.amountspent',
-        header: 'Amount Spent',
-      },
-      {
-        accessorKey: 'perubahan.reach',
-        header: 'Reach',
-      },
-      {
-        accessorKey: 'perubahan.impressions',
-        header: 'Impressions',
-      },
-      {
-        accessorKey: 'perubahan.frequency',
-        header: 'Frequency',
-      },
-      {
-        accessorKey: 'perubahan.rar',
-        header: 'RAR',
-      },
-      {
-        accessorKey: 'perubahan.cpc',
-        header: 'CPC',
-      },
-      {
-        accessorKey: 'perubahan.ctr',
-        header: 'CTR',
-      },
-      {
-        accessorKey: 'perubahan.oclp',
-        header: 'OCLP',
-      },
-      {
-        accessorKey: 'perubahan.cpr',
-        header: 'CPR',
-      },
-      {
-        accessorKey: 'perubahan.atc',
-        header: 'ATC',
-      },
-      {
-        accessorKey: 'perubahan.roas',
-        header: 'ROAS',
-      },
-    ],
-    [],
-  );
 
-  // const data = useMemo(
-  //   () => [
-  //     {
-  //       update: '28 Jul 2023, 09:20',
-  //       amount: 'Rp. 2.000.000',
-  //       reach: '97.000',
-  //       impressions: '230.000',
-  //       frequency: '2,3',
-  //       rar: '6,1% ',
-  //       cpc: 'Rp. 2.000',
-  //       ctr: '1,0%',
-  //       oclp: '30%',
-  //       cpr: 'Rp. 5.000',
-  //       atc: '2,5%',
-  //       roas: '3,1x'
-  //     },
-  //     {
-  //       update: '28 Jul 2023, 09:20',
-  //       amount: 'Rp. 4.000.000',
-  //       reach: '97.000',
-  //       impressions: '230.000',
-  //       frequency: '2,3',
-  //       rar: '6,1% ',
-  //       cpc: 'Rp. 2.000',
-  //       ctr: '1,0%',
-  //       oclp: '30%',
-  //       cpr: 'Rp. 5.000',
-  //       atc: '2,5%',
-  //       roas: '3,1x'
-  //     },
-  //     {
-  //       update: '28 Jul 2023, 09:20',
-  //       amount: 'Rp. 4.000.000',
-  //       reach: '97.000',
-  //       impressions: '230.000',
-  //       frequency: '2,3',
-  //       rar: '6,1% ',
-  //       cpc: 'Rp. 2.000',
-  //       ctr: '1,0%',
-  //       oclp: '30%',
-  //       cpr: 'Rp. 5.000',
-  //       atc: '2,5%',
-  //       roas: '3,1x'
-  //     },
-  //     {
-  //       update: '28 Jul 2023, 09:20',
-  //       amount: 'Rp. 4.000.000',
-  //       reach: '97.000',
-  //       impressions: '230.000',
-  //       frequency: '2,3',
-  //       rar: '6,1% ',
-  //       cpc: 'Rp. 2.000',
-  //       ctr: '1,0%',
-  //       oclp: '30%',
-  //       cpr: 'Rp. 5.000',
-  //       atc: '2,5%',
-  //       roas: '3,1x'
-  //     },
-  //     {
-  //       update: '28 Jul 2023, 09:20',
-  //       amount: 'Rp. 4.000.000',
-  //       reach: '97.000',
-  //       impressions: '230.000',
-  //       frequency: '2,3',
-  //       rar: '6,1% ',
-  //       cpc: 'Rp. 2.000',
-  //       ctr: '1,0%',
-  //       oclp: '30%',
-  //       cpr: 'Rp. 5.000',
-  //       atc: '2,5%',
-  //       roas: '3,1x'
-  //     },
-  //     {
-  //       update: '28 Jul 2023, 09:20',
-  //       amount: 'Rp. 4.000.000',
-  //       reach: '97.000',
-  //       impressions: '230.000',
-  //       frequency: '2,3',
-  //       rar: '6,1% ',
-  //       cpc: 'Rp. 2.000',
-  //       ctr: '1,0%',
-  //       oclp: '30%',
-  //       cpr: 'Rp. 5.000',
-  //       atc: '2,5%',
-  //       roas: '3,1x'
-  //     },
-  //     {
-  //       update: '28 Jul 2023, 09:20',
-  //       amount: 'Rp. 4.000.000',
-  //       reach: '97.000',
-  //       impressions: '230.000',
-  //       frequency: '2,3',
-  //       rar: '6,1% ',
-  //       cpc: 'Rp. 2.000',
-  //       ctr: '1,0%',
-  //       oclp: '30%',
-  //       cpr: 'Rp. 5.000',
-  //       atc: '2,5%',
-  //       roas: '3,1x'
-  //     },
-  //     {
-  //       update: '28 Jul 2023, 09:20',
-  //       amount: 'Rp. 4.000.000',
-  //       reach: '97.000',
-  //       impressions: '230.000',
-  //       frequency: '2,3',
-  //       rar: '6,1% ',
-  //       cpc: 'Rp. 2.000',
-  //       ctr: '1,0%',
-  //       oclp: '30%',
-  //       cpr: 'Rp. 5.000',
-  //       atc: '2,5%',
-  //       roas: '3,1x'
-  //     },
-  //     {
-  //       update: '28 Jul 2023, 09:20',
-  //       amount: 'Rp. 4.000.000',
-  //       reach: '97.000',
-  //       impressions: '230.000',
-  //       frequency: '2,3',
-  //       rar: '6,1% ',
-  //       cpc: 'Rp. 2.000',
-  //       ctr: '1,0%',
-  //       oclp: '30%',
-  //       cpr: 'Rp. 5.000',
-  //       atc: '2,5%',
-  //       roas: '3,1x'
-  //     },
-  //     {
-  //       update: '27 Jul 2023, 09:20',
-  //       amount: 'Rp. 4.000.000',
-  //       reach: '97.000',
-  //       impressions: '230.000',
-  //       frequency: '2,3',
-  //       rar: '6,1% ',
-  //       cpc: 'Rp. 2.000',
-  //       ctr: '1,0%',
-  //       oclp: '30%',
-  //       cpr: 'Rp. 5.000',
-  //       atc: '2,5%',
-  //       roas: '3,1x'
-  //     },
-  //     {
-  //       update: '27 Jul 2023, 09:20',
-  //       amount: 'Rp. 4.000.000',
-  //       reach: '97.000',
-  //       impressions: '230.000',
-  //       frequency: '2,3',
-  //       rar: '6,1% ',
-  //       cpc: 'Rp. 2.000',
-  //       ctr: '1,0%',
-  //       oclp: '30%',
-  //       cpr: 'Rp. 5.000',
-  //       atc: '2,5%',
-  //       roas: '3,1x'
-  //     },
-  //   ]
-  // )
 
-  // SORTING
-  const [sortBy, setSortBy] = useState({
-    column: 'key',
-    ascending: true,
-  });
-  const handleSort = (column) => {
-    if (column === sortBy.column) {
-      setSortBy({ column, ascending: !sortBy.ascending });
-    } else {
-      setSortBy({ column, ascending: true });
+
+
+  // PAGINATION
+  const paginationStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'end',
+    marginTop: '20px',
+  };
+
+  const buttonStyle = {
+    backgroundColor: '#007BFF',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+    padding: '5px 10px',
+    cursor: 'pointer',
+    fontSize: '16px',
+    margin: '0 5px',
+  };
+
+  const disabledButtonStyle = {
+    backgroundColor: '#ccc',
+    cursor: 'not-allowed',
+  };
+
+  const pageInfoStyle = {
+    fontSize: '16px',
+    margin: '0 10px',
+    color: '#333',
+  };
+  // END PAGINATION
+
+
+  const getStatusString = (status) => {
+    let statusStyle = {}; // Objek gaya status
+
+    switch (status) {
+      case 1:
+        statusStyle = {
+          color: '#00CA00',
+          padding: '2px',
+          borderRadius: '7px',
+          fontWeight: '500',
+        };
+        return (
+          <span style={statusStyle}>Active</span>
+        );
+      case 2:
+        statusStyle = {
+          color: '#8F8F8F',
+          padding: '2px',
+          borderRadius: '7px',
+          fontWeight: '500',
+        };
+        return (
+          <span style={statusStyle}>Draft</span>
+        );
+      case 3:
+        statusStyle = {
+          color: '#FF8A00',
+          padding: '2px',
+          borderRadius: '7px',
+          fontWeight: '500',
+        };
+        return (
+          <span style={statusStyle}>Completed</span>
+        );
+      default:
+        return "Unknown";
     }
   };
-  const sortedData = [...Data].sort((a, b) => {
-    const keyA = a[sortBy.column];
-    const keyB = b[sortBy.column];
-    if (sortBy.ascending) {
-      return keyA.localeCompare(keyB);
-    } else {
-      return keyB.localeCompare(keyA);
+
+
+  const getPlatFormString = (platform) => {
+    switch (platform) {
+      case 1:
+        return "Meta Ads";
+      case 2:
+        return "Google Ads";
+      case 3:
+        return "Tiktok Ads";
+      default:
+        return "Unknown";
     }
+  };
+  const getObjectiveString = (objective) => {
+    switch (objective) {
+      case 1:
+        return "Awareness";
+      case 2:
+        return "Conversion";
+      case 3:
+        return "Consideration";
+      default:
+        return "Unknown";
+    }
+  };
+
+
+
+
+  const columns = React.useMemo(
+    () => [
+
+      {
+        Header: "Last Update",
+        accessor: "perubahan.TglUpdate",
+        Cell: ({ value }) => {
+          const date = new Date(value);
+          const formattedTime = date.toLocaleTimeString('id-ID', { year: 'numeric', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+          return <div className="flex justify-center">{formattedTime}</div>;
+        },
+      },
+      {
+        Header: "Amount Spent",
+        accessor: "perubahan.amountspent",
+      },
+      {
+        Header: "Reach",
+        accessor: "perubahan.reach",
+      },
+      {
+        Header: "Impressions",
+        accessor: "perubahan.impressions",
+      },
+      {
+        Header: "Frequency",
+        accessor: "perubahan.frequency",
+
+      },
+      {
+        Header: "RAR",
+        accessor: "perubahan.rar",
+      },
+      {
+        Header: "CPC",
+        accessor: "perubahan.cpc",
+
+      },
+      {
+        Header: "CTR",
+        accessor: "perubahan.ctr",
+
+      },
+      {
+        Header: "OCLP",
+        accessor: "perubahan.oclp",
+
+      },
+      {
+        Header: "CPR",
+        accessor: "perubahan.cpr",
+
+      },
+      {
+        Header: "ATC",
+        accessor: "perubahan.atc",
+
+      },
+      {
+        Header: "ROAS",
+        accessor: "perubahan.roas",
+
+      },
+    ],
+    []
+  );
+
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    prepareRow,
+    page, // Replace 'rows' with 'page' for paginated data
+    state: { pageIndex, pageSize, globalFilter }, // Add these state properties
+    setGlobalFilter, // Add this function
+    gotoPage, // Add this function
+    nextPage, // Add this function
+    previousPage, // Add this function
+    canNextPage, // Add this function
+    canPreviousPage, // Add this function
+    pageOptions, // Add this function
+    pageCount, // Add this function
+  } = useTable(
+    {
+      columns,
+      data,
+      initialState: { pageIndex: 0, pageSize: 5 }, // Initial page settings
+    },
+    useGlobalFilter,
+    usePagination // Add this hook
+  );
+
+  const tableRef = useRef(null);
+
+  //export table ke excel
+  const { onDownload } = useDownloadExcel({
+    currentTableRef: tableRef.current,
+    filename: "DataCampaigns",
+    sheet: "DataCampaigns",
   });
 
-  // EXPORT EXCEL
+  //export table ke pdf
 
-  // const tableRef = useRef(null);
-  // const { onDownload } = useDownloadExcel({
-  //   tableRef: tableRef, // Use 'tableRef' instead of 'currentTableRef'
-  //   data: data,
-  //   filename: "Data",
-  //   sheet: "Data",
-  // });
-
-  // EXPORT PDF
   const componentPDF = useRef();
-  const generatePDF = useReactToPrint({
-    content: () => componentPDF.current,
-    documentTitle: "Data",
-    onAfterPrint: () => alert("Data Saved in PDF")
-  });
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    doc.text('Campaign Data', 14, 15);
+
+    const filteredData = tableData.map((row) => ({
+      Name: row.name,
+      Client: row.client,
+      Platform: row.platform,
+      Account: row.account,
+      Objective: row.objective,
+      'Start Date': row.startdate,
+      Status: getStatusString(row.status),
+    }));
+
+    const tableColumnNames = Object.keys(filteredData[0]);
+    const tableColumnValues = filteredData.map((row) => Object.values(row));
+
+    doc.autoTable({
+      head: [tableColumnNames],
+      body: tableColumnValues,
+      startY: 20,
+    });
+
+    doc.save('campaigns.pdf');
+  };
+
+
 
 
 
   return (
-    <div className="relative w-full">
-    <div className='flex justify-end'>
-      <div className="container mx-auto p-4">
-        <div className="flex gap-5 items-center justify-end">
-          <div className='flex gap-5 items-center'>
-            <button onClick={generatePDF}>
-              <img
-                className="h-8 w-auto"
-                src={pdfImage}
-                alt="pdfImage"
-              />
-            </button>
-            <CSVLink data={data}>
-              <img
-                className="h-8 w-auto"
-                src={excelImage}
-                alt="excelImage"
-              />
-            </CSVLink>
+    <div>
+      <div className="border-2 border-slate-200  p-0 m-2 lg:m-10 mt-8 rounded-lg relative">
+        <div className="container mx-auto p-4">
+          <div className="grid grid-cols-12 gap-3 px-2 md:px-0 mb-2">
+            {/* Search bar */}
 
-            <select name="" id="" className='focus:outline-none p-2 px-5 border border-gray-300 text-gray-500 rounded-md'>
-              <option value="">Today</option>
-            </select>
+            {/* End */}
 
+            {/* bagian platform */}
+
+
+            {/* bagian objective */}
+
+            {/* div kosong untuk memberi jarak */}
+            <div className="hidden lg:flex col-span-11 "></div>
+
+
+
+            {/* Button add data */}
+            <div className="gap-2 flex lg:justify-end">
+
+              {/* menu add data */}
+
+
+
+              {/* Button export excel */}
+              <button
+                type="button"
+                className="center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
+                onClick={onDownload}
+              >
+                <RiFileExcel2Line className="relative font-medium text-lg" />
+              </button>
+
+              {/* End */}
+
+              {/* Button export pdf */}
+              <button
+                type="button"
+                className="center  border border-slate-300 h-9 rounded-md  bg-white p-2 hover:bg-gray-50"
+                onClick={generatePDF}
+              >
+                <AiOutlineFilePdf className="relative font-medium text-lg" />
+              </button>
+            </div>
+            {/* End */}
+          </div>
+          {/*  */}
+          <div className=" w-full table-container outline-none shadow-lg shadow-slate-900/10 border-none " ref={componentPDF}>
+            <table
+              {...getTableProps()}
+              ref={tableRef}
+              className="table-auto w-full"
+            >
+             <thead>
+  {headerGroups.map((headerGroup) => (
+    <tr {...headerGroup.getHeaderGroupProps()}>
+      {headerGroup.headers.map((column) => (
+        <th
+          {...column.getHeaderProps()}
+          className={`p-2 text-white bg-sky-500 font-medium border-t-0 border-slate-300 ${
+            column.id === "status" || column.id === "id" ? "place-items-center" : "text-left"
+          }`}
+          style={{ width: '50px' }} // Set the width to 20px
+        >
+          {column.render("Header")}
+        </th>
+      ))}
+    </tr>
+  ))}
+</thead>
+
+              <tbody {...getTableBodyProps()}>
+                {page.map((row, i) => {
+                  prepareRow(row);
+                  return (
+                    <tr
+                      {...row.getRowProps()}
+                      className={`text-gray-600 hover:bg-blue-200 hover:text-gray-700 ${i % 2 === 1 ? "bg-gray-100" : "bg-white"}`}
+                    >
+                      {row.cells.map((cell) => {
+                        const textAlign =
+                          cell.column.id === "perubahan.frequency" ||
+                            cell.column.id === "perubahan.rar" ||
+                            cell.column.id === "perubahan.ctr" ||
+                            cell.column.id === "perubahan.oclp" ||
+                            cell.column.id === "perubahan.atc" ||
+                            cell.column.id === "perubahan.roas"
+                            ? "text-center"
+                            : cell.column.id === "perubahan.TglUpdate"
+                              ? "text-left"
+                              : "text-right"; // Assuming amount spent, reach, impressions, cpc, and cpr should be right-aligned.
+
+                        return (
+                          <td
+                            {...cell.getCellProps()}
+                            className={`p-2 border border-slate-300 border-b-0 ${textAlign}`}
+                          >
+                            {cell.render("Cell")}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
-        <div ref={componentPDF} >
-          <MaterialReactTable
-            columns={columns}
-            data={data}
-             onRowSelection={handleRowSelection}
-            muiTableHeadCellProps={{
-              sx: (theme) => ({
-                backgroundColor: theme.palette.primary.main, 
-                color: theme.palette.common.white, 
-              })
+        {/* Pagination */}
+        <div style={paginationStyle}>
+          <button
+            onClick={() => gotoPage(0)}
+            disabled={!canPreviousPage}
+            style={{
+              ...buttonStyle,
+              ...(canPreviousPage ? {} : disabledButtonStyle),
             }}
-            muiTablePaperProps={{
-              elevation: 0,
-              sx: {
-                borderRadius: '10px',
-                border: '1px dashed #e0e0e0',
-              },
+          >
+            {'<<'}
+          </button>{' '}
+          <button
+            onClick={() => previousPage()}
+            disabled={!canPreviousPage}
+            style={{
+              ...buttonStyle,
+              ...(canPreviousPage ? {} : disabledButtonStyle),
             }}
-            muiTableBodyProps={{
-              sx: (theme) => ({
-                '& tr:nth-of-type(odd)': {
-                  backgroundColor: darken(theme.palette.background.default, 0.1),
-                },
-              }),
+          >
+            {'<'}
+          </button>{' '}
+          <span style={pageInfoStyle}>
+            Page{' '}
+            <strong>
+              {pageIndex + 1} of {pageOptions.length}
+            </strong>{' '}
+          </span>
+          <button
+            onClick={() => nextPage()}
+            disabled={!canNextPage}
+            style={{
+              ...buttonStyle,
+              ...(canNextPage ? {} : disabledButtonStyle),
             }}
-          />
-
-
+          >
+            {'>'}
+          </button>{' '}
+          <button
+            onClick={() => gotoPage(pageCount - 1)}
+            disabled={!canNextPage}
+            style={{
+              ...buttonStyle,
+              ...(canNextPage ? {} : disabledButtonStyle),
+            }}
+          >
+            <IoIosArrowForward />
+          </button>{' '}
         </div>
+        {/* End Pagination */}
       </div>
+
     </div>
-    </div>
-  )
+
+  );
 }
 
-export default History
+export default History;
