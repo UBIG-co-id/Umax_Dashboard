@@ -17,6 +17,8 @@ import Translation from "../translation/Translation.json"
 import { useLanguage } from '../LanguageContext';
 import { us, indonesia } from '../assets';
 import LazyLoad from 'react-lazyload';
+import { BiChevronDown, BiCheck } from "react-icons/bi";
+import { AiOutlineSearch } from "react-icons/ai";
 
 import {
   Drawer,
@@ -132,7 +134,25 @@ const theme = {
   const [darkMode, setDarkMode] = useState(false);
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
+    localStorage.setItem('darkMode', !darkMode);
   };
+
+  useEffect(() => {
+    const savedDarkMode = localStorage.getItem('darkMode');
+    if (savedDarkMode) {
+      setDarkMode(savedDarkMode === 'true');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [darkMode]);
+
+  
 
   const location = useLocation();
   const [activePage, setActivePage] = useState(location.pathname);
@@ -197,12 +217,48 @@ const theme = {
     fetchData();
   }, []);
 
- 
+  // select 2
+  const [DataV2, DataSelect2] = useState(null);
+  const [inputValue, setInputValue] = useState("");
+  const [selected, setSelected] = useState("");
+  const [buka, setBuka] = useState(false);
+  const [resultsFound, setResultsFound] = useState(true); 
+
+  const dumySementara = [
+    { name: "05/10/2023" },
+    { name: "05-10-2023" },
+    { name: "05/Jan/2023" },
+    { name: "05-Jan-2023" },
+    { name: "Jan/10/2023" },
+  ];
+
+  const DumyData = true;
+  useEffect(() => {
+    if (DumyData) {
+      DataSelect2(dumySementara);
+    }
+  }, [DumyData]);
+
+  useEffect(() => {
+    const isResultFound = DataV2 && DataV2.some(country =>
+      country.name.toLowerCase().startsWith(inputValue)
+    );
+    setResultsFound(isResultFound);
+  }, [DataV2, inputValue]);
+
+
+  // darkmode
+  const themeClasses = darkMode
+  ? 'dark:bg-gray-900 dark:text-white'
+  : 'bg-white text-gray-700';
+
+
+  
   return (
-    <Disclosure as="nav" className="bg-white shadow-md">
+<Disclosure as="nav" className={`bg-white shadow-md ${themeClasses}`}>
       {({ open }) => (
         <>
-          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+          <div className={"mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 "}>
             <div className="relative flex h-16 items-center justify-between">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
 
@@ -268,17 +324,6 @@ const theme = {
                   ))}
                 </div>
               </div>
-
-              
-
-              {/* <select onChange={toggleLanguage}>
-                  <option value="english">
-                    <img src={uk} alt="uk" className="w-4 h-4 mr-2" /> English
-                  </option>
-                  <option value="indonesia">
-                    <img src={indonesia} alt="Indonesia" className="w-4 h-4 mr-2" /> Indonesia
-                  </option>
-                </select> */}
 
               <div className="absolute  inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
 
@@ -431,7 +476,7 @@ const theme = {
                         
                       </Menu.Item>
       
-                    
+                    <hr />
 
                       <Menu.Item>
                         {({ active }) => (
@@ -470,11 +515,15 @@ const theme = {
                 <RxCross2 className='text-gray-400  hover:text-gray-600'/>
                 <h1 className='font-medium text-gray-700'>Settings</h1>
                 </button>
-                <hr className='relative -ml-4 top-2 mx-0'/>
+
+                <span className="flex pt-5 items-center">
+                  <h1 className="mr-2 font-medium text-blue-700">General</h1>
+                  <hr className="border-gray-500 border-dashed flex-1 h-0 ml-0" />
+                </span>
 
 
                  {/* tombol mode gelap */}
-                   <div className='flex justify-between mx-5 pt-10'>
+                   <div className='flex justify-between mx-5 pt-6'>
                  <h1 className='text-gray-700 relative right-3 font-medium'>Theme:</h1>
                  <label htmlFor="darkModeToggle" className="flex items-center cursor-pointer">
                   <div className="relative">
@@ -510,10 +559,7 @@ const theme = {
       <h1 className="text-gray-700 relative right-4 font-medium">Language:</h1>
       <div className="relative left-1">
         <div className="relative inline-block text-left">
-          <button
-            onClick={toggleDropdown}
-            className="btn dropdown-toggle flex items-center"
-          >
+          <button onClick={toggleDropdown} className="btn dropdown-toggle flex items-center">
             <img
               src={selectedLanguage === 'english' ? us : indonesia}
               className="w-6 h-6 mr-2"
@@ -540,7 +586,7 @@ const theme = {
             </svg>
           </button>
           {isDropdownOpen && (
-            <ul className="dropdown-menu right-2 absolute mt-3  py-2 w-32 bg-white border border-gray-300 rounded-lg shadow-lg">
+            <ul className={`dropdown-menu z-10 right-2 absolute mt-3 py-2 w-32 bg-white border border-gray-300 rounded-lg shadow-lg transition-opacity duration-300 ease-in-out opacity-100 ${isDropdownOpen ? 'opacity-100' : 'opacity-0'}`}>
               <li>
                 <button
                   onClick={() => toggleLanguage('english')}
@@ -565,7 +611,92 @@ const theme = {
       </div>
     </div>
 
+                <span className="flex pt-5 items-center">
+                  <h1 className="mr-2 font-medium text-blue-700">Date Format</h1>
+                  <hr className="border-gray-500 border-dashed flex-1 h-0 ml-0" />
+                </span>
 
+            {/* bagian Date format */}
+                <div className='flex justify-between mx-3 mt-5'>
+                    <h1 >Date:</h1>
+                 <div className="w-40 font-medium h-80">
+                    <div
+                    onClick={() => setBuka(!buka)}
+                    className={`bg-white border border-gray-600 w-full p-2 py-1 flex items-center justify-between rounded-md ${
+                    !selected && "text-gray-700"
+                    }`}
+                    >
+                    {selected
+                    ? selected?.length > 25
+                    ? selected?.substring(0, 25) + "..."
+                    : selected
+                    : "--select--"}
+
+                      <div className="flex items-center">
+                      {selected && (
+                          <RxCross2
+                              size={15}
+                              className="text-red-500 cursor-pointer"
+                              onClick={() => {
+                                  setSelected(null); // Reset the value
+                                  setInputValue(""); // Reset the input value
+
+                              }}
+                          />
+                      )}
+                      <BiChevronDown
+                          size={20}
+                          className={`${buka && "rotate-180"}`}
+                      />
+                      </div>
+                    </div>
+                    <ul
+                    className={`bg-white  border-t-0  w-[158px] max-w-[160px] left-[1px] relative rounded-b-md shadow-md mb-5  overflow-y-auto ${
+                    buka ? "border-t-0 max-h-[160px]" : "max-h-0"
+                    } `}
+                    >
+                    <div className="flex items-center px-1  sticky top-0 ">
+                    <AiOutlineSearch size={18} className="text-gray-700 absolute right-1" />
+                    <input
+                    type="text"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value.toLowerCase())}
+                    placeholder="Search"
+                    className="placeholder:text-gray-500 font-normal  p-1 pl-5 relative right-[15px] max-w-[163px] outline-none"
+                    />
+                    </div>
+                    {resultsFound
+  ? DataV2?.map((country) => (
+      <li
+        key={country?.name}
+        className={`p-2 text-sm hover-bg-sky-400 hover-text-gray-800
+        ${
+          country?.name &&
+          country.name.toLowerCase() === selected?.toLowerCase() &&
+          <BiCheck className='text-blue-400 absolute'/>
+        }
+        ${
+          country?.name?.toLowerCase().startsWith(inputValue)
+            ? "block"
+            : "hidden"
+        }`}
+        onClick={() => {
+          if (country?.name?.toLowerCase() !== selected?.toLowerCase()) {
+            setSelected(country?.name);
+            setBuka(false);
+            setInputValue("");
+          }
+        }}
+      >
+        {country?.name}
+      </li>
+    ))
+  : (
+    <li className="p-2 text-sm">Hasil tidak ditemukan</li>
+  )}
+                    </ul>
+                    </div>
+                 </div>
 
                 </Drawer>
                       

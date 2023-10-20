@@ -654,8 +654,8 @@ const Dashboard = () => {
                     icon={<AiOutlineInfoCircle size={20} />}
                     persen={`${formattedKoma1(metrixData.persen)}%`}
                     description={formatDescMetrix(metrixData)}
-                    persenTextColor={metrixData.persen < 0 ? "#D40B0B" : "#656F84"}
-                    spanBackgroundColor={metrixData.persen < 0 ? "#FF6D6D" : "#1CD14F"}
+                    persenTextColor={metrixData.persen < 0 ? "#ffff" : "#ffff"}
+                    spanBackgroundColor={metrixData.persen < 0 ? "#EF4444" : "#22C55E"}
                     descModal={metrixData.descModal}
                   />
                 ))
