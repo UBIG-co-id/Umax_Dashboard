@@ -16,11 +16,12 @@ import AddClients from './add/AddClients'
 import AddAccounts from './add/AddAccounts'
 import AddCampaigns from './add/AddCampaigns'
 
-
+import useTheme from "./hooks/useTheme";
 
 
 
 const App = () => {
+const theme = useTheme()
   return (
 
     <Router>

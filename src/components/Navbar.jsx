@@ -3,7 +3,7 @@ import { Fragment, useState, useEffect, useContext } from 'react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { MdDashboard } from 'react-icons/md';
 import { BiSolidMegaphone, BiGroup, BiBell, BiLogOut } from 'react-icons/bi';
-import { AiOutlineUser } from 'react-icons/ai';
+import { AiOutlineUser,AiOutlineSearch } from 'react-icons/ai';
 import { CiSettings, CiGlobe } from 'react-icons/ci';
 import { logo, defaultProfile } from '../assets';
 import { FiSun, FiMoon } from 'react-icons/fi';
@@ -17,6 +17,7 @@ import Translation from "../translation/Translation.json"
 import { useLanguage } from '../LanguageContext';
 import { us, indonesia } from '../assets';
 import jwt_decode from 'jwt-decode';
+import { BiChevronDown,BiCheck } from 'react-icons/bi';
 
 // import LazyLoad from 'react-lazyload';
 
@@ -134,7 +135,25 @@ const Navbar = () => {
   const [darkMode, setDarkMode] = useState(false);
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
+    localStorage.setItem('darkMode', !darkMode);
   };
+
+  useEffect(() => {
+    const savedDarkMode = localStorage.getItem('darkMode');
+    if (savedDarkMode) {
+      setDarkMode(savedDarkMode === 'true');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [darkMode]);
+
+  
 
   const location = useLocation();
   const [activePage, setActivePage] = useState(location.pathname);
@@ -206,12 +225,45 @@ const Navbar = () => {
     fetchData();
   }, []);
 
+  // select 2
+  const [DataV2, DataSelect2] = useState(null);
+  const [inputValue, setInputValue] = useState("");
+  const [selected, setSelected] = useState("");
+  const [buka, setBuka] = useState(false);
+  const [resultsFound, setResultsFound] = useState(true); 
 
+  const dumySementara = [
+    { name: "05/10/2023" },
+    { name: "05-10-2023" },
+    { name: "05/Jan/2023" },
+    { name: "05-Jan-2023" },
+    { name: "Jan/10/2023" },
+  ];
+
+  const DumyData = true;
+  useEffect(() => {
+    if (DumyData) {
+      DataSelect2(dumySementara);
+    }
+  }, [DumyData]);
+
+  useEffect(() => {
+    const isResultFound = DataV2 && DataV2.some(country =>
+      country.name.toLowerCase().startsWith(inputValue)
+    );
+    setResultsFound(isResultFound);
+  }, [DataV2, inputValue]);
+
+
+
+  
+
+  
   return (
-    <Disclosure as="nav" className="bg-white shadow-md">
+<Disclosure as="nav" className="bg-secondary-content  shadow-md ">
       {({ open }) => (
         <>
-          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+          <div className={"mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 "}>
             <div className="relative flex h-16 items-center justify-between">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
 
@@ -278,17 +330,6 @@ const Navbar = () => {
                 </div>
               </div>
 
-
-
-              {/* <select onChange={toggleLanguage}>
-                  <option value="english">
-                    <img src={uk} alt="uk" className="w-4 h-4 mr-2" /> English
-                  </option>
-                  <option value="indonesia">
-                    <img src={indonesia} alt="Indonesia" className="w-4 h-4 mr-2" /> Indonesia
-                  </option>
-                </select> */}
-
               <div className="absolute  inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
 
 
@@ -319,14 +360,15 @@ const Navbar = () => {
                     leaveFrom="opacity-100 scale-100"
                     leaveTo="opacity-0 scale-95"
                   >
-                    <Menu as="div" className="absolute z-10 -ml-48 mt-8 w-48 rounded-md bg-white py-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transition-transform">
+               <Menu as="div" className={`absolute z-10 -ml-48 mt-8 w-48 rounded-md py-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transition-transform ${darkMode ? 'dark:bg-gray-800 dark:text-white' : 'bg-white text-gray-700'}`}>
                       {/* Notifikasi Dropdown */}
                       <Menu.Item>
                         {({ active }) => (
                           <a
                             href="#"
                             className={classNames(
-                              'relative bottom-2 rounded-t-md block px-4 py-2 text-sm bg-red-500 text-white'
+                              'relative bottom-2 rounded-t-md block px-4 py-2 text-sm bg-red-500 text-white',
+                              { 'dark:bg-gray-700 dark:text-white': darkMode }
                             )}
                           >
                             Notification
@@ -338,8 +380,9 @@ const Navbar = () => {
                           <a
                             href="#"
                             className={classNames(
-                              active ? 'bg-gray-100' : '',
-                              'block px-4 py-2 text-sm text-gray-700'
+                              active ? 'bg-gray-50/5 text-white' : '',
+                              'block px-4 py-2 text-sm text-gray-700',
+                              { 'dark:bg-gray-800 dark:text-white': darkMode }
                             )}
                           >
                             Notification 1
@@ -351,8 +394,9 @@ const Navbar = () => {
                           <a
                             href="#"
                             className={classNames(
-                              active ? 'bg-gray-100' : '',
-                              'block px-4 py-2 text-sm text-gray-700'
+                              active ? 'bg-gray-50/5 text-white' : '',
+                              'block px-4 py-2 text-sm text-gray-700',
+                              { 'dark:bg-gray-800 dark:text-white': darkMode }
                             )}
                           >
                             Notification 2
@@ -573,7 +617,92 @@ const Navbar = () => {
               </div>
             </div>
 
+                <span className="flex pt-5 items-center">
+                  <h1 className="mr-2 font-medium text-blue-700">Date Format</h1>
+                  <hr className="border-gray-500 border-dashed flex-1 h-0 ml-0" />
+                </span>
 
+            {/* bagian Date format */}
+                <div className='flex justify-between mx-3 mt-5'>
+                    <h1 >Date:</h1>
+                 <div className="w-40 font-medium h-80">
+                    <div
+                    onClick={() => setBuka(!buka)}
+                    className={`bg-white border border-gray-600 w-full p-2 py-1 flex items-center justify-between rounded-md ${
+                    !selected && "text-gray-700"
+                    }`}
+                    >
+                    {selected
+                    ? selected?.length > 25
+                    ? selected?.substring(0, 25) + "..."
+                    : selected
+                    : "--select--"}
+
+                      <div className="flex items-center">
+                      {selected && (
+                          <RxCross2
+                              size={15}
+                              className="text-red-500 cursor-pointer"
+                              onClick={() => {
+                                  setSelected(null); // Reset the value
+                                  setInputValue(""); // Reset the input value
+
+                              }}
+                          />
+                      )}
+                      <BiChevronDown
+                          size={20}
+                          className={`${buka && "rotate-180"}`}
+                      />
+                      </div>
+                    </div>
+                    <ul
+                    className={`bg-white  border-t-0  w-[158px] max-w-[160px] left-[1px] relative rounded-b-md shadow-md mb-5  overflow-y-auto ${
+                    buka ? "border-t-0 max-h-[160px]" : "max-h-0"
+                    } `}
+                    >
+                    <div className="flex items-center px-1  sticky top-0 ">
+                    <AiOutlineSearch size={18} className="text-gray-700 absolute right-1" />
+                    <input
+                    type="text"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value.toLowerCase())}
+                    placeholder="Search"
+                    className="placeholder:text-gray-500 font-normal  p-1 pl-5 relative right-[15px] max-w-[163px] outline-none"
+                    />
+                    </div>
+                    {resultsFound
+  ? DataV2?.map((country) => (
+      <li
+        key={country?.name}
+        className={`p-2 text-sm hover-bg-sky-400 hover-text-gray-800
+        ${
+          country?.name &&
+          country.name.toLowerCase() === selected?.toLowerCase() &&
+          <BiCheck className='text-blue-400 absolute'/>
+        }
+        ${
+          country?.name?.toLowerCase().startsWith(inputValue)
+            ? "block"
+            : "hidden"
+        }`}
+        onClick={() => {
+          if (country?.name?.toLowerCase() !== selected?.toLowerCase()) {
+            setSelected(country?.name);
+            setBuka(false);
+            setInputValue("");
+          }
+        }}
+      >
+        {country?.name}
+      </li>
+    ))
+  : (
+    <li className="p-2 text-sm">Hasil tidak ditemukan</li>
+  )}
+                    </ul>
+                    </div>
+                 </div>
 
           </Drawer>
 

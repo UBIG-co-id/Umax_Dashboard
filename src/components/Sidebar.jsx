@@ -6,7 +6,7 @@ import { Context } from '../context';
 import { useLanguage } from '../LanguageContext'; // Import the useLanguage hook
 import Translation from '../translation/Translation.json';
 
-const Sidebar = ({ updateSelectedName, setMetricId }) => {
+const Sidebar = ({ updateSelectedName }) => {
   const [activeTab, setActiveTab] = useState('all');
   const [searchText, setSearchText] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -54,7 +54,7 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
           'accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',
           'Authorization': `Bearer ${token}`,
-        }, 
+        },
       });
       if (response.ok) {
         const responseData = await response.json(); // Rename to avoid conflict with 'data' state
@@ -93,20 +93,15 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
   }, [itemsToShow]);
 
   const handleItemClick = (itemName) => {
-    // Find the campaign that matches the clicked name
+    // Temukan kampanye yang sesuai dengan nama yang diklik
     const selectedData = data.find((data) => data.campaign_name === itemName);
-  
+
     if (selectedData) {
       setActiveItem(itemName);
       updateSelectedName(itemName);
       setSelectedData(selectedData);
-  
-      // Add this part to set metric_id based on selectedData
-      const metricIdFromSelectedData = selectedData._id;
-      setMetricId(metricIdFromSelectedData);
     }
   };
-  
 
 
   // menyimpan warna array

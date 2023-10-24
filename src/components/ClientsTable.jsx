@@ -159,8 +159,9 @@ function ClientsTable() {
     switch (status) {
       case 1:
         statusStyle = {
-          backgroundColor: "#22C55E",
-          color: '#ffff',
+          backgroundColor: "#DFFFDF",
+          color: '#00A600',
+          border: '0.3px solid #00CA0090',
           padding: '5px 13px',
           fontSize: "12px",
           borderRadius: '6px',
@@ -171,9 +172,10 @@ function ClientsTable() {
         );
       case 2:
         statusStyle = {
-          backgroundColor: "#ADB5BD",
-          color: '#ffff', 
-          padding: '5px 13px',
+          backgroundColor: "#FFF2E8",
+          color: '#D4380D', 
+          border: '0.3px solid #FF0000',
+          padding: '5px 15px',
           fontSize: "12px",
           borderRadius: '6px',
           fontWeight: '500', 
@@ -484,7 +486,7 @@ function ClientsTable() {
 
                           {...cell.getCellProps()}
 
-                          className={`p-2  border-b-0 border-x-0 border-slate-300 ${cell.column.id === 'status' || cell.column.id === 'action'
+                          className={`p-2  border-b-0 border-slate-300 ${cell.column.id === 'status' || cell.column.id === 'action'
                             ? 'text-center action-column' // Terapkan kelas CSS khusus
                             : 'text-left'
                             }`}
