@@ -54,7 +54,7 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
           'accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',
           'Authorization': `Bearer ${token}`,
-        }, 
+        },
       });
       if (response.ok) {
         const responseData = await response.json(); // Rename to avoid conflict with 'data' state
@@ -106,7 +106,6 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
       setMetricId(metricIdFromSelectedData);
     }
   };
-  
 
 
   // menyimpan warna array

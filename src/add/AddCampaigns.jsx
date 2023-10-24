@@ -9,7 +9,6 @@ const AddCampaigns = () => {
     const navigate = useNavigate();
     const [clientList, setClientList] = useState([]);
     const [accountList, setAccountList] = useState([]);
-    
     // GET DATA CLIENT
     async function fetchClientData() {
         try {

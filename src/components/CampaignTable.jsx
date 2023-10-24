@@ -199,8 +199,9 @@ const handleDelete = async (_id) => {
     switch (status) {
       case 1:
         statusStyle = {
-          backgroundColor: "#22C55E",
-          color: '#ffff',
+          backgroundColor: "#DFFFDF",
+          color: '#00A600',
+          border: '0.3px solid #00CA00',
           padding: '5px 13px',
           fontSize: "12px",
           borderRadius: '6px',
@@ -211,9 +212,10 @@ const handleDelete = async (_id) => {
         );
       case 2:
         statusStyle = {
-          backgroundColor: "#ADB5BD",
-          color: '#ffff', 
-          padding: '5px 13px',
+          backgroundColor: "#DCDCDC",
+          color: '#6F6F6F', 
+          border: '0.3px solid #868686',
+          padding: '5px 15px',
           fontSize: "12px",
           borderRadius: '6px',
           fontWeight: '500', 
@@ -223,10 +225,11 @@ const handleDelete = async (_id) => {
         );
       case 3:
         statusStyle = {
-          backgroundColor: "#F59E0B",
-          color: '#ffff', 
-          padding: '5px 13px',
-          fontSize: "10px",
+          backgroundColor: "#FFF2D1",
+          color: '#E29117', 
+          border: '0.3px solid #FF6B00',
+          padding: '4px 10px',
+          fontSize: "12px",
           borderRadius: '7px',
           fontWeight: '500', 
         };
@@ -593,7 +596,7 @@ const handleDelete = async (_id) => {
                           <td
                             {...cell.getCellProps()}
 
-                            className={`p-2 border-gray-300 border-b-0 border-x-0  ${cell.column.id === "status" ||
+                            className={`p-2 border-gray-300 border-b-0   ${cell.column.id === "status" ||
                                 cell.column.id === "action"
                                 ? "text-center"
                                 : "text-left"

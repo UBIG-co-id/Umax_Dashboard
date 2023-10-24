@@ -14,17 +14,15 @@
     "@material-tailwind/react": "^2.1.2",
     "@mui/icons-material": "^5.14.8",
     "@mui/material": "^5.14.8",
-    "@mui/x-charts": "^6.0.0-alpha.15",
     "@react-pdf/renderer": "^3.1.12",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "apexcharts": "^3.42.0",
     "axios": "^1.5.0",
-    "chart.js": "^4.4.0",
+    "chart.js": "^4.3.3",
     "classnames": "^2.3.2",
     "cors-anywhere": "^0.4.4",
-    "flowbite": "^1.8.1",
     "font-awesome": "^4.7.0",
     "formik": "^2.4.5",
     "http-proxy-middleware": "^2.0.6",
@@ -87,6 +85,7 @@
     ]
   },
   "devDependencies": {
+    "daisyui": "^3.9.3",
     "tailwindcss": "^3.3.3"
   }
 }
