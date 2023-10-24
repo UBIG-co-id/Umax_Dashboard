@@ -3,6 +3,7 @@ import logo from '../assets/logo.png';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
+
 const SignIn = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -11,10 +12,10 @@ const SignIn = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     try {
       const response = await fetch(
-        `https://umax-1-z7228928.deta.app/login/?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+        `https://umaxdashboard-1-w0775359.deta.app/login/?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
         {
           method: 'POST',
           headers: {
@@ -22,13 +23,17 @@ const SignIn = () => {
           },
         }
       );
-
+  
       if (response.ok) {
-        const token = await response.json();
-
+        const responseData = await response.json();
+        const token = responseData.token;
+        const user = responseData.user;
+  
         localStorage.setItem('jwtToken', token);
+        
         console.log(localStorage.getItem('jwtToken'));
-
+        console.log(user); // Tampilkan data pengguna
+  
         navigate('/Dashboard');
       } else {
         setError('Invalid email or password');
@@ -37,6 +42,7 @@ const SignIn = () => {
       console.error('Error:', error);
     }
   };
+    
 
   return (
     <div className="relative bg-gray-100 min-h-screen flex flex-col items-center justify-center">

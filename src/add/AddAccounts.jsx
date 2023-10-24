@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 import AccountTable from '../components/AccountTable';
 import { useFormik } from 'formik';
 import { Link, useNavigate, useParams, } from 'react-router-dom';
-import { AiOutlineEdit, AiOutlineFilePdf, AiOutlineEye, AiOutlineEyeInvisible,AiOutlineSearch } from 'react-icons/ai';
+import { AiOutlineEdit, AiOutlineFilePdf, AiOutlineEye, AiOutlineEyeInvisible, AiOutlineSearch } from 'react-icons/ai';
 import { BiChevronDown } from 'react-icons/bi';
 
 
@@ -15,6 +15,7 @@ const AddDataAccounts = () => {
   const [openDropdown, setOpenDropdown] = useState(false);
   const [filteredClients, setFilteredClients] = useState([]);
   const [selectedClient, setSelectedClient] = useState(null);
+  
 
   useEffect(() => {
     setFilteredClients(clientList); // Inisialisasi dengan seluruh data client
@@ -111,18 +112,18 @@ const AddDataAccounts = () => {
   // close menggunakan esc
   useEffect(() => {
     const handleKeyDown = (e) => {
-        if (e.key === "Escape") {
-            console.log("Esc key pressed");
-            navigate(-1); 
-        };
+      if (e.key === "Escape") {
+        console.log("Esc key pressed");
+        navigate(-1);
+      };
     };
 
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-        window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
-}, [navigate]);
+  }, [navigate]);
 
 
   return (
@@ -149,17 +150,94 @@ const AddDataAccounts = () => {
                   className="p-2 h-9 w-56 border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                 />
               </div>
-               <div className="flex flex-col relative">
-                <label className="pb-2 text-sm" htmlFor="client">
-                  Client
-                </label>
-                <div
+              <div className="flex flex-col relative">
+  <label className="pb-2 text-sm" htmlFor="client">
+    Client
+  </label>
+  <div className="relative">
+    <div
+      className="p-2 h-10 w-56 border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md pr-10"
+      style={{
+        overflow: "hidden",
+        whiteSpace: "nowrap",
+        textOverflow: "ellipsis"
+      }}
+    >
+      {selectedClient ? (
+        selectedClient.name
+      ) : (
+        "Select Client..."
+      )}
+    </div>
+    <div
+      className="absolute top-3 right-2 cursor-pointer"
+      onClick={() => setOpenDropdown(!openDropdown)}
+    >
+      {selectedClient ? (
+        <>
+        
+          <BiChevronDown size={20} className={`ml-2 ${openDropdown ? 'rotate-180' : ''}`} />
+        </>
+      ) : (
+        <BiChevronDown size={20} className={`ml-2 ${openDropdown ? 'rotate-180' : ''}`} />
+      )}
+    </div>
+    {openDropdown && (
+     
+      <ul
+        className={`px-1 p-0 h-10 w-56   absolute z-10`}
+      >
+        <div className="flex items-center px-1 sticky top-0 border bg-slate-100 border-slate-300">
+          <AiOutlineSearch size={18} className="text-gray-700 absolute right-1" />
+          <input
+            type="text"
+            value={inputSearch}
+            onChange={(e) => setInputSearch(e.target.value)}
+            placeholder="Search"
+            className="placeholder:text-gray-500 font-normal p-1 pl-5 relative right-[15px] max-w-[163px] outline-none"
+          />
+        </div>
+        {filteredClients.length > 0 ? (
+          filteredClients.map((client) => (
+            <li
+              key={client.id}
+              className={`p-2 text-sm bg-slate-100 border-slate-300 hover:bg-blue-500 hover:text-white ${
+                selectedClient && client.id === selectedClient.id && "bg-slate-100 text-slate-500 "
+              }`}
+              onClick={() => handleClientSelect(client)}
+            >
+              {client.name}
+            </li>
+          ))
+        ) : (
+          <li className="p-2 text-sm">No results found</li>
+        )}
+      </ul>
+    )}
+  </div>
+</div>
+
+
+              {/* <div
+                onClick={() => setOpenDropdown(!openDropdown) }
+                className={`p-2 h-10 w-56 border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md 
+                ${!selectedClient && "absolute top-7 -right-50  cursor-pointer"}`}>
+                  {selectedClient ? (
+                    // selectedClient.name
+                    <BiChevronDown />
+                  ):(
+                    <BiChevronDown/>
+                  )}
+                  
+                </div> */}
+              {/* <div
                   onClick={() => setOpenDropdown(!openDropdown)}
                   className={`p-2 h-10 w-56 border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md  ${
                     !selectedClient && "text-slate-500"
                   }`}
-                >
-                  {selectedClient ? (
+                > */}
+
+              {/* {selectedClient ? (
                     selectedClient.name
                   ) : (
                     <>
@@ -168,9 +246,9 @@ const AddDataAccounts = () => {
 
                     </BiChevronDown>
                     </>
-                  )}
-                
-                </div>
+                  )} */}
+
+              {/* </div>
                 <ul
                   className={`  bg-slate-100 border-slate-300 border-t-0 w-[158px] max-w-[160px] left-[1px] z-10 rounded-b-md shadow-md mb-5 overflow-y-auto ${
                     openDropdown ? "bg-slate-100 border-slate-300 border-t-10 max-h-[160px]" : "max-h-0"
@@ -201,11 +279,9 @@ const AddDataAccounts = () => {
                   ) : (
                     <li className="p-2 text-sm">No results found</li>
                   )}
-                </ul>
-               
-
-              </div>
+                </ul> */}
             </div>
+            {/* </div> */}
 
             <div className="flex flex-col md:flex-row gap-4 mb-4">
               <div className="flex flex-col">
@@ -318,7 +394,7 @@ const AddDataAccounts = () => {
               </Link>
               <button
                 type="submit"
-                
+
                 className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
               >
                 Save

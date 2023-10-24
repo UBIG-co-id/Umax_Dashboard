@@ -7,6 +7,7 @@ import { LuContact } from 'react-icons/lu';
 import { AiOutlineEdit, AiOutlineMail } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
+import jwt_decode from 'jwt-decode'; 
 
 import {
   Card,
@@ -22,15 +23,22 @@ import {
 export default function CheckoutForm() {
   const [type, setType] = React.useState("Account");
   const [profileData, setProfileData] = useState({
-    name: "‎",
+    nama: "‎",
     image: defaultProfile,
+
   });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('jwtToken');
-        const apiUrl = 'https://umax-1-z7228928.deta.app/profiluser/65227163017382b905f8b1dd';
+
+        const decodedToken = jwt_decode(token);
+        console.log("Token Extrax",decodedToken);
+
+        const _id = decodedToken.user_id;
+        console.log(_id);
+        const apiUrl = `https://umaxdashboard-1-w0775359.deta.app/user/${_id}`;
 
         const response = await Axios.get(apiUrl, {
           headers: {
@@ -42,8 +50,8 @@ export default function CheckoutForm() {
         console.log(response.data)
 
         setProfileData({
-          name: response.data.name,
-          image: response.data.image || defaultProfile, 
+          nama: response.data.nama,
+          image: response.data.image,
         });
       } catch (error) {
         if (error.response) {
@@ -58,6 +66,39 @@ export default function CheckoutForm() {
 
     fetchData();
   }, []);
+  
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const token = localStorage.getItem('jwtToken');
+  //       const apiUrl = 'https://umax-1-z7228928.deta.app/profiluser/65227163017382b905f8b1dd';
+
+  //       const response = await Axios.get(apiUrl, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           'Content-Type': 'application/json',
+  //         },
+  //       });
+
+  //       console.log(response.data)
+
+  //       setProfileData({
+  //         name: response.data.name,
+  //         image: response.data.image || defaultProfile, 
+  //       });
+  //     } catch (error) {
+  //       if (error.response) {
+  //         console.error('Server error:', error.response.data);
+  //       } else if (error.request) {
+  //         console.error('No response from the server:', error.request);
+  //       } else {
+  //         console.error('Error:', error.message);
+  //       }
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
 
   return (
     <div className="bg-gray-200 flex justify-center items-center w-screen">
@@ -86,7 +127,7 @@ export default function CheckoutForm() {
             </div>
             <div className="items-start mt-4 flex flex-col">
               <h4 className="font-normal pl-4 text-white">Hallo,</h4>
-              <h4 className="font-medium pl-4 text-white">{profileData.name}</h4>
+              <h4 className="font-medium pl-4 text-white">{profileData.nama}</h4>
             </div>
           </div>
         </div>
