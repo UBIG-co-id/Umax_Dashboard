@@ -247,15 +247,12 @@ const theme = {
   }, [DataV2, inputValue]);
 
 
-  // darkmode
-  const themeClasses = darkMode
-  ? 'dark:bg-gray-900 dark:text-white'
-  : 'bg-white text-gray-700';
 
+  
 
   
   return (
-<Disclosure as="nav" className={`bg-white shadow-md ${themeClasses}`}>
+<Disclosure as="nav" className="bg-secondary-content  shadow-md ">
       {({ open }) => (
         <>
           <div className={"mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 "}>
@@ -355,14 +352,15 @@ const theme = {
                     leaveFrom="opacity-100 scale-100"
                     leaveTo="opacity-0 scale-95"
                   >
-                    <Menu as="div" className="absolute z-10 -ml-48 mt-8 w-48 rounded-md bg-white py-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transition-transform">
+               <Menu as="div" className={`absolute z-10 -ml-48 mt-8 w-48 rounded-md py-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transition-transform ${darkMode ? 'dark:bg-gray-800 dark:text-white' : 'bg-white text-gray-700'}`}>
                       {/* Notifikasi Dropdown */}
                       <Menu.Item>
                         {({ active }) => (
                           <a
                             href="#"
                             className={classNames(
-                              'relative bottom-2 rounded-t-md block px-4 py-2 text-sm bg-red-500 text-white'
+                              'relative bottom-2 rounded-t-md block px-4 py-2 text-sm bg-red-500 text-white',
+                              { 'dark:bg-gray-700 dark:text-white': darkMode }
                             )}
                           >
                             Notification
@@ -374,8 +372,9 @@ const theme = {
                           <a
                             href="#"
                             className={classNames(
-                              active ? 'bg-gray-100' : '',
-                              'block px-4 py-2 text-sm text-gray-700'
+                              active ? 'bg-gray-50/5 text-white' : '',
+                              'block px-4 py-2 text-sm text-gray-700',
+                              { 'dark:bg-gray-800 dark:text-white': darkMode }
                             )}
                           >
                             Notification 1
@@ -387,8 +386,9 @@ const theme = {
                           <a
                             href="#"
                             className={classNames(
-                              active ? 'bg-gray-100' : '',
-                              'block px-4 py-2 text-sm text-gray-700'
+                              active ? 'bg-gray-50/5 text-white' : '',
+                              'block px-4 py-2 text-sm text-gray-700',
+                              { 'dark:bg-gray-800 dark:text-white': darkMode }
                             )}
                           >
                             Notification 2
@@ -559,7 +559,7 @@ const theme = {
       <h1 className="text-gray-700 relative right-4 font-medium">Language:</h1>
       <div className="relative left-1">
         <div className="relative inline-block text-left">
-          <button onClick={toggleDropdown} className="btn dropdown-toggle flex items-center">
+          <button onClick={toggleDropdown} className=" dropdown-toggle flex items-center">
             <img
               src={selectedLanguage === 'english' ? us : indonesia}
               className="w-6 h-6 mr-2"
