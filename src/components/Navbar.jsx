@@ -155,6 +155,23 @@ const Navbar = () => {
 
   
 
+  // useEffect(() => {
+  //   const savedDarkMode = localStorage.getItem('darkMode');
+  //   if (savedDarkMode) {
+  //     setDarkMode(savedDarkMode === 'true');
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   if (darkMode) {
+  //     document.body.classList.add('dark-mode');
+  //   } else {
+  //     document.body.classList.remove('dark-mode');
+  //   }
+  // }, [darkMode]);
+
+  
+
   const location = useLocation();
   const [activePage, setActivePage] = useState(location.pathname);
 
