@@ -456,7 +456,6 @@ th svg.desc{
   background-color: #505f6b;
 }
 
-//tampilan responsive setting
 @media (max-width: 640px) {
   .setting-responsive{
     background-color: red;
@@ -475,17 +474,18 @@ th svg.desc{
 }
 
 
-/* Setting.css */
-.container {
-}
-
-@media (min-width: 446px) and (max-width: 1123px) {
-  .container {
-  }
-}
 
 .hoverable:hover {
   background-color: #E3F5FF;
 }
 
 
+/* Tambahkan animasi loading bar ke file CSS Anda */
+@keyframes animate-loading-bar {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
