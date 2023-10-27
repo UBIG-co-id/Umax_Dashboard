@@ -68,10 +68,12 @@ export default function Chart({ metricId }) {
   return (
     <div className='w-[99%] h-fit'>
       {chartData ? (
-        <ReactApexChart options={options} series={series} type='area' height={'350px'} />
+        <ReactApexChart options={options} series={series} type='area' height={'420px'} />
       ) : (
-        <p>Loading chart data...</p>
-      )}
+        <div class="flex justify-center items-center">
+        <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-900"></div>
+     </div>  
+        )}
     </div>
   );
 }

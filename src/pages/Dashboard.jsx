@@ -6,6 +6,7 @@ import { BiRefresh } from 'react-icons/bi';
 import CardInfo from '../components/CardInfo';
 import Chart from '../components/Chart';
 import Card from '../components/Card';
+import CardLoad from '../components/CardLoad';
 import Setting from '../components/Setting';
 import Metrics from '../components/Metrics';
 import History from '../components/History';
@@ -759,8 +760,8 @@ const Dashboard = () => {
                   />
                 ))
               ) : (
-                <div>Loading...</div> // You can provide a loading indicator here
-              )}
+                <CardLoad/>
+            )}
             </div>
           </div>
         );
@@ -903,21 +904,25 @@ const Dashboard = () => {
 
           {/* Header */}
           <div className='border-b-2  border-gray-600'>
-            <div className='flex p-4 ml-3 pb-1 items-center'>
-              {selectedData && (
-                <img src={
-                  selectedData.campaign_platform === 1
-                    ? meta // Import meta from assets when campaign_platform is 1
-                    : selectedData.campaign_platform === 2
-                      ? google // Import google from assets when campaign_platform is 2
-                      : selectedData.campaign_platform === 3
-                        ? tiktok // Import tiktok from assets when platform is 3
-                        : '' // Default value if platform doesn't match 1, 2, or 3
-                } alt="icon" width={30} />
-              )
-              }
-              <h1 className='text-2xl pl-3 font-bold text-gray-600'> {selectedName ? selectedName : ''}</h1>
-            </div>
+          <div className='flex p-4 ml-3 pb-1 items-center'>
+  {selectedData && (
+    <img src={
+      selectedData.campaign_platform === 1
+        ? meta
+        : selectedData.campaign_platform === 2
+          ? google
+          : selectedData.campaign_platform === 3
+            ? tiktok
+            : ''
+    } alt="icon" width={30} />
+  )}
+  <h1 className={`text-2xl pl-3 font-bold ${
+    selectedName ? 'text-gray-600' : 'bg-gray-200 animate-pulse top-3 w-44 h-5 relative'
+  }`}>
+    {selectedName ? selectedName : ''}
+  </h1>
+</div>
+
 
 
             <div className="flex justify-center">

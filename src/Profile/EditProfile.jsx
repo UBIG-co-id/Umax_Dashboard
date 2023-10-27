@@ -180,7 +180,7 @@ export default function CheckoutForm() {
 
 
   const [profileData, setProfileData] = useState({
-    user_id: _id,
+    // user_id: _id,
     nama: "‎",
     image: defaultProfile,
     email: "",
