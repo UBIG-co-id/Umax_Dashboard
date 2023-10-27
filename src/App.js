@@ -15,7 +15,6 @@ import EditProfile from './Profile/EditProfile';
 import AddClients from './add/AddClients'
 import AddAccounts from './add/AddAccounts'
 import AddCampaigns from './add/AddCampaigns'
-
 import useTheme from "./hooks/useTheme";
 
 
@@ -41,7 +40,8 @@ const theme = useTheme()
         <Route path='/Accounts' element={<Accounts/> }  />
         <Route path='/Clients' element={<Clients/> }  />
         <Route path='/Profile' element={<Profile/> }  />
-        <Route path='/EditProfile' element={<EditProfile/> }  />
+        <Route path='/EditProfile/:_id' element={<EditProfile />} />
+
 
       </Routes>
     </Router>

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { defaultProfile, cover } from '../assets';
 import { MdOutlineAccountCircle } from 'react-icons/md';
 import { BiLockOpenAlt } from 'react-icons/bi';
-import { IoIosArrowBack } from 'react-icons/io'; 
-import { LuContact } from 'react-icons/lu'; 
-import { AiOutlineEdit, AiOutlineMail } from 'react-icons/ai';
+import { IoIosArrowBack } from 'react-icons/io';
+import { LuContact } from 'react-icons/lu';
+import { AiOutlineEdit, AiOutlineMail, AiOutlinePhone, AiOutlineEnvironment, AiOutlineTeam } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
-import jwt_decode from 'jwt-decode'; 
+import jwt_decode from 'jwt-decode';
 
 import {
   Card,
@@ -23,21 +23,25 @@ import {
 export default function CheckoutForm() {
   const [type, setType] = React.useState("Account");
   const [profileData, setProfileData] = useState({
+
     nama: "‎",
     image: defaultProfile,
-
+    email: "",
+    alamat: "",
+    notelpon: "",
+    is_admin: "",
   });
+  const token = localStorage.getItem('jwtToken');
+
+  const decodedToken = jwt_decode(token);
+  console.log("Token Extrax", decodedToken);
+
+  const _id = decodedToken.user_id;
+  console.log(_id);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem('jwtToken');
-
-        const decodedToken = jwt_decode(token);
-        console.log("Token Extrax",decodedToken);
-
-        const _id = decodedToken.user_id;
-        console.log(_id);
         const apiUrl = `https://umaxdashboard-1-w0775359.deta.app/user/${_id}`;
 
         const response = await Axios.get(apiUrl, {
@@ -52,6 +56,10 @@ export default function CheckoutForm() {
         setProfileData({
           nama: response.data.nama,
           image: response.data.image,
+          email: response.data.email,
+          alamat: response.data.alamat,
+          notelpon: response.data.notelpon,
+          is_admin: response.data.is_admin,
         });
       } catch (error) {
         if (error.response) {
@@ -66,7 +74,7 @@ export default function CheckoutForm() {
 
     fetchData();
   }, []);
-  
+
   // useEffect(() => {
   //   const fetchData = async () => {
   //     try {
@@ -99,28 +107,32 @@ export default function CheckoutForm() {
 
   //   fetchData();
   // }, []);
+  
 
   return (
     <div className="bg-gray-200 flex justify-center items-center w-screen">
       <Card className="w-full">
         {/* thumnail */}
         <div
-    className="m-0 grid place-items-start rounded-b-[20px] py-8 px-4 text-center"
-    style={{ 
-      backgroundImage: `url(${cover})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      height: '210px', 
-    }}
-  >
-    <div className=" bg-opacity-40 w-full h-[210px] rounded-b-[20px] absolute top-0 left-0"></div>
+          className="m-0 grid place-items-start rounded-b-[20px] py-8 px-4 text-center"
+          style={{
+            backgroundImage: `url(${cover})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            height: '210px',
+          }}
+        >
+          <div className=" bg-opacity-40 w-full h-[210px] rounded-b-[20px] absolute top-0 left-0"></div>
           <h1 className='relative -mt-5 mx-auto text-white text-lg'>Your Profile</h1>
           <Link to="/Dashboard">
             <IoIosArrowBack className="absolute top-3 left-5 text-gray-50/90 cursor-pointer hover:text-white h-6 w-6" />
           </Link>
-          <Link to="/EditProfile">
+          
+          <Link to={`/EditProfile/${_id}`}>
             <AiOutlineEdit className="absolute top-3 right-5 text-gray-50/90 cursor-pointer hover:text-white h-6 w-6" />
           </Link>
+
+
           <div className="relative top-4 mt-5 flex">
             <div className="mb-1 rounded-full border border-white/10 bg-white/10 p-2 text-white">
               <img src={`data:image/jpeg;base64,${profileData.image}`} alt="Foto" className="h-24 w-24 object-cover rounded-full max-sm:h-16 max-sm:w-16" />
@@ -168,22 +180,52 @@ export default function CheckoutForm() {
               <TabPanel value="Account" className="p-0">
                 <form className="mt-1 flex flex-col mb-2 gap-4">
 
-              <div className='flex justify-around'>
-                  <div className='flex mt-5'>
-                    <LuContact className='bg-white p-3 text-blue-600 text-[45px] rounded-full shadow-md mr-5' />
-                    <span className='flex flex-col'>
-                      <p className='font-medium text-base'>Username</p>
-                      <h1 className='font-normal text-sm'>Dikaa</h1>
-                    </span>
+                  <div className='flex justify-around'>
+                    <div className='flex mt-5'>
+                      <LuContact className='bg-white p-3 text-blue-600 text-[45px] rounded-full shadow-md mr-5' />
+                      <span className='flex flex-col'>
+                        <p className='font-medium text-base'>Username</p>
+                        <h1 className='font-normal text-sm'>{profileData.nama}</h1>
+                      </span>
+                    </div>
+
+                    <div className='flex mt-5'>
+                      <AiOutlineMail className='bg-white p-3 text-red-600 text-[45px] rounded-full shadow-md mr-5' />
+                      <span className='flex flex-col'>
+                        <p className='font-medium text-base'>Email</p>
+                        <h1 className='font-normal text-sm'>{profileData.email}</h1>
+                      </span>
+                    </div>
                   </div>
-                  
-                  <div className='flex mt-5'>
-                    <AiOutlineMail className='bg-white p-3 text-red-600 text-[45px] rounded-full shadow-md mr-5' />
-                    <span className='flex flex-col'>
-                      <p className='font-medium text-base'>Email</p>
-                      <h1 className='font-normal text-sm'>Dikaa@gmail.com</h1>
-                    </span>
+
+                  <div className='flex justify-around'>
+                    <div className='flex mt-5'>
+                      <AiOutlineEnvironment className='bg-white p-3 text-blue-600 text-[45px] rounded-full shadow-md mr-5' />
+                      <span className='flex flex-col'>
+                        <p className='font-medium text-base'>Alamat</p>
+                        <h1 className='font-normal text-sm'>{profileData.alamat}</h1>
+                      </span>
+                    </div>
+
+                    <div className='flex mt-5'>
+                      <AiOutlinePhone className='bg-white p-3 text-red-600 text-[45px] rounded-full shadow-md mr-5' />
+                      <span className='flex flex-col'>
+                        <p className='font-medium text-base'>No Telp</p>
+                        <h1 className='font-normal text-sm'>{profileData.notelpon}</h1>
+                      </span>
+                    </div>
                   </div>
+
+                  <div className='flex justify-around'>
+                    <div className='flex mt-5'>
+                      <AiOutlineTeam className='bg-white p-3 text-red-600 text-[45px] rounded-full shadow-md mr-5' />
+                      <span className='flex flex-col'>
+                        <p className='font-medium text-base'>Status</p>
+                        <h1 className='font-normal text-sm'>
+                          {profileData.is_admin ? 'Admin' : 'Staff'}
+                        </h1>
+                      </span>
+                    </div>
                   </div>
 
                 </form>

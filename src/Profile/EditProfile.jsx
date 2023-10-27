@@ -7,7 +7,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible, AiOutlineCamera} from 'react-icons
 import { BsKey } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
-
+import jwt_decode from 'jwt-decode';
 
 import {
   Card,
@@ -24,6 +24,7 @@ import {
 export default function CheckoutForm() {
   const [type, setType] = React.useState("card");
   // usestate untuk tab account
+  
 
   const [isFocusedName, setIsFocusedName] = useState(false);
   const [inputValueName, setInputValueName] = useState('');
@@ -179,15 +180,26 @@ export default function CheckoutForm() {
 
 
   const [profileData, setProfileData] = useState({
-    name: "‎", 
-    image: defaultProfile, 
+    user_id: _id,
+    nama: "‎",
+    image: defaultProfile,
+    email: "",
+    alamat: "",
+    notelpon: "",
+    is_admin: "",
   });
+  const token = localStorage.getItem('jwtToken');
+
+  const decodedToken = jwt_decode(token);
+  console.log("Token Extrax", decodedToken);
+
+  const _id = decodedToken.user_id;
+  console.log(_id);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem('jwtToken');
-        const apiUrl = 'https://umax-1-z7228928.deta.app/profiluser/65227163017382b905f8b1dd';
+        const apiUrl = `https://umaxdashboard-1-w0775359.deta.app/user/${_id}`;
 
         const response = await Axios.get(apiUrl, {
           headers: {
@@ -199,8 +211,12 @@ export default function CheckoutForm() {
         console.log(response.data)
 
         setProfileData({
-          name: response.data.name,
+          nama: response.data.nama,
           image: response.data.image,
+          email: response.data.email,
+          alamat: response.data.alamat,
+          notelpon: response.data.notelpon,
+          is_admin: response.data.is_admin,
         });
       } catch (error) {
         if (error.response) {

@@ -40,6 +40,8 @@ const Dashboard = () => {
   // const [data, setData] = useState([]); // Store the fetched data
   // const [selectedData, setSelectedData] = useState([]);
   const [error, setError] = useState(null);
+  const [selectedTimeframe, setSelectedTimeframe] = useState(""); // Set ke string kosong
+  const [chartUrl, setChartUrl] = useState('');
 
   useEffect(() => {
     // Fetch metrics data and set it in the state
@@ -75,6 +77,16 @@ const Dashboard = () => {
       console.error('Terjadi kesalahan:', error);
     }
   };
+  const updateChartUrl = (timeframe) => {
+    if (selectedName && metric_id) {
+      const baseUrl = 'https://umaxdashboard-1-w0775359.deta.app/metrics'; // URL dasar
+      const selectedTimeframe = timeframe === 'lastweek' ? 'lastweek' : 'lastmonth'; // Ganti ini sesuai kebutuhan
+      const newUrl = `${baseUrl}${selectedTimeframe}/${metric_id}`;
+      setChartUrl(newUrl);
+      console.log(newUrl)
+    }
+  };
+  
 
   const fetchHistoryData = async (metric_id) => {
     try {
@@ -124,6 +136,7 @@ const Dashboard = () => {
       setActiveItem(itemName);
       setSelectedName(itemName);
       setSelectedData(selectedCampaign);
+      
     }
   };
 
@@ -184,7 +197,7 @@ const Dashboard = () => {
   }, []);
 
 
-
+ 
 
   const [state, setState] = useState({
     toggleNavbar: false,
@@ -569,6 +582,7 @@ const Dashboard = () => {
     return metrixData.description;
   };
 
+  
   const renderContent = () => {
     switch (activeTab) {
       case 'performance':
@@ -581,10 +595,17 @@ const Dashboard = () => {
                   <BiRefresh size={25} />
                   Feb 4, 20:12
                 </div>
-                <select name="" id="" className='focus:outline-none p-2 px-5 border border-gray-300 text-gray-500 rounded-md'>
-                  <option value="">{translations['Last Week']}</option>
-                  <option value="">{translations['Last Month']}</option>
-                  <option value="">{translations['Last Year']}</option>
+               <select
+                  name=""
+                  id=""
+                  className='focus:outline-none p-2 px-5 border border-gray-300 text-gray-500 rounded-md'
+                  onChange={handleTimeframeChange}
+                  value={selectedTimeframe}
+                >
+                  <option hidden value="">Filter Data</option>
+                  <option value="lastweek">{translations['Last Week']}</option>
+                  <option value="lastmonth">{translations['Last Month']}</option>
+                  <option value="lastyear">{translations['Last Year']}</option>
                 </select>
               </div>
             </div>
@@ -625,7 +646,7 @@ const Dashboard = () => {
 
                 {/* Chart */}
                 <div className='w-full md:w-full flex flex-col gap-5 justify-between'>
-                <Chart metricId={metric_id} />
+                <Chart metricId={chartUrl} />
 
 
                   {selectedData && (
@@ -862,7 +883,14 @@ const Dashboard = () => {
 
     fetchData();
   }, []);
-
+  
+  const handleTimeframeChange = (event) => {
+    const selectedTimeframe = event.target.value;
+    setSelectedTimeframe(selectedTimeframe);
+    updateChartUrl(selectedTimeframe); // Panggil fungsi ini untuk mengubah URL
+  };
+  
+  
   return (
     <main className='bg-slate-100 min-h-screen ' >
       <div>

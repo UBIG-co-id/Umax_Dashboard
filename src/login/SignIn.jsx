@@ -30,6 +30,7 @@ const SignIn = () => {
         const user = responseData.user;
   
         localStorage.setItem('jwtToken', token);
+        localStorage.setItem('user_id', user._id);
         
         console.log(localStorage.getItem('jwtToken'));
         console.log(user); // Tampilkan data pengguna

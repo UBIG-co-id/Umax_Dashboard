@@ -1,21 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
+import axios from 'axios';
 
 export default function Chart({ metricId }) {
   const [chartData, setChartData] = useState(null);
 
   useEffect(() => {
-    // Fetch data from the dynamic URL using metricId
-    fetch(`https://umaxdashboard-1-w0775359.deta.app/history/${metricId}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setChartData(data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('jwtToken');
+        const response = await axios.get(metricId, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.status === 200) {
+          const data = response.data;
+          setChartData(data);
+        } else {
+          console.error('Failed to fetch data from API');
+        }
+      } catch (error) {
+        console.error('An error occurred', error);
+      }
+    };
+
+    fetchData();
   }, [metricId]);
-  
 
   const options = {
     chart: {
@@ -33,29 +46,24 @@ export default function Chart({ metricId }) {
     },
   };
 
-  // Extracting data with decimal values
-  const series = Array.isArray(chartData) && chartData.length > 0
-  ? [
-    {
-      name: 'Amount Spent',
-      data: chartData.map((item) =>
-        parseFloat(item.perubahan.amountspent.replace(/[^0-9.]/g, ''))
-      ),
-    },
-    {
-      name: 'RAR',
-      data: chartData.map((item) =>
-        parseFloat(item.perubahan.rar.replace(/[^0-9.]/g, ''))
-      ),
-    },
-    {
-      name: 'CTR',
-      data: chartData.map((item) =>
-        parseFloat(item.perubahan.ctr.replace(/[^0-9.]/g, ''))
-      ),
-    },
-  ]
-  : [];
+  let series = [];
+
+  if (Array.isArray(chartData) && chartData.length > 0) {
+    series = [
+      {
+        name: 'Amount Spent',
+        data: chartData.map((item) => parseFloat(item.amountspent.replace(/[^0-9.]/g, ''))),
+      },
+      {
+        name: 'RAR',
+        data: chartData.map((item) => parseFloat(item.rar.replace(/[^0-9.]/g, ''))),
+      },
+      {
+        name: 'CTR',
+        data: chartData.map((item) => parseFloat(item.ctr.replace(/[^0-9.]/g, ''))),
+      },
+    ];
+  }
 
   return (
     <div className='w-[99%] h-fit'>
