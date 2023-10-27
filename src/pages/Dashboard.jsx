@@ -40,7 +40,7 @@ const Dashboard = () => {
   // const [data, setData] = useState([]); // Store the fetched data
   // const [selectedData, setSelectedData] = useState([]);
   const [error, setError] = useState(null);
-  const [selectedTimeframe, setSelectedTimeframe] = useState(""); // Set ke string kosong
+  const [selectedTimeframe, setSelectedTimeframe] = useState("lastweek"); // Set ke string kosong
   const [chartUrl, setChartUrl] = useState('');
 
   useEffect(() => {
@@ -80,7 +80,8 @@ const Dashboard = () => {
   const updateChartUrl = (timeframe) => {
     if (selectedName && metric_id) {
       const baseUrl = 'https://umaxdashboard-1-w0775359.deta.app/metrics'; // URL dasar
-      const selectedTimeframe = timeframe === 'lastweek' ? 'lastweek' : 'lastmonth'; // Ganti ini sesuai kebutuhan
+      const selectedTimeframe = timeframe === 'lastweek' ? 'lastweek' : timeframe === 'lastmonth' ? 'lastmonth' : 'lastyear';
+      // Ganti ini sesuai kebutuhan
       const newUrl = `${baseUrl}${selectedTimeframe}/${metric_id}`;
       setChartUrl(newUrl);
       console.log(newUrl)
@@ -129,13 +130,16 @@ const Dashboard = () => {
 
   const handleItemClick = (itemName) => {
     console.log(itemName)
+    setSelectedTimeframe("lastweek");
     // Temukan kampanye yang sesuai dengan nama yang diklik
     const selectedCampaign = data.find((data) => data.campaign_name === itemName);
-
+    
+    
     if (selectedCampaign) {
       setActiveItem(itemName);
       setSelectedName(itemName);
       setSelectedData(selectedCampaign);
+      updateChartUrl(selectedTimeframe);
       
     }
   };
@@ -581,8 +585,13 @@ const Dashboard = () => {
 
     return metrixData.description;
   };
-
+  const handleTimeframeChange = (event) => {
+    const selectedTimeframe = event.target.value;
+    setSelectedTimeframe(selectedTimeframe);
+    updateChartUrl(selectedTimeframe); // Panggil fungsi ini untuk mengubah URL
+  };
   
+
   const renderContent = () => {
     switch (activeTab) {
       case 'performance':
@@ -884,11 +893,7 @@ const Dashboard = () => {
     fetchData();
   }, []);
   
-  const handleTimeframeChange = (event) => {
-    const selectedTimeframe = event.target.value;
-    setSelectedTimeframe(selectedTimeframe);
-    updateChartUrl(selectedTimeframe); // Panggil fungsi ini untuk mengubah URL
-  };
+
   
   
   return (
