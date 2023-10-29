@@ -658,31 +658,39 @@ const Dashboard = () => {
                 <div className='w-full md:w-full flex flex-col gap-5 justify-between'>
                 <Chart metricId={chartUrl} />
 
-
                   {selectedData && (
-                    <div className="flex flex-col md:flex-row gap-5 -mt-4">
-                      <CardInfo
-                        title='CPR'
-                        value={selectedData.cpr}
-                        popupContent=' Perhitungan biaya yang kita keluarkan untuk setiap hasil yang kita dapatkan'
-                      />
-                      <CardInfo
-                        title='ATC'
-                        value={selectedData.atc}
-                        popupContent=' Menambahkan produk atau barang ke dalam keranjang belanja saat berbelanja secara online di situs web e-commerce atau toko online'
-                      />
-                      <CardInfo
-                        title='ROAS'
-                        value={selectedData.roas}
-                        popupContent='Mengukur seberapa banyak pendapatan atau hasil yang dihasilkan dari setiap unit pengeluaran iklan'
-                      />
-                      <CardInfo
-                        title='Real ROAS'
-                        value={selectedData.realroas}
-                        popupContent='Mengukur banyak pendapatan asli yang di hasilkan tiap pengeluaran iklan'
-                      />
-                    </div>
-                  )}
+              <div className="flex flex-col md:flex-row gap-4 justify-center mx-auto w-full -mt-[28px]">
+                <div className="card-container">
+                  <CardInfo
+                    title='CPR'
+                    value={selectedData.cpr}
+                    popupContent='Perhitungan biaya yang kita keluarkan untuk setiap hasil yang kita dapatkan'
+                  />
+                </div>
+                <div className="card-container">
+                  <CardInfo
+                    title='ATC'
+                    value={selectedData.atc}
+                    popupContent='Menambahkan produk atau barang ke dalam keranjang belanja saat berbelanja secara online di situs web e-commerce atau toko online'
+                  />
+                </div>
+                <div className="card-container">
+                  <CardInfo
+                    title='ROAS'
+                    value={selectedData.roas}
+                    popupContent='Mengukur seberapa banyak pendapatan atau hasil yang dihasilkan dari setiap unit pengeluaran iklan'
+                  />
+                </div>
+                <div className="card-container">
+                  <CardInfo
+                    title='Real ROAS'
+                    value={selectedData.realroas}
+                    popupContent='Mengukur banyak pendapatan asli yang dihasilkan tiap pengeluaran iklan'
+                  />
+                </div>
+              </div>
+            )}
+
 
                 </div>
               </div>

@@ -124,8 +124,9 @@ function AccountTable() {
     switch (status) {
       case 1:
         statusStyle = {
-          backgroundColor: "#22C55E",
-          color: '#ffff',
+          backgroundColor: "#DFFFDF",
+          color: '#00A600',
+          border: '0.3px solid #00CA00',
           padding: '5px 13px',
           fontSize: "12px",
           borderRadius: '6px',
@@ -137,9 +138,10 @@ function AccountTable() {
       
       case 2:
         statusStyle = {
-          backgroundColor: "#ADB5BD",
-          color: '#ffff', 
-          padding: '5px 13px',
+          backgroundColor: "#FFF2E8",
+          color: '#D4380D', 
+          border: '0.3px solid #FF0000',
+          padding: '5px 15px',
           fontSize: "12px",
           borderRadius: '6px',
           fontWeight: '500', 

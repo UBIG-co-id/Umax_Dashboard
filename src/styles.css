@@ -16,7 +16,7 @@
   background-color: #B91C1C !important};
 
 .lebarcard{
-  with: 88%;
+  width: 88%;
 }
 .no-scroll {
   overflow: hidden;
@@ -488,4 +488,9 @@ th svg.desc{
   100% {
     width: 100%;
   }
+}
+.card-container {
+  flex: 1; /* Membagi ruang dengan rasio yang sama */
+  min-width: 100px; /* Menentukan lebar minimum */
+  max-width: 300px; /* Menentukan lebar maksimum */
 }
