@@ -43,6 +43,25 @@ const Dashboard = () => {
   const [error, setError] = useState(null);
   const [selectedTimeframe, setSelectedTimeframe] = useState("lastweek"); // Set ke string kosong
   const [chartUrl, setChartUrl] = useState('');
+  const [suggestionData, setSuggestionData] = useState([]);
+
+  const fetchSuggestions = async () => {
+    try {
+      const response = await axios.get(`https://umaxdashboard-1-w0775359.deta.app/suggestion/${metric_id}`);
+      if (response.status === 200) {
+        const data = response.data;
+        setSuggestionData(data);
+      } else {
+        console.error('Failed to fetch suggestion data from API');
+      }
+    } catch (error) {
+      console.error('An error occurred while fetching suggestion data', error);
+    }
+  };
+  useEffect(() => {
+    // Fetch metrics data and set it in the state
+    fetchSuggestions();
+  }, []);
 
   useEffect(() => {
     // Fetch metrics data and set it in the state
@@ -709,10 +728,20 @@ const Dashboard = () => {
                         <div>
                           <FiAlertTriangle size={25} className='text-yellow-500' />
                         </div>
-                        <div>
+                        {suggestionData.length > 0 && (
+                          <div>
+                             {suggestionData.map((suggestion, index) => (
+                               <div key={index}>
+                               <h2>{suggestion.error}:</h2>
+                               <p>{suggestion.message}</p>
+                             </div>
+                             ))}
+                          </div>
+                        )}
+                        {/* <div>
                           <div className='font-medium mb-2'>{translations['CTR Value']}</div>
                           <p>{translations['Message CTR']}</p>
-                        </div>
+                        </div> */}
                       </div>
                       <a href="https://chat.openai.com/share/3bb35f6a-4b3b-4182-b6f9-c880722b3c72" target="_blank" rel="noopener noreferrer">
                         <div className='mt-2 hover:underline  text-end text-sm'>
