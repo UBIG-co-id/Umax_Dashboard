@@ -46,8 +46,9 @@ const Dashboard = () => {
   const [suggestionData, setSuggestionData] = useState([]);
 
   const fetchSuggestions = async () => {
+    const id = metric_id
     try {
-      const response = await axios.get(`https://umaxdashboard-1-w0775359.deta.app/suggestion/${metric_id}`);
+      const response = await axios.get(`https://umaxdashboard-1-w0775359.deta.app/suggestion/${id}`);
       if (response.status === 200) {
         const data = response.data;
         setSuggestionData(data);
@@ -138,11 +139,8 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (metric_id) {
-      // Fetch data based on metric_id here and set it to selectedData
-      // Example: fetch data for selected metric_id and set it to selectedData state
-      // setSelectedData(data);
+   
     } else {
-      // Handle the case when no metric_id is selected
       setSelectedData(null);
     }
   }, [metric_id]);
@@ -158,6 +156,7 @@ const Dashboard = () => {
     if (selectedCampaign) {
       setActiveItem(itemName);
       setSelectedName(itemName);
+      setSuggestionData(suggestionData);
       setSelectedData(selectedCampaign);
       updateChartUrl(selectedTimeframe);
       
@@ -315,7 +314,7 @@ const Dashboard = () => {
         "Berapa kali rata-rata seorang user melihat iklan kita ditampilkan dalam rentang waktu tertentu. Dihitung dari jumlah Impressions dibagi dengan jumlah Reach",
     },
     {
-      title: translations["Reach Amount Ratio"],
+      title: translations["Reach Amount Spent Ratio"],
       value: selectedData ? selectedData.rar : null,
       chart: [
         { name: "Day1", value: 10 },
@@ -327,7 +326,7 @@ const Dashboard = () => {
         { name: "Day7", value: 20 },
       ],
       persen: 2.0,
-      description: "Total Reach Amount ratio compared to last 7 day",
+      description: "Total Reach Amount Spent ratio compared to last 7 day",
       descModal:
         "Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut",
     },
@@ -488,7 +487,7 @@ const Dashboard = () => {
       "Frequency": (value) => `${formattedKoma1(value)}`,
       "Return on ADD Spent": (value) => `${formattedKoma1(value)}`,
       "Real ROAS": (value) => `${formattedKoma1(value)}`,
-      "Reach Amount Ratio": (value) => `${formattedKoma1(value)} `,
+      "Reach Amount Spent Ratio": (value) => `${formattedKoma1(value)} `,
       "Outbont Click Landing Page": (value) => `${formattedKoma1(value)} `,
       "Click Through Rate": (value) => `${formattedKoma1(value)} `,
       "Add to Cart": (value) => `${formattedKoma1(value)} `,
@@ -532,7 +531,7 @@ const Dashboard = () => {
           {description}
         </p>
       ),
-      "Reach Amount Ratio": 
+      "Reach Amount Spent Ratio": 
       (description) => (
         <p
           style={{
@@ -654,7 +653,7 @@ const Dashboard = () => {
                       popupContent="Jumlah total biaya yang kita keluarkan untuk pemasangan iklan"
                       />
                     <CardInfo
-                      title={translations['Reach Amount Ratio']} 
+                      title={translations['Reach Amount Spent Ratio']} 
                       value={selectedData.rar}
                       color="text-yellow-500"
                       popupContent="Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut"
@@ -756,10 +755,16 @@ const Dashboard = () => {
                         <div>
                           <AiOutlineCloseCircle size={25} className='text-red-500' />
                         </div>
-                        <div>
-                          <div className='font-medium mb-2'>{translations['OCLP Value']}</div>
-                          <p>{translations['Message OCLP']}</p>
-                        </div>
+                        {suggestionData.length > 0 && (
+                          <div>
+                             {suggestionData.map((suggestion, index) => (
+                               <div key={index}>
+                               <h2>{suggestion.error}:</h2>
+                               <p>{suggestion.message}</p>
+                             </div>
+                             ))}
+                          </div>
+                        )}
                       </div>
                       <a href="https://chat.openai.com/share/cb290ced-08a9-4153-93dc-470a1e0fd126" target="_blank" rel="noopener noreferrer">
                         <div className='mt-2 hover:underline  text-end text-sm'>
@@ -843,7 +848,7 @@ const Dashboard = () => {
       popupContent: 'Jumlah total biaya yang kita keluarkan untuk pemasangan iklan' 
     },
     {
-      title: 'Reach Amount Ratio',
+      title: 'Reach Amount Spent Ratio',
       value: '6.1%',
       color: 'text-yellow-500',
       popupContent: 'Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut' 
@@ -959,7 +964,7 @@ const Dashboard = () => {
     } alt="icon" width={30} />
   )}
   <h1 className={`text-2xl pl-3 font-bold ${
-    selectedName ? 'text-gray-600' : 'bg-gray-200 animate-pulse top-3 w-44 h-5 relative'
+    selectedName ? 'text-gray-600' : 'bg-gray-200 animate-pulse top-3 w-44 h-5 rounded-md relative'
   }`}>
     {selectedName ? selectedName : ''}
   </h1>

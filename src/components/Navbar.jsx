@@ -132,43 +132,43 @@ const Navbar = () => {
 
 
 
-  // const [darkMode, setDarkMode] = useState(false);
-  // const toggleDarkMode = () => {
-  //   setDarkMode(!darkMode);
-  //   localStorage.setItem('darkMode', !darkMode);
-  // };
+  const [darkMode, setDarkMode] = useState(false);
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+    localStorage.setItem('darkMode', !darkMode);
+  };
 
-  // useEffect(() => {
-  //   const savedDarkMode = localStorage.getItem('darkMode');
-  //   if (savedDarkMode) {
-  //     setDarkMode(savedDarkMode === 'true');
-  //   }
-  // }, []);
+  useEffect(() => {
+    const savedDarkMode = localStorage.getItem('darkMode');
+    if (savedDarkMode) {
+      setDarkMode(savedDarkMode === 'true');
+    }
+  }, []);
 
-  // useEffect(() => {
-  //   if (darkMode) {
-  //     document.body.classList.add('dark-mode');
-  //   } else {
-  //     document.body.classList.remove('dark-mode');
-  //   }
-  // }, [darkMode]);
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [darkMode]);
 
   
 
-  // useEffect(() => {
-  //   const savedDarkMode = localStorage.getItem('darkMode');
-  //   if (savedDarkMode) {
-  //     setDarkMode(savedDarkMode === 'true');
-  //   }
-  // }, []);
+  useEffect(() => {
+    const savedDarkMode = localStorage.getItem('darkMode');
+    if (savedDarkMode) {
+      setDarkMode(savedDarkMode === 'true');
+    }
+  }, []);
 
-  // useEffect(() => {
-  //   if (darkMode) {
-  //     document.body.classList.add('dark-mode');
-  //   } else {
-  //     document.body.classList.remove('dark-mode');
-  //   }
-  // }, [darkMode]);
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [darkMode]);
 
   
 
@@ -383,11 +383,7 @@ const Navbar = () => {
                         {({ active }) => (
                           <a
                             href="#"
-                            className={classNames(
-                              'relative bottom-2 rounded-t-md block px-4 py-2 text-sm bg-red-500 text-white',
-                              // { 'dark:bg-gray-700 dark:text-white': darkMode }
-                            )}
-                          >
+                            className='relative bottom-2 rounded-t-md block px-4 py-2 text-sm bg-red-500 text-white'>
                             Notification
                           </a>
                         )}
@@ -397,9 +393,8 @@ const Navbar = () => {
                           <a
                             href="#"
                             className={classNames(
-                              active ? 'bg-gray-50/5 text-white' : '',
-                              'block px-4 py-2 text-sm text-gray-700',
-                              // { 'dark:bg-gray-800 dark:text-white': darkMode }
+                              active ? 'bg-gray-50/5 text-gray-700' : '',
+                              'block px-4 py-2 text-sm text-gray-700'
                             )}
                           >
                             Notification 1
@@ -411,9 +406,8 @@ const Navbar = () => {
                           <a
                             href="#"
                             className={classNames(
-                              active ? 'bg-gray-50/5 text-white' : '',
-                              'block px-4 py-2 text-sm text-gray-700',
-                              // { 'dark:bg-gray-800 dark:text-white': darkMode }
+                              active ? 'bg-gray-50/5 text-gray-700' : '',
+                              'block px-4 py-2 text-sm text-gray-700'
                             )}
                           >
                             Notification 2
@@ -544,7 +538,9 @@ const Navbar = () => {
 
 
             {/* tombol mode gelap */}
+            
             <div className='flex justify-between mx-5 pt-10'>
+              
               <h1 className='text-gray-700 relative right-3 font-medium'>Theme:</h1>
               <label htmlFor="darkModeToggle" className="flex items-center cursor-pointer">
                 <div className="relative">
@@ -552,22 +548,22 @@ const Navbar = () => {
                     type="checkbox"
                     id="darkModeToggle"
                     className="sr-only"
-                    // onChange={toggleDarkMode}
-                    // checked={darkMode}
+                    onChange={toggleDarkMode}
+                    checked={darkMode}
                   />
                   <div className={`w-14 h-7 bg-white rounded-full p-1 flex items-center bordernya transition-transform ease-in-out duration-300`}>
                     <div
                       className={`dot w-5 h-5 bg-cyan-100 rounded-full shadow transition-transform ease-in-out duration-300`}
-                      // style={{
-                      //   transform: darkMode ? 'translateX(100%)' : 'translateX(0)',
-                      //   opacity: darkMode ? '1' : '1',
-                      // }}
+                      style={{
+                        transform: darkMode ? 'translateX(100%)' : 'translateX(0)',
+                        opacity: darkMode ? '1' : '1',
+                      }}
                     >
-                      {/* {darkMode ? (
+                      {darkMode ? (
                         <FiMoon className="h-5 w-5 text-sky-600 absolute left-0" />
                       ) : (
                         <FiSun className="h-5 w-5 text-sky-600 absolute right-0" />
-                      )} */}
+                      )}
                     </div>
                   </div>
                 </div>

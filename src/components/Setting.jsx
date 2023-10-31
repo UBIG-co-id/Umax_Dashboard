@@ -126,7 +126,7 @@ const Setting = () => {
             name="OCLP"
             placeholder="80"
             label="Outbound Click Landing Page (OCLP)"
-            label2="Recommended value > 1.5%"
+            label2="Recommended value > 80%"
             decoration={<AiOutlinePercentage size="1rem" />}
           />
           <InputGroup1
@@ -141,14 +141,14 @@ const Setting = () => {
           <InputGroup2
             name="CPC"
             placeholder="5.000"
-            label="Cost per Click (CPC)"
-            label2="Recommended value > Rp. 5.000"
+            label="Cost per Result (CPR)"
+            label2="Recommended value < Rp 5.000"
           />
           <InputGroup2
             name="CPC"
             placeholder="1.000"
             label="Cost per Click (CPC)"
-            label2="Recommended value > Rp. 1.000"
+            label2="Recommended value < Rp 1.000"
           />
         </div>
         <button className='absolute bottom-0 right-0 mb-4 mr-4 bg-sky-600 px-4 py-1 rounded-md text-white'>

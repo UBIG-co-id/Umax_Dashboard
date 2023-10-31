@@ -251,12 +251,12 @@ function AccountTable() {
         accessor: 'action',
         Cell: ({ row }) => (
           <div className="flex space-x-2 justify-center">
-            {/* <button
+            <button
               onClick={() => handleDelete(row.original._id)}
-              className="bg-red-200 hover:bg-red-300 text-red-600 py-1 px-1 rounded"
+              className="bg-red-500 hover:bg-red-500 text-white py-1 px-1 rounded"
             >
               <BsTrash3 />
-            </button> */}
+            </button>
             <Link to={`/updateaccount/${row.original._id}`}>
             <button
               
@@ -518,7 +518,7 @@ function AccountTable() {
                       return (
                         <td
                           {...cell.getCellProps()}
-                          className={`p-2  border-gray-200 border-b-0 border-x-0  ${cell.column.id === 'status' || cell.column.id === 'action'
+                          className={`p-2  border-gray-200 border-b-0  ${cell.column.id === 'status' || cell.column.id === 'action'
                             ? 'text-center' //  untuk rata tengah
                             : 'text-left' //  untuk sel lainnya
                             }`}
