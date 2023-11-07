@@ -92,19 +92,15 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
     };
   }, [itemsToShow]);
 
-  const handleItemClick = (itemName) => {
-    // Find the campaign that matches the clicked name
-    const selectedData = data.find((data) => data.campaign_name === itemName);
-  
-    if (selectedData) {
-      setActiveItem(itemName);
-      updateSelectedName(itemName);
-      setSelectedData(selectedData);
+  const handleItemClick = (item) => {
+
+      setActiveItem(item._id);
+      updateSelectedName(item);
+      setSelectedData(item);
   
       // Add this part to set metric_id based on selectedData
-      const metricIdFromSelectedData = selectedData._id;
+      const metricIdFromSelectedData = item._id;
       setMetricId(metricIdFromSelectedData);
-    }
   };
 
 
@@ -174,7 +170,7 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
   
     // Tambahkan baris berikut untuk melakukan filtering berdasarkan kata kunci pencarian
     const filteredByKeyword = filtered.filter((item) =>
-    item.campaign_name ? item.campaign_name.toLowerCase() : ''
+      item.campaign_name ? item.campaign_name.toLowerCase() : ''
     );
   
     return filteredByKeyword.slice(0, itemsToShow).map((item, index) => {
@@ -191,15 +187,15 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
         circleColor = '#8F8F8F'; // Default: Abu-abu
       }
 
-      const isItemActive = activeItem === item.campaign_name; // Menggunakan 'name' alih-alih 'title'
+      const isItemActive = activeItem === item._id; // Menggunakan 'name' alih-alih 'title'
       const listItemClasses = `flex flex-col h-24 mb-0 -ml-2 ${isItemActive ? 'bg-blue-200 ' : ''
         } ${!isItemActive ? nonActiveHoverClass : ''}`;
 
       return (
         <li
-          key={index}
+          key={item._id}
           className={listItemClasses}
-          onClick={() => handleItemClick(item.campaign_name)}
+          onClick={() => handleItemClick(item)}
         >
           {index > 0 && <hr className="border-gray-300 " />}
           <div

@@ -142,28 +142,20 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (metric_id) {
-   
+      updateChartUrl(selectedTimeframe);
     } else {
       setSelectedData(null);
     }
   }, [metric_id]);
 
 
-  const handleItemClick = (itemName) => {
-    console.log(itemName)
+  const handleItemClick = (item) => {
     setSelectedTimeframe("lastweek");
-    // Temukan kampanye yang sesuai dengan nama yang diklik
-    const selectedCampaign = data.find((data) => data.campaign_name === itemName);
-    
-    
-    if (selectedCampaign) {
-      setActiveItem(itemName);
-      setSelectedName(itemName);
-      setSuggestionData(suggestionData);
-      setSelectedData(selectedCampaign);
-      updateChartUrl(selectedTimeframe);
-      
-    }
+    setActiveItem(item.campaign_name);
+    setSelectedName(item.campaign_name);
+    setSuggestionData(suggestionData);
+    setSelectedData(item);
+    updateChartUrl(selectedTimeframe);
   };
 
   const updateSelectedName = (item) => {
