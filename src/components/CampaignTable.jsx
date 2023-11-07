@@ -24,6 +24,9 @@ function DataTable() {
   const [tableData, setTableData] = useState([]);
   const [showAddPopup, setShowAddPopup] = useState(false);
   const navigate = useNavigate();
+
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false); // Tambah state untuk alert
+
   const [currentLocale, setCurrentLocale] = useState("en-US"); // Default to English
   const toggleLocale = () => {
     const newLocale = currentLocale === "en-US" ? "id-ID" : "en-US";
@@ -86,7 +89,7 @@ const handleDelete = async (_id) => {
           });
         }
       } catch (error) {
-        Swal.fire('Error', 'An error occurred while deleting the data.', 'error');
+        Swal.fire('Error', 'Terjadi kesalahan saat menghapus data.', 'error');
       }
     }
   });
@@ -127,10 +130,9 @@ const handleDelete = async (_id) => {
       startdate: '',
       enddate: '',
       status: '',
-     notes: '',
+      notes: '',
     },
-
-    onSubmit: (values) => {
+      onSubmit: (values) => {
       const token = localStorage.getItem('jwtToken');
       fetch('https://umax-1-z7228928.deta.app/campaigns', {
         method: 'POST',
@@ -145,20 +147,31 @@ const handleDelete = async (_id) => {
       .then(data => {
         console.log(data);
         if (data.message === 'data berhasil ditambah') {
-          toggleAddPopup();
-          fetchData();
+          // Step 4: Set the state to show the alert
+          setShowSuccessAlert(true);
+
+          // Step 5: Set a timeout to hide the alert after a few seconds
+          setTimeout(() => {
+            setShowSuccessAlert(false);
+          }, 5000); // Hide the alert after 5 seconds (you can adjust the duration)
         }
       })
       .catch(error => {
         console.error(error);
       });
     },
-        
   });
-  
 
 
- 
+  useEffect(() => {
+    if (showSuccessAlert) {
+      // Set timeout untuk menyembunyikan alert setelah beberapa detik
+      const timeoutId = setTimeout(() => {
+        setShowSuccessAlert(false);
+      }, 5000); // Contoh: alert akan hilang setelah 5 detik
+      return () => clearTimeout(timeoutId);
+    }
+  }, [showSuccessAlert]);
 
 
   // PAGINATION
@@ -465,6 +478,11 @@ const handleDelete = async (_id) => {
 
   return (
     <div className="border-2 border-slate-200  p-0 m-2 lg:m-10 mt-8 rounded-lg relative">
+    {showSuccessAlert && (
+        <div className="bg-green-200 border-green-500 text-green-700 border rounded p-2 mt-2">
+          Data berhasil ditambah!
+        </div>
+      )}
         <div className="container mx-auto p-4">
         <div className="grid grid-cols-12 gap-3 px-2 md:px-0 mb-2">
             {/* Search bar */}
@@ -588,7 +606,7 @@ const handleDelete = async (_id) => {
                   return (
                     <tr
                       {...row.getRowProps()}
-                      className={` text-gray-600 hover:bg-blue-200 hover:text-gray-700 ${i % 2 === 1 ? "bg-gray-100" : "bg-white"
+                      className={` text-gray-600 hover:bg-blue-200 hover:text-gray-700 ${i % 2 === 1 ? "bg-stone-200" : "bg-white"
                         } `}
                     >
                       {row.cells.map((cell) => {

@@ -7,7 +7,7 @@ const data = {
   datasets: [
     {
       label: 'Data 1',
-      data: [12, 19, 3, 5, 2, 3, 8],
+      data: [12, 79, 3, 5, 2, 3, 8],
       fill: true,
       borderColor: 'rgb(75, 192, 192)',
       backgroundColor: 'rgba(75, 192, 192, 0.2)',

@@ -476,7 +476,7 @@ function ClientsTable() {
                 return (
                   <tr
                     {...row.getRowProps()}
-                    className={` text-gray-600 hover:bg-blue-300 hover:text-gray-700 ${i % 2 === 1 ? 'bg-gray-100' : 'bg-white' // Memberikan latar belakang selang-seling
+                    className={` text-gray-600 hover:bg-blue-300 hover:text-gray-700 ${i % 2 === 1 ? 'bg-stone-200' : 'bg-white' // Memberikan latar belakang selang-seling
                       }`}                  >
                     {row.cells.map((cell) => {
                       return (

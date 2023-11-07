@@ -72,34 +72,34 @@ const AddCampaigns = () => {
             notes: '',
         },
 
-        onSubmit: (values) => {
-            const token = localStorage.getItem('jwtToken');
-            // Send a POST request to your FastAPI backend with form data
-            fetch('https://umaxdashboard-1-w0775359.deta.app/campaigns', {
-                method: 'POST',
-                headers: {
-                    'accept': 'application/json',
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: new URLSearchParams(values).toString(),
-            })
-
-                .then(response => response.json())
-                .then(data => {
-                    // Handle the response from the backend (e.g., success message or error)
-                    console.log(data);
-                    if (data.message === 'data berhasil ditambah') {
-                        // Redirect to the dashboard page
-                    }
-                    navigate('/Campaigns');
+            onSubmit: (values) => {
+                const token = localStorage.getItem('jwtToken');
+                // Send a POST request to your FastAPI backend with form data
+                fetch('https://umaxdashboard-1-w0775359.deta.app/campaigns', {
+                    method: 'POST',
+                    headers: {
+                        'accept': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: new URLSearchParams(values).toString(),
                 })
-                .catch(error => {
-                    // Handle errors, e.g., network errors
-                    console.error(error);
-                });
 
-        },
+                    .then(response => response.json())
+                    .then(data => {
+                        // Handle the response from the backend (e.g., success message or error)
+                        console.log(data);
+                        if (data.message === 'data berhasil ditambah') {
+                            // Redirect to the dashboard page
+                        }
+                        navigate('/Campaigns');
+                    })
+                    .catch(error => {
+                        // Handle errors, e.g., network errors
+                        console.error(error);
+                    });
+
+            },
     });
     // END ADD DATA Campaigns
 
@@ -294,7 +294,7 @@ const AddCampaigns = () => {
                             </div>
 
 
-                        </div>
+                        </div>  
 
                         <div className="flex justify-end">
                             {/* Tombol Save */}
@@ -322,7 +322,6 @@ const AddCampaigns = () => {
                         </div>
                     </form>
                 </div>
-                <div>AddCampaigns</div>
 
             </div>
 

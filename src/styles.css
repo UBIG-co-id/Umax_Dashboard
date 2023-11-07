@@ -441,6 +441,7 @@ th svg.desc{
 /* Gaya scroll bar */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -492,5 +493,5 @@ th svg.desc{
 .card-container {
   flex: 1; /* Membagi ruang dengan rasio yang sama */
   min-width: 100px; /* Menentukan lebar minimum */
-  max-width: 300px; /* Menentukan lebar maksimum */
+  max-width: 700px; /* Menentukan lebar maksimum */
 }

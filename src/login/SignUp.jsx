@@ -2,6 +2,8 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import { useFormik } from 'formik';
+import bgLogin from '../assets/bg-default.svg';
+
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -40,13 +42,14 @@ const SignUp = () => {
   });
 
   return (
-    <div className="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
+    <div className="relative overflow-hidden min-h-screen flex flex-col items-center justify-center">
+        <img src={bgLogin} className='absolute -z-10'/>
       <div>
         <img src={logo} alt="logo" className="mx-auto pb-2 w-20" />
       </div>
       <form
         onSubmit={formik.handleSubmit}
-        className="w-full max-w-md bg-white rounded-lg shadow-lg p-6"
+        className="w-full max-w-md bg-white rounded-lg shadow-lg p-6 border-2"
       >
         <p className="font-semibold text-base text-[#5473E3] mb-5">Register</p>
         <input

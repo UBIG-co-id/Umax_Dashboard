@@ -174,7 +174,7 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
   
     // Tambahkan baris berikut untuk melakukan filtering berdasarkan kata kunci pencarian
     const filteredByKeyword = filtered.filter((item) =>
-      item.campaign_name.toLowerCase().includes(searchKeyword.toLowerCase())
+    item.campaign_name ? item.campaign_name.toLowerCase() : ''
     );
   
     return filteredByKeyword.slice(0, itemsToShow).map((item, index) => {

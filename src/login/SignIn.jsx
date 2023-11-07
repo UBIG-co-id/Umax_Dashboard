@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import logo from '../assets/logo.png';
+import bgLogin from '../assets/bg-default.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
@@ -46,12 +47,13 @@ const SignIn = () => {
     
 
   return (
-    <div className="relative bg-gray-100 min-h-screen flex flex-col items-center justify-center">
+    <div className="relative min-h-screen overflow-hidden flex flex-col items-center justify-center">
+      <img src={bgLogin} className='absolute -z-10'/>
       <div>
         <img src={logo} alt="logo" className="mx-auto pb-2 w-20" />
       </div>
       <div className="flex flex-col items-center justify-center mt-5 sm:mt-0">
-        <form onSubmit={handleSubmit} className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+        <form onSubmit={handleSubmit} className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg border-2 ">
           <p className="font-semibold text-base text-[#5473E3] mb-5">Login</p>
           <input
             type="email"

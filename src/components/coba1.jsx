@@ -1,11 +1,9 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { BarChart, Bar, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import "../styles.css";
 import { Popover, Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-
 
 const Metrics = ({
   title,
@@ -40,6 +38,7 @@ const Metrics = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 });
+
   const handleOpenModal = (event) => {
     setAnchorEl(event.currentTarget);
     const rect = event.target.getBoundingClientRect();
@@ -83,75 +82,68 @@ const Metrics = ({
           }}
         >
           {/* modal */}
-          <div className=" p-4 flex flex-col max-w-xs rounded-lg bg-white">
-          <Typography
-            id="modal-modal-title"
-            variant="h6"
-            component="h2"
-
-            style={{
-              alignItems: "center", 
-              fontSize: "15px",
-              display: "flex",
-              justifyContent: "space-between",
-              fontWeight: 600,
-              backgroundColor: "#3B82F6",
-              color: "white", 
-              padding: "6px", 
-              margin: "-16px", 
-              borderRadius: "5px 5px 0 0 ", 
-            }}
-              >
+          <div className="p-4 flex flex-col max-w-xs rounded-lg bg-white">
+            <Typography
+              id="modal-modal-title"
+              variant="h6"
+              component="h2"
+              style={{
+                alignItems: "center",
+                fontSize: "15px",
+                display: "flex",
+                justifyContent: "space between",
+                fontWeight: 600,
+                backgroundColor: "#3B82F6",
+                color: "white",
+                padding: "6px",
+                margin: "-16px",
+                borderRadius: "5px 5px 0 0 ",
+              }}
+            >
               {title}
-              <span className="bg-gray-300 rounded-full hover:bg-slate-100" style={{ width: '20px', height: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <IconButton
-                onClick={handleCloseModal}
-                aria-label="close"
-                >
-                <CloseIcon style={{ fontSize: '16px', color: '#3B82F6'}} /> 
+              <span
+                className="bg-gray-300 rounded-full hover-bg-slate-100"
+                style={{
+                  width: "20px",
+                  height: "20px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <IconButton onClick={handleCloseModal} aria-label="close">
+                  <CloseIcon style={{ fontSize: "16px", color: "#3B82F6" }} />
                 </IconButton>
-                </span>
-
-
+              </span>
             </Typography>
             <div
-            id="modal-modal-description"
-            className="mt-6 text-gray-500 leading-5"
-            style={{
-            maxHeight: '80px',
-            overflowY: 'auto',
-            }}
+              id="modal-modal-description"
+              className="mt-6 text-gray-500 leading-5"
+              style={{
+                maxHeight: "80px",
+                overflowY: "auto",
+              }}
             >
-            {descModal}
+              {descModal}
             </div>
-            </div>
-            </Popover>
+          </div>
+        </Popover>
       </div>
-   
+
       <div className="flex mt-1">
         <div className="relative top-4 text-gray-600 text-xl font-bold">
           {value}
         </div>
       </div>
+
       <div className="relative -top-5 flex justify-end">
         <div style={{ width: "40%", height: 40 }}>
           <ResponsiveContainer>
             <BarChart data={chartData}>
-              <Bar dataKey="value" shape={<CustomBar />}>
-                {chartData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                   
-                    fill={
-                      index === chartData.length - 1
-                        ? entry.value > chartData[chartData.length - 2].value
-                          ? "#1CD14F" // hijau jika nilai naik
-                          : "#FF3636" // merah jika nilai turun
-                        : "#8690A2" // Warna default
-                    }
-                    // ---------------------------------------------------------------------------------
-                  />
-                ))}
+              <Bar dataKey="value" shape={CustomBar}>
+                <Cell
+                  fill="#1CD14F" // hijau jika nilai naik
+                />
               </Bar>
               <Tooltip
                 content={<CustomTooltip />}
@@ -161,6 +153,7 @@ const Metrics = ({
           </ResponsiveContainer>
         </div>
       </div>
+
       <div className="flex">
         <div
           className="w-14 h-6 text-xs px-3 py-1 font-medium rounded-full"
@@ -171,7 +164,7 @@ const Metrics = ({
         >
           {persen}
         </div>
-        <span className="text-gray-400 kecil font-medium pl-2 truncate cursor-pointer ">
+        <span className="text-gray-400 kecil font-medium pl-2 truncate cursor-pointer">
           {description}
         </span>
       </div>

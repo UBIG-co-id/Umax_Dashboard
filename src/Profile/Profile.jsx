@@ -154,14 +154,14 @@ export default function CheckoutForm() {
                   </span>
                 </div>
               </Tab>
-              <Tab value="Security" onClick={() => setType("Security")}>
+              {/* <Tab value="Security" onClick={() => setType("Security")}>
                 <div className="flex gap-1 items-center">
                   <BiLockOpenAlt className="h-5 w-5" />
                   <span className="font-medium">
                     Security
                   </span>
                 </div>
-              </Tab>
+              </Tab> */}
             </TabsHeader>
             <TabsBody
               className="!overflow-x-hidden"
@@ -230,10 +230,10 @@ export default function CheckoutForm() {
 
                 </form>
               </TabPanel>
-              <TabPanel value="Security" className="p-0">
+              {/* <TabPanel value="Security" className="p-0">
                 <form className="mt-12 flex flex-col gap-4">
                 </form>
-              </TabPanel>
+              </TabPanel> */}
             </TabsBody>
           </Tabs>
         </CardBody>

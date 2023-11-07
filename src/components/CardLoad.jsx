@@ -7,15 +7,15 @@ const data = [
   { title: "Card 1", value: "Value 1", spanBackgroundColor: "#D5D4DA", persenTextColor: "white", width: "30%" },
   { title: "Card 2", value: "Value 2", spanBackgroundColor: "#D5D4DA", persenTextColor: "white", width: "30%" },
   { title: "Card 2", value: "Value 2", spanBackgroundColor: "#D5D4DA", persenTextColor: "white", width: "30%" },
-  
+
   { title: "Card 2", value: "Value 2", spanBackgroundColor: "#D5D4DA", persenTextColor: "white", width: "30%" },
   { title: "Card 2", value: "Value 2", spanBackgroundColor: "#D5D4DA", persenTextColor: "white", width: "30%" },
   { title: "Card 2", value: "Value 2", spanBackgroundColor: "#D5D4DA", persenTextColor: "white", width: "30%" },
-  
+
   { title: "Card 1", value: "Value 1", spanBackgroundColor: "#D5D4DA", persenTextColor: "white", width: "30%" },
   { title: "Card 2", value: "Value 2", spanBackgroundColor: "#D5D4DA", persenTextColor: "white", width: "30%" },
   { title: "Card 2", value: "Value 2", spanBackgroundColor: "#D5D4DA", persenTextColor: "white", width: "30%" },
-  
+
   { title: "Card 2", value: "Value 2", spanBackgroundColor: "#D5D4DA", persenTextColor: "white", width: "30%" },
   { title: "Card 2", value: "Value 2", spanBackgroundColor: "#D5D4DA", persenTextColor: "white", width: "30%" },
   { title: "Card 2", value: "Value 2", spanBackgroundColor: "#D5D4DA", persenTextColor: "white", width: "30%" },

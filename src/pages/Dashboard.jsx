@@ -20,6 +20,7 @@ import { useLanguage } from '../LanguageContext'; // Import the useLanguage hook
 import Translation from '../translation/Translation.json'; 
 
 
+
 import axios from 'axios';
 
 
@@ -36,33 +37,35 @@ const Dashboard = () => {
   const { selectedLanguage } = useLanguage(); // Get selectedLanguage from context
   const translations = Translation[selectedLanguage];
   const [data, setData] = useState([]);
+  const [barr, setBarr] = useState([]);
+
   const [metrics, setMetrics] = useState([]);
   const [metric_id, setMetricId] = useState(''); // Inisialisasi dengan nilai default jika diperlukan.
-  // const [data, setData] = useState([]); // Store the fetched data
   // const [selectedData, setSelectedData] = useState([]);
   const [error, setError] = useState(null);
   const [selectedTimeframe, setSelectedTimeframe] = useState("lastweek"); // Set ke string kosong
   const [chartUrl, setChartUrl] = useState('');
   const [suggestionData, setSuggestionData] = useState([]);
 
-  const fetchSuggestions = async () => {
-    const id = metric_id
-    try {
-      const response = await axios.get(`https://umaxdashboard-1-w0775359.deta.app/suggestion/${id}`);
-      if (response.status === 200) {
-        const data = response.data;
-        setSuggestionData(data);
-      } else {
-        console.error('Failed to fetch suggestion data from API');
+    const fetchSuggestions = async () => {
+      const id = metric_id;
+      console.log("ID CAMPAIGN",id)
+      try {
+        const response = await axios.get(`https://umaxdashboard-1-w0775359.deta.app/suggestion/${id}`);
+        if (response.status === 200) {
+          const data = response.data;
+          setSuggestionData(data);
+        } else {
+          console.error('Failed to fetch suggestion data from API');
+        }
+      } catch (error) {
+        console.error('An error occurred while fetching suggestion data', error);
       }
-    } catch (error) {
-      console.error('An error occurred while fetching suggestion data', error);
-    }
-  };
-  useEffect(() => {
-    // Fetch metrics data and set it in the state
-    fetchSuggestions();
-  }, []);
+    };
+    useEffect(() => {
+      // Fetch metrics data and set it in the state
+      fetchSuggestions();
+    }, []);
 
   useEffect(() => {
     // Fetch metrics data and set it in the state
@@ -100,7 +103,7 @@ const Dashboard = () => {
   };
   const updateChartUrl = (timeframe) => {
     if (selectedName && metric_id) {
-      const baseUrl = 'https://umaxdashboard-1-w0775359.deta.app/metrics'; // URL dasar
+      const baseUrl = 'https://umaxdashboard-1-w0775359.deta.app/'; // URL dasar
       const selectedTimeframe = timeframe === 'lastweek' ? 'lastweek' : timeframe === 'lastmonth' ? 'lastmonth' : 'lastyear';
       // Ganti ini sesuai kebutuhan
       const newUrl = `${baseUrl}${selectedTimeframe}/${metric_id}`;
@@ -240,6 +243,42 @@ const Dashboard = () => {
   };
 
 
+  // data metrics
+  const metricsChart = async () => {
+    try {
+      const id = metric_id;
+      // console.log("ID METRICS",id) 
+      const token = localStorage.getItem('jwtToken');  
+      const apiUrl = `https://umaxdashboard-1-w0775359.deta.app/lastweek/6549a4196a890c59d1ced723`;
+  
+      const response = await fetch(apiUrl, {
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      if (response.ok) {
+        const barr = await response.json();
+        setBarr(barr);
+        
+        // Ambil metric_id dari data (misalnya, dari item pertama).
+        const metricIdFromData = barr.length > 0 ? barr[0]._id : '';
+        
+        // Set metric_id ke dalam state.
+        setMetricId(metricIdFromData);
+      } else {
+        console.error('Gagal mengambil metrics');
+      }
+    } catch (error) {
+      console.error('Terjadi kesalahan:', error);
+    }
+  };
+  useEffect(() => {
+    metricsChart();
+  }, []);
+
 
   //Data Baru
   //Backend tinggal ikutin ini aja
@@ -247,37 +286,29 @@ const Dashboard = () => {
   const metrixDatas = [
     {
       title: translations["Amount Spent"],
-      value: selectedData ? selectedData.amountspent : null,
-      chart: [
-        { name: "Day1", value: 5 },
-        { name: "Day2", value: 10 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 12 },
-        { name: "Day5", value: 15 },
-        { name: "Day6", value: 10 },
-        { name: "Day7", value: 20 },
-      ],
+      value: selectedData
+        ? selectedData.amountspent
+        : barr.map((dayData) => dayData.amountspent), // Ambil semua amountspent dari barr
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.amountspent.replace(/\D/g, '')),
+      })),
       persen: 2.0,
       description: "Total Amount spent compared to last 7 day",
-      descModal:
-        "Jumlah total biaya yang kita keluarkan untuk pemasangan iklan",
+      descModal: "Jumlah total biaya yang kita keluarkan untuk pemasangan iklan",
     },
     {
-      title:  translations["Reach"],
-      value: selectedData ? selectedData.reach : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 20 },
-        { name: "Day5", value: 10 },
-        { name: "Day6", value: 15 },
-        { name: "Day7", value: 5 },
-      ],
-      persen: -2.0,
-      description: "Total Reach compared to last 7 day",
-      descModal:
-        "Jumlah user yang melihat iklan kita pada platform iklan yang kita pasang",
+      title: translations["Reach"],
+      value: selectedData
+        ? selectedData.reach
+        : barr.map((dayData) => dayData.reach), // Ambil semua reach dari barr
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.reach.replace(/\D/g, '')),
+      })),
+      persen: 2.0,
+      description: "Total Amount spent compared to last 7 day",
+      descModal: "Jumlah total biaya yang kita keluarkan untuk pemasangan iklan",
     },
     {
       title: translations["Impression"],
@@ -673,12 +704,14 @@ const Dashboard = () => {
                 )}
 
                 {/* Chart */}
-                <div className='w-full md:w-full flex flex-col gap-5 justify-between'>
+                <div className='flex flex-col w-full'>
+                <div className='w-full mt-1 flex flex-col  gap-5 justify-between'>
                 <Chart metricId={chartUrl} />
+              </div>
 
                   {selectedData && (
-              <div className="flex flex-col md:flex-row gap-4 justify-center mx-auto w-full -mt-[28px]">
-                <div className="card-container">
+              <div className="flex w-full flex-col md:flex-row gap-4 max-sm:w-full justify-center mx-auto -mt-[13px]">
+                <div className="card-container ">
                   <CardInfo
                     title='CPR'
                     value={selectedData.cpr}
@@ -709,8 +742,7 @@ const Dashboard = () => {
               </div>
             )}
 
-
-                </div>
+                  </div>
               </div>
             </div>
             {/* end */}
@@ -720,9 +752,13 @@ const Dashboard = () => {
             <div>
               <div className='relative top-5 border-t-2 border-gray-600 p-5 px-10 pb-5'>
                 <h1 className='text-xl font-bold text-gray-700'>{translations['Suggestion']}</h1>
-                <div className='flex flex-col mt-5 md:flex-row gap-5'>
-                  <Card color='yellow'>
-                    <div className='max-w-sm'>
+                <div className='flex flex-col mt-5 md:flex-row gap-5 '>
+              
+
+                
+                 <div id='warning' >
+                  <Card color='yellow' >
+                    <div className=' max-w-sm'>
                       <div className='flex gap-3'>
                         <div>
                           <FiAlertTriangle size={25} className='text-yellow-500' />
@@ -731,8 +767,8 @@ const Dashboard = () => {
                           <div>
                              {suggestionData.map((suggestion, index) => (
                                <div key={index}>
-                               <h2>{suggestion.error}:</h2>
-                               <p>{suggestion.message}</p>
+                               <h2>{suggestion.error3}</h2>
+                               <p>{suggestion.message3}</p>
                              </div>
                              ))}
                           </div>
@@ -749,6 +785,8 @@ const Dashboard = () => {
                       </a>
                     </div>
                   </Card>
+                  </div>
+                 
                   <Card color='red'>
                     <div className='max-w-sm'>
                       <div className='flex gap-3'>
@@ -759,8 +797,8 @@ const Dashboard = () => {
                           <div>
                              {suggestionData.map((suggestion, index) => (
                                <div key={index}>
-                               <h2>{suggestion.error}:</h2>
-                               <p>{suggestion.message}</p>
+                               <h2>{suggestion.error4}</h2>
+                               <p>{suggestion.message4}</p>
                              </div>
                              ))}
                           </div>
@@ -912,7 +950,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('jwtToken');
-        const response = await axios.get('https://umax-1-z7228928.deta.app/metrics/',
+        const response = await axios.get('https://umaxdashboard-1-w0775359.deta.app/metricslastweek/6549a4196a890c59d1ced723',
         {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -963,11 +1001,14 @@ const Dashboard = () => {
             : ''
     } alt="icon" width={30} />
   )}
-  <h1 className={`text-2xl pl-3 font-bold ${
-    selectedName ? 'text-gray-600' : 'bg-gray-200 animate-pulse top-3 w-44 h-5 rounded-md relative'
-  }`}>
-    {selectedName ? selectedName : ''}
-  </h1>
+    <h1 className={`text-2xl pl-3 font-bold ${
+      selectedName ? 'text-gray-600' : 'left-10 bg-gray-200 top-3 w-44 h-5 animate-pulse rounded-md relative'
+    }`}>
+      {selectedName ? selectedName : (
+        <h1 className="w-5 h-5 relative -left-12 rounded-md bg-gray-200">
+        </h1>
+      )}
+    </h1>
 </div>
 
 
