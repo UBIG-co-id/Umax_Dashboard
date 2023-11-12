@@ -6,7 +6,6 @@ import { BiRefresh } from 'react-icons/bi';
 import CardInfo from '../components/CardInfo';
 import Chart from '../components/Chart';
 import Card from '../components/Card';
-import CardLoad from '../components/CardLoad';
 import Setting from '../components/Setting';
 import Metrics from '../components/Metrics';
 import History from '../components/History';
@@ -47,11 +46,14 @@ const Dashboard = () => {
   const [chartUrl, setChartUrl] = useState('');
   const [suggestionData, setSuggestionData] = useState([]);
 
+  // url base
+  const umaxUrl = 'https://umaxx-1-v8834930.deta.app';
+
     const fetchSuggestions = async () => {
       const id = metric_id;
       console.log("ID CAMPAIGN",id)
       try {
-        const response = await axios.get(`https://umaxdashboard-1-w0775359.deta.app/suggestion/${id}`);
+        const response = await axios.get(`${umaxUrl}/suggestion/${id}`);
         if (response.status === 200) {
           const data = response.data;
           setSuggestionData(data);
@@ -75,7 +77,7 @@ const Dashboard = () => {
   const fetchMetricsData = async () => {
     try {
       const token = localStorage.getItem('jwtToken');
-      const apiUrl = "https://umaxdashboard-1-w0775359.deta.app/metrics";
+      const apiUrl = `${umaxUrl}/metrics`;
   
       const response = await fetch(apiUrl, {
         headers: {
@@ -103,7 +105,7 @@ const Dashboard = () => {
   };
   const updateChartUrl = (timeframe) => {
     if (selectedName && metric_id) {
-      const baseUrl = 'https://umaxdashboard-1-w0775359.deta.app/'; // URL dasar
+      const baseUrl = `${umaxUrl}/`; // URL dasar
       const selectedTimeframe = timeframe === 'lastweek' ? 'lastweek' : timeframe === 'lastmonth' ? 'lastmonth' : 'lastyear';
       // Ganti ini sesuai kebutuhan
       const newUrl = `${baseUrl}${selectedTimeframe}/${metric_id}`;
@@ -116,7 +118,7 @@ const Dashboard = () => {
   const fetchHistoryData = async (metric_id) => {
     try {
       const token = localStorage.getItem('jwtToken');
-      const apiUrl = `https://umaxdashboard-1-w0775359.deta.app/history/${metric_id}`; // Updated URL with metric_id
+      const apiUrl = `${umaxUrl}/${metric_id}`; // Updated URL with metric_id
   
       const response = await fetch(apiUrl, {
         headers: {
@@ -166,7 +168,7 @@ const Dashboard = () => {
   const fetchCampaignData = async () => {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch('https://umaxdashboard-1-w0775359.deta.app/metrics', {
+      const response = await fetch(`${umaxUrl}/metrics`, {
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -193,7 +195,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('jwtToken');
-        const response = await axios.get('https://umax-1-z7228928.deta.app/metrics/', {
+        const response = await axios.get(`${umaxUrl}/metrics/`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -241,7 +243,7 @@ const Dashboard = () => {
       const id = metric_id;
       // console.log("ID METRICS",id) 
       const token = localStorage.getItem('jwtToken');  
-      const apiUrl = `https://umaxdashboard-1-w0775359.deta.app/lastweek/6549a4196a890c59d1ced723`;
+      const apiUrl = `${umaxUrl}/lastweek/654b4e5bb87a11b0650dda14`;
   
       const response = await fetch(apiUrl, {
         headers: {
@@ -273,9 +275,9 @@ const Dashboard = () => {
 
 
   //Data Baru
-  //Backend tinggal ikutin ini aja
 
   const metrixDatas = [
+    // amount spent
     {
       title: translations["Amount Spent"],
       value: selectedData
@@ -289,6 +291,7 @@ const Dashboard = () => {
       description: "Total Amount spent compared to last 7 day",
       descModal: "Jumlah total biaya yang kita keluarkan untuk pemasangan iklan",
     },
+    // reach
     {
       title: translations["Reach"],
       value: selectedData
@@ -299,176 +302,147 @@ const Dashboard = () => {
         value: parseFloat(dayData.reach.replace(/\D/g, '')),
       })),
       persen: 2.0,
-      description: "Total Amount spent compared to last 7 day",
-      descModal: "Jumlah total biaya yang kita keluarkan untuk pemasangan iklan",
+      description: "Total Reach compared to last 7 day",
+      descModal: "jumlah unik pengguna atau akun yang melihat iklan Anda selama periode waktu tertentu",
     },
+    // impression
     {
       title: translations["Impression"],
-      value: selectedData ? selectedData.impressions : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 12 },
-        { name: "Day5", value: 15 },
-        { name: "Day6", value: 10 },
-        { name: "Day7", value: 20 },
-      ],
-      persen: -2.0,
+      value: selectedData
+        ? selectedData.impressions
+        : barr.map((dayData) => dayData.impressions), // Ambil semua impressions dari barr
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.impressions.replace(/\D/g, '')),
+      })),
+      persen: 2.0,
       description: "Total Impression compared to last 7 day",
-      descModal:
-        "Jumlah iklan kita ditayangkan. Bedanya dengan Reach, user yang sama bisa dihitung melihat iklan yang sama lebih dari satu kali",
+      descModal: "seberapa sering iklan Anda ditampilkan di layar pengguna",
     },
+    // frequency
     {
       title: translations["Frequency"],
-      value: selectedData ? selectedData.frequency : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 20 },
-        { name: "Day5", value: 10 },
-        { name: "Day6", value: 15 },
-        { name: "Day7", value: 5 },
-      ],
-      persen: -2.0,
+      value: selectedData
+        ? selectedData.frequency
+        : barr.map((dayData) => dayData.frequency), // Ambil semua frequency dari barr
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.frequency.replace(/\D/g, '')),
+      })),
+      persen: 2.0,
       description: "Total Impression compared to last 7 day",
       descModal:
-        "Berapa kali rata-rata seorang user melihat iklan kita ditampilkan dalam rentang waktu tertentu. Dihitung dari jumlah Impressions dibagi dengan jumlah Reach",
+        "Berapa kali rata-rata seorang user melihat iklan kita ditampilkan dalam rentang waktu tertentu",
     },
     {
       title: translations["Reach Amount Spent Ratio"],
-      value: selectedData ? selectedData.rar : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 20 },
-        { name: "Day5", value: 10 },
-        { name: "Day6", value: 15 },
-        { name: "Day7", value: 20 },
-      ],
+      value: selectedData
+        ? selectedData.rar
+        : barr.map((dayData) => dayData.rar), // Ambil semua rar dari barr
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.rar.replace(/\D/g, '')),
+      })),
       persen: 2.0,
-      description: "Total Reach Amount Spent ratio compared to last 7 day",
+      description: "Total Rar compared to last 7 day",
       descModal:
         "Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut",
     },
     {
       title: translations["Cost Per Click"],
-      value: selectedData ? selectedData.cpc : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 12 },
-        { name: "Day5", value: 15 },
-        { name: "Day6", value: 10 },
-        { name: "Day7", value: 20 },
-      ],
+      value: selectedData
+        ? selectedData.cpr
+        : barr.map((dayData) => dayData.cpr), // Ambil semua cpr dari barr
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.cpr.replace(/\D/g, '')),
+      })),
       persen: 2.0,
-      description: "Total Cost per Click compared to last 7 day",
+      description: "Total Cost Per Click compared to last 7 day",
       descModal:
-        "Perhitungan biaya yang kita keluarkan untuk setiap Link Clicks. Dihitung dari jumlah Amount Spent dibagi dengan jumlah Link Clicks",
+        "Perhitungan biaya yang kita keluarkan untuk setiap Link Clicks",
     },
     {
       title: translations["Click Through Rate"],
-      value: selectedData ? selectedData.ctr : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 12 },
-        { name: "Day5", value: 15 },
-        { name: "Day6", value: 10 },
-        { name: "Day7", value: 15 },
-      ],
+      value: selectedData
+        ? selectedData.ctr
+        : barr.map((dayData) => dayData.ctr), // Ambil semua ctr dari barr
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.ctr.replace(/\D/g, '')),
+      })),
       persen: 2.0,
       description: "Total Click Through Rate compared to last 7 day",
       descModal:
-        "Rasio jumlah klik pada iklan kita dibandingkan dengan jumlah iklan ditayangkan. Dihitung dari jumlah Link Click dibagi dengan jumlah Impressions",
+        "Rasio jumlah klik pada iklan kita dibandingkan dengan jumlah iklan ditayangkan",
     },
     {
       title: translations["Outbont Click Landing Page"],
-      value: selectedData ? selectedData.oclp : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 12 },
-        { name: "Day5", value: 15 },
-        { name: "Day6", value: 10 },
-        { name: "Day7", value: 5 },
-      ],
-      persen: -2.0,
+      value: selectedData
+        ? selectedData.oclp
+        : barr.map((dayData) => dayData.oclp), // Ambil semua oclp dari barr
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.oclp.replace(/\D/g, '')),
+      })),
+      persen: 2.0,
       description: "Total OCLP compared to last 7 day",
       descModal:
         "Mendorong pengunjung untuk mengklik tautan atau tombol yang mengarahkan mereka ke halaman atau situs web eksternal yang relevan",
     },
     {
       title: translations["Cost Per Result"],
-      value: selectedData ? selectedData.cpr : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 12 },
-        { name: "Day5", value: 15 },
-        { name: "Day6", value: 10 },
-        { name: "Day7", value: 20 },
-      ],
+      value: selectedData
+        ? selectedData.cpr
+        : barr.map((dayData) => dayData.cpr), // Ambil semua cpr dari barr
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.cpr.replace(/\D/g, '')),
+      })),
       persen: 2.0,
-      description: "Total Cost per Result compared to last 7 day",
+      description: "Total CPR compared to last 7 day",
       descModal:
         "Perhitungan biaya yang kita keluarkan untuk setiap hasil yang kita dapatkan",
     },
     {
       title: translations["Add To Cart"],
-      value: selectedData ? selectedData.atc : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 12 },
-        { name: "Day5", value: 15 },
-        { name: "Day6", value: 10 },
-        { name: "Day7", value: 20 },
-      ],
+      value: selectedData
+        ? selectedData.atc
+        : barr.map((dayData) => dayData.atc), // Ambil semua atc dari barr
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.atc.replace(/\D/g, '')),
+      })),
       persen: 2.0,
-      description: "Total Add to Cart compared to last 7 day",
+      description: "Total ATC compared to last 7 day",
       descModal:
         "Menambahkan produk atau barang ke dalam keranjang belanja saat berbelanja secara online di situs web e-commerce atau toko online",
     },
     {
       title: translations["Return on Ad Spent"],
-      value: selectedData ? selectedData.roas : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 12 },
-        { name: "Day5", value: 15 },
-        { name: "Day6", value: 10 },
-        { name: "Day7", value: 20 },
-      ],
+      value: selectedData
+        ? selectedData.roas
+        : barr.map((dayData) => dayData.roas), // Ambil semua roas dari barr
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.roas.replace(/\D/g, '')),
+      })),
       persen: 2.0,
-      description: "Total ROAS to last 7 day",
+      description: "Total ROAS compared to last 7 day",
       descModal:
         "Mengukur seberapa banyak pendapatan atau hasil yang dihasilkan dari setiap unit pengeluaran iklan",
     },
     {
       title: translations["Real ROAS"],
-      value: selectedData ? selectedData.realroas : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 12 },
-        { name: "Day5", value: 15 },
-        { name: "Day6", value: 10 },
-        { name: "Day7", value: 20 },
-      ],
+      value: selectedData
+        ? selectedData.realroas
+        : barr.map((dayData) => dayData.realroas), // Ambil semua realroas dari barr
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.realroas.replace(/\D/g, '')),
+      })),
       persen: 2.0,
-      description: "Total Real ROAS to last 7 day",
+      description: "Total Real Roas compared to last 7 day",
       descModal:
         "Mengukur banyak pendapatan asli yang di hasilkan tiap pengeluaran iklan",
     },
@@ -502,9 +476,9 @@ const Dashboard = () => {
   //format value metrix
   const formatValueMetrix = (metrixData) => {
     const formatMap = {
-      "Amount Spent": (value) => `${formattedNumber(value)}`,
+      "Amount Spent": (value) => `${rupiah(value)}`,
       "Cost per Click": (value) => `${formattedNumber(value)}`,
-      "Cost per Result": (value) => `${formattedNumber(value)}`,
+      "Cost per Result": (value) => `${rupiah(value)}`,
       "Reach": (value) => `${formattedNumber(value)} `,
       "Impression": (value) => `${formattedNumber(value)} `,
       "Frequency": (value) => `${formattedKoma1(value)}`,
@@ -841,8 +815,8 @@ const Dashboard = () => {
                   />
                 ))
               ) : (
-                <CardLoad/>
-            )}
+                <span>Load Data</span>
+)}
             </div>
           </div>
         );
@@ -939,10 +913,11 @@ const Dashboard = () => {
   }
 
    useEffect(() => {
+    const id = metric_id
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('jwtToken');
-        const response = await axios.get('https://umaxdashboard-1-w0775359.deta.app/metricslastweek/6549a4196a890c59d1ced723',
+        const response = await axios.get(`${umaxUrl}/lastweek/${id}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -955,7 +930,7 @@ const Dashboard = () => {
           console.log(data); 
           setMetricsData(data);
         } else {
-          console.error('Failed to fetch data from API');
+          console.error('test');
         }
       } catch (error) {
         console.error('An error occurred', error);

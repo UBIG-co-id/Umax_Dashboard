@@ -36,13 +36,16 @@ export default function CheckoutForm() {
   const decodedToken = jwt_decode(token);
   console.log("Token Extrax", decodedToken);
 
+  // url base
+  const umaxUrl = 'https://umaxx-1-v8834930.deta.app'
+
   const _id = decodedToken.user_id;
   console.log(_id);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const apiUrl = `https://umaxdashboard-1-w0775359.deta.app/user/${_id}`;
+        const apiUrl = `${umaxUrl}/user/${_id}`;
 
         const response = await Axios.get(apiUrl, {
           headers: {

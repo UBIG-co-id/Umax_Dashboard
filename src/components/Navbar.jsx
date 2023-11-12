@@ -213,7 +213,7 @@ const Navbar = () => {
 
         const _id = decodedToken.user_id;
         console.log(_id);
-        const apiUrl = `https://umaxdashboard-1-w0775359.deta.app/user/${_id}`;
+        const apiUrl = `https://umaxx-1-v8834930.deta.app//user/${_id}`;
 
         const response = await Axios.get(apiUrl, {
           headers: {
@@ -449,8 +449,6 @@ const Navbar = () => {
                         </span>
                       </div>
 
-                      {/* </LazyLoad> */}
-
 
 
                     </Menu.Button>
@@ -538,8 +536,13 @@ const Navbar = () => {
 
 
             {/* tombol mode gelap */}
-            
+            <span className="flex pt-5 items-center">
+                  <h1 className="mr-2 font-medium text-blue-700">General</h1>
+                  <hr className="border-gray-500 border-dashed flex-1 h-0 ml-0" />
+                </span>
+                
             <div className='flex justify-between mx-5 pt-10'>
+              
               
               <h1 className='text-gray-700 relative right-3 font-medium'>Theme:</h1>
               <label htmlFor="darkModeToggle" className="flex items-center cursor-pointer">
@@ -631,17 +634,20 @@ const Navbar = () => {
             </div>
 
                 <span className="flex pt-5 items-center">
-                  <h1 className="mr-2 font-medium text-blue-700">Date Format</h1>
+                  <h1 className="mr-2 font-medium text-blue-700">Format setting</h1>
                   <hr className="border-gray-500 border-dashed flex-1 h-0 ml-0" />
                 </span>
 
             {/* bagian Date format */}
+              
+
+            {/* bagian Date format */}
                 <div className='flex justify-between mx-3 mt-5'>
-                    <h1 >Date:</h1>
-                 <div className="w-40 font-medium h-80">
+                    <h1 >Time:</h1>
+                 <div className="w-40 font-medium ">
                     <div
                     onClick={() => setBuka(!buka)}
-                    className={`bg-white border border-gray-600 w-full p-2 py-1 flex items-center justify-between rounded-md ${
+                    className={`bg-white border cursor-pointer border-gray-600 w-full p-2 py-1 flex items-center justify-between rounded-md ${
                     !selected && "text-gray-700"
                     }`}
                     >

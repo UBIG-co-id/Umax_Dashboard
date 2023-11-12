@@ -49,6 +49,8 @@ export default function CheckoutForm() {
   const [isFocusedConsPw, setIsFocusedConsPw] = useState(false);
   const [inputValueConsPw, setInputValueConsPw] = useState('');
 
+  // url base
+  const umaxUrl = 'https://umaxx-1-v8834930.deta.app'
 
   const handleFocusName = () => {
     setIsFocusedName(true);
@@ -199,7 +201,7 @@ export default function CheckoutForm() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const apiUrl = `https://umaxdashboard-1-w0775359.deta.app/user/${_id}`;
+        const apiUrl = `${umaxUrl}/user/${_id}`;
 
         const response = await Axios.get(apiUrl, {
           headers: {

@@ -9,12 +9,14 @@ const AddDataAccounts = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [clientList, setClientList] = useState([]);
+  // url base
+  const umaxUrl = 'https://umaxx-1-v8834930.deta.app';
 
   // GET DATA CLIENT
   async function fetchClientData() {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch("https://umaxdashboard-1-w0775359.deta.app/clients", {
+      const response = await fetch(`${umaxUrl}/clients`, {
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -50,7 +52,7 @@ const AddDataAccounts = () => {
     onSubmit: (values) => {
       const token = localStorage.getItem('jwtToken');
       // Send a POST request to your FastAPI backend with form data
-      fetch('https://umaxdashboard-1-w0775359.deta.app/accounts', {
+      fetch(`${umaxUrl}/accounts`, {
         method: 'POST',
         headers: {
           'accept': 'application/json',

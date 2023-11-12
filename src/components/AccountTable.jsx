@@ -20,7 +20,8 @@ function AccountTable() {
   const [tableData, setTableData] = useState([]);
   const tableRef = useRef(null);
   const navigate = useNavigate();
-
+  // url base
+  const umaxUrl = 'https://umaxx-1-v8834930.deta.app';
  
   const [showAddPopup, setShowAddPopup] = useState(false);
 
@@ -52,7 +53,7 @@ function AccountTable() {
         try {
           const token = localStorage.getItem('jwtToken');
           const response = await axios.delete(
-            `https://umaxdashboard-1-w0775359.deta.app/accounts/${_id}`,
+            `${umaxUrl}/accounts/${_id}`,
             {
               headers: {
                 'Authorization': `Bearer ${token}`,
@@ -96,7 +97,7 @@ function AccountTable() {
   async function fetchData() {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch("https://umaxdashboard-1-w0775359.deta.app/accounts",{
+      const response = await fetch(`${umaxUrl}/accounts`,{
         headers: {
          'accept': 'application/json',
          'Content-Type': 'application/x-www-form-urlencoded',

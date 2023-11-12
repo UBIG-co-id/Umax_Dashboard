@@ -5,6 +5,9 @@ import Navbar from '../components/Navbar';
 import ClientsTable from '../components/ClientsTable';
 
 const AddDataClients = () => {
+    // url base
+    const umaxUrl = 'https://umaxx-1-v8834930.deta.app';
+
     const navigate = useNavigate();
     // ADD DATA
     const formik = useFormik({
@@ -19,7 +22,7 @@ const AddDataClients = () => {
 
         onSubmit: (values) => {
             const token = localStorage.getItem('jwtToken');
-            fetch('https://umaxdashboard-1-w0775359.deta.app/clients', {
+            fetch(`${umaxUrl}/clients`, {
                 method: 'POST',
                 headers: {
                     'accept': 'application/json',

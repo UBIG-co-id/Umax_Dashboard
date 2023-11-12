@@ -60,7 +60,7 @@ const History = ({ metric_id }) => {
   const fetchHistoryData = async (metric_id) => {
     try {
       const token = localStorage.getItem('jwtToken');
-      const apiUrl = `https://umaxdashboard-1-w0775359.deta.app/history/${metric_id}`;
+      const apiUrl = `https://umaxx-1-v8834930.deta.app/history/${metric_id}`;
 
       const response = await fetch(apiUrl, {
         headers: {

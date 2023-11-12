@@ -36,6 +36,8 @@ function DataTable() {
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [selectedObjective, setSelectedObjective] = useState("");
   
+  // url base
+  const umaxUrl = 'https://umaxx-1-v8834930.deta.app';
 
   const handleAddClick = () => {
     navigate('/AddCampaigns');
@@ -59,7 +61,7 @@ const handleDelete = async (_id) => {
       try {
         const token = localStorage.getItem('jwtToken');
         const response = await axios.delete(
-          `https://umaxdashboard-1-w0775359.deta.app/campaigns/${_id}`,
+          `${umaxUrl}/campaigns/${_id}`,
           {
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -101,7 +103,7 @@ const handleDelete = async (_id) => {
   async function fetchData() {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch("https://umaxdashboard-1-w0775359.deta.app/campaigns",{
+      const response = await fetch(`${umaxUrl}/campaigns`,{
       headers: {
         'accept': 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded',

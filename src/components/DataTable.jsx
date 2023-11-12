@@ -18,6 +18,8 @@ import { useFormik } from 'formik';
 
 
 const DataTable = () => {
+  // url base
+  const umaxUrl = 'https://umaxx-1-v8834930.deta.app';
 
   const [tableData, setTableData] = useState([]);
   const navigate = useNavigate();
@@ -29,7 +31,8 @@ const DataTable = () => {
     try {
       const token = localStorage.getItem('jwtToken');
       const response = await axios.delete(
-        `https://umax-1-z7228928.deta.app/clients/${_id}`,
+        
+        `${umaxUrl}/clients/${_id}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -53,7 +56,7 @@ const DataTable = () => {
 
   async function fetchData() {
     try {
-      const response = await fetch("https://umax-1-z7228928.deta.app/clients");
+      const response = await fetch(`${umaxUrl}/clients`);
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
       }
@@ -74,7 +77,7 @@ const DataTable = () => {
     try {
       const token = localStorage.getItem('jwtToken');
       const response = await axios.put(
-        `https://umax-1-z7228928.deta.app/clients/${selectedClientId}`,
+        `${umaxUrl}/clients/${selectedClientId}`,
         values, // Send the updated data
         {
           headers: {

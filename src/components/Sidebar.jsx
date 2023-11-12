@@ -20,6 +20,9 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
   const translations = Translation[selectedLanguage];
   const [searchKeyword, setSearchKeyword] = useState('');
 
+  // url base
+  
+
   const [filteredCampaigns, setFilteredCampaigns] = useState([]);
   useEffect(() => {
     // Fungsi ini akan dipanggil setiap kali activeTab atau campaigns berubah
@@ -252,7 +255,7 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
     });
   };
   return (
-    <div className="relative flex max-sm:absolute max-sm:left-0 z-20">
+    <div className="relative flex max-sm:absolute max-sm:left-0 z-50">
       <button
         className={`relative top-2 right-2 sm:hidden text-gray-600 z-10`}
         onClick={toggleSidebar}

@@ -16,7 +16,7 @@ const SignIn = () => {
   
     try {
       const response = await fetch(
-        `https://umaxdashboard-1-w0775359.deta.app/login/?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+        `https://umaxx-1-v8834930.deta.app/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
         {
           method: 'POST',
           headers: {
@@ -27,14 +27,17 @@ const SignIn = () => {
   
       if (response.ok) {
         const responseData = await response.json();
-        const token = responseData.token;
-        const user = responseData.user;
-  
+        console.log (responseData)
+        const token = responseData
         localStorage.setItem('jwtToken', token);
-        localStorage.setItem('user_id', user._id);
+        // const token = responseData.token;
+        // const user = responseData.user;
+  
+        // localStorage.setItem('jwtToken', token);
+        // localStorage.setItem('user_id', user.user_id);
         
-        console.log(localStorage.getItem('jwtToken'));
-        console.log(user); // Tampilkan data pengguna
+        // console.log(localStorage.getItem('jwtToken'));
+        // console.log(user); // Tampilkan data pengguna
   
         navigate('/Dashboard');
       } else {

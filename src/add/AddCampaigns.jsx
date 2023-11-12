@@ -6,6 +6,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { BsTrash3, BsPlus } from "react-icons/bs";
 
 const AddCampaigns = () => {
+    // url base
+    const umaxUrl = 'https://umaxx-1-v8834930.deta.app';
+
     const navigate = useNavigate();
     const [clientList, setClientList] = useState([]);
     const [accountList, setAccountList] = useState([]);
@@ -37,7 +40,7 @@ const AddCampaigns = () => {
     async function fetchAccountData() {
         try {
             const token = localStorage.getItem('jwtToken');
-            const response = await fetch("https://umaxdashboard-1-w0775359.deta.app/accounts", {
+            const response = await fetch(`${umaxUrl}/accounts`, {
                 headers: {
                     'accept': 'application/json',
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -75,7 +78,7 @@ const AddCampaigns = () => {
             onSubmit: (values) => {
                 const token = localStorage.getItem('jwtToken');
                 // Send a POST request to your FastAPI backend with form data
-                fetch('https://umaxdashboard-1-w0775359.deta.app/campaigns', {
+                fetch(`${umaxUrl}/campaigns`, {
                     method: 'POST',
                     headers: {
                         'accept': 'application/json',

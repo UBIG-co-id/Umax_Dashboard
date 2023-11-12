@@ -7,6 +7,9 @@ import bgLogin from '../assets/bg-default.svg';
 
 const SignUp = () => {
   const navigate = useNavigate();
+  
+  // url base
+  const umaxUrl = 'https://umaxx-1-v8834930.deta.app';
 
   const formik = useFormik({
     initialValues: {
@@ -17,7 +20,7 @@ const SignUp = () => {
     },
     onSubmit: (values) => {
       // Send a POST request to your FastAPI backend with form data
-      fetch('https://umax-1-z7228928.deta.app/register/', {
+      fetch(`${umaxUrl}/register/`, {
         method: 'POST',
         headers: {
           'accept': 'application/json',

@@ -2,15 +2,11 @@ import React, { createContext, useContext, useState } from 'react';
 
 const LanguageContext = createContext();
 
-export const useLanguage = () => {
-  return useContext(LanguageContext);
-};
-
 export const LanguageProvider = ({ children }) => {
-  const [selectedLanguage, setSelectedLanguage] = useState('english'); 
+  const [selectedLanguage, setSelectedLanguage] = useState('english');
 
-  const toggleLanguage = () => {
-    setSelectedLanguage(selectedLanguage === 'english' ? 'indonesia' : 'english');
+  const toggleLanguage = (language) => {
+    setSelectedLanguage(language);
   };
 
   return (
@@ -18,4 +14,8 @@ export const LanguageProvider = ({ children }) => {
       {children}
     </LanguageContext.Provider>
   );
+};
+
+export const useLanguage = () => {
+  return useContext(LanguageContext);
 };

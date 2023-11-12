@@ -6,7 +6,6 @@ import Accounts from './pages/Accounts';
 import Clients from './pages/Clients';
 import Login from './login/SignIn'
 import Register from './login/SignUp'
-import CardLoad from './components/CardLoad'
 
 import UpdateClient from './update/UpdateClient';
 import UpdateAccount from './update/UpdateAccount';
@@ -33,7 +32,6 @@ const theme = useTheme()
         <Route path='/AddClients' element={<AddClients/>}/>
         <Route path='/AddAccounts' element={<AddAccounts/>}/>
         <Route path='/AddCampaigns' element={<AddCampaigns/>}/>
-        <Route path='/data' element={<CardLoad/>}/>
         <Route path='/register' element={<Register/>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/Dashboard' element={<Dashboard/> }  />

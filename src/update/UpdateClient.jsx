@@ -7,6 +7,9 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 
 const UpdateClient = () => {
     // const [data,setData] =useState([])
+    // url base
+    const umaxUrl = 'https://umaxx-1-v8834930.deta.app';
+
     const {_id} =useParams();
     const token = localStorage.getItem('jwtToken');
     const [values,setValues] = useState({
@@ -25,7 +28,7 @@ const UpdateClient = () => {
     const navigate = useNavigate();
     
    useEffect(()=> {
-    axios.get('https://umaxdashboard-1-w0775359.deta.app/clients/'+_id,{
+    axios.get(`${umaxUrl}/clients/`+_id,{
       headers:headers,
     })
     .then(res => 
@@ -40,7 +43,7 @@ const UpdateClient = () => {
 
     const handleSubmit =(e) => {
         e.preventDefault();
-        axios.put ('https://umaxdashboard-1-w0775359.deta.app/clients/'+_id,values,{headers})
+        axios.put (`${umaxUrl}/clients/`+_id,values,{headers})
         .then(res => {
             navigate('/Clients');
         })

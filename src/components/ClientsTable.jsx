@@ -24,6 +24,8 @@ function ClientsTable() {
   const navigate = useNavigate();
 
   const [selectedFilter, setSelectedFilter] = useState("");
+  // variable base url
+  const umaxUrl = 'https://umaxx-1-v8834930.deta.app';
 
   const handleAddClick = () => {
     navigate('/AddClients');
@@ -54,7 +56,7 @@ function ClientsTable() {
         try {
           const token = localStorage.getItem('jwtToken');
           const response = await axios.delete(
-            `https://umaxdashboard-1-w0775359.deta.app/clients/${_id}`,
+            `${umaxUrl}/clients/${_id}`,
             {
               headers: {
                 'Authorization': `Bearer ${token}`,
@@ -91,7 +93,7 @@ function ClientsTable() {
   async function fetchData() {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch("https://umaxdashboard-1-w0775359.deta.app/clients", {
+      const response = await fetch(`${umaxUrl}/clients`, {
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',
