@@ -1,246 +1,247 @@
-import React, { useState, useEffect } from 'react';
-import { defaultProfile, cover } from '../assets';
-import { MdOutlineAccountCircle } from 'react-icons/md';
-import { BiLockOpenAlt } from 'react-icons/bi';
-import { IoIosArrowBack } from 'react-icons/io';
-import { LuContact } from 'react-icons/lu';
-import { AiOutlineEdit, AiOutlineMail, AiOutlinePhone, AiOutlineEnvironment, AiOutlineTeam } from 'react-icons/ai';
+import React, { useState, useEffect,} from 'react';
+import {MdOutlinePermContactCalendar,MdOutlineAccessTime  , MdOutlineEmail  } from 'react-icons/md';
+import { VscSymbolEnum } from 'react-icons/vsc';
+import { LiaMoneyBillWaveAltSolid   } from 'react-icons/lia';
+import { IoIosArrowBack  } from 'react-icons/io';
+import { CiGlobe, CiEdit } from 'react-icons/ci';
+import { GiGlobe  } from 'react-icons/gi';
+import { FaUsersCog } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
-import jwt_decode from 'jwt-decode';
+import us from "../assets/us.png"
+import indonesia from "../assets/indonesia.png"
+import japan from "../assets/japan.jpg"
 
 import {
   Card,
   CardBody,
-  Button,
   Tabs,
-  TabsHeader,
   TabsBody,
-  Tab,
   TabPanel,
 } from "@material-tailwind/react";
 
+ 
 export default function CheckoutForm() {
-  const [type, setType] = React.useState("Account");
-  const [profileData, setProfileData] = useState({
+  const [type] = React.useState("card");
+  
 
-    nama: "‎",
-    image: defaultProfile,
-    email: "",
-    alamat: "",
-    notelpon: "",
-    is_admin: "",
-  });
-  const token = localStorage.getItem('jwtToken');
+// ambil data user
+const [profileData, setProfileData] = useState({
+  name: '',
+  image: '',
+  roles: '',
+  email: '',
+  currency: '',
+  currency_position: '',
+  language: '',
+  timezone_name: '',
+  culture: '',
+});
 
-  const decodedToken = jwt_decode(token);
-  console.log("Token Extrax", decodedToken);
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem('jwtToken');
+      const apiUrl = 'https://umaxx-1-v8834930.deta.app/user-by-id';
 
-  // url base
-  const umaxUrl = 'https://umaxx-1-v8834930.deta.app'
+      const response = await Axios.get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
-  const _id = decodedToken.user_id;
-  console.log(_id);
+      console.log('Respon API:', response);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const apiUrl = `${umaxUrl}/user/${_id}`;
+      const selectedProfile = response.data[0];
 
-        const response = await Axios.get(apiUrl, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
+      console.log('URL Gambar:', selectedProfile.image);
+      console.log('Respon role:', selectedProfile.roles);
 
-        console.log(response.data)
+
+      
+
+        // curency posisi
+        const currencyPosition = selectedProfile.currency_position ? 'Left ($n)' : 'Right (n$)';
+
+        // language
+        let languageLabel = '';
+        let languageImageURL = '';
+        
+        switch (selectedProfile.language) {
+          case 'id':
+            languageLabel = 'Indonesia';
+            languageImageURL = `${indonesia}`; 
+            break;
+          case 'en':
+            languageLabel = 'English';
+            languageImageURL = `${us}`; 
+            break;
+          case 'ja':
+            languageLabel = 'Japan';
+            languageImageURL = `${japan}`; 
+            break;
+          default:
+            languageLabel = '';
+            break;
+        }
+        
+        console.log('Label Language yang Ditetapkan:', languageLabel);
+        const languageImage = languageImageURL ? <img src={languageImageURL} className='w-4 h-4 object-cover' alt={languageLabel} /> : null;
+
+        const base64Image = selectedProfile.image;
 
         setProfileData({
-          nama: response.data.nama,
-          image: response.data.image,
-          email: response.data.email,
-          alamat: response.data.alamat,
-          notelpon: response.data.notelpon,
-          is_admin: response.data.is_admin,
+          name: selectedProfile.name,
+          image: base64Image,
+          roles: selectedProfile.roles,
+          email: selectedProfile.email,
+          currency: selectedProfile.currency,
+          currency_position: currencyPosition,
+          language: languageLabel,
+          languageImage: languageImage, 
+          timezone_name: selectedProfile.timezone_name, 
+          culture: selectedProfile.culture, 
         });
-      } catch (error) {
-        if (error.response) {
-          console.error('Server error:', error.response.data);
-        } else if (error.request) {
-          console.error('No response from the server:', error.request);
-        } else {
-          console.error('Error:', error.message);
-        }
-      }
-    };
+    } catch (error) {
+      console.error('Error saat mengambil data:', error.message);
+    }
+  };
 
-    fetchData();
-  }, []);
+  fetchData();
+}, []);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const token = localStorage.getItem('jwtToken');
-  //       const apiUrl = 'https://umax-1-z7228928.deta.app/profiluser/65227163017382b905f8b1dd';
-
-  //       const response = await Axios.get(apiUrl, {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //           'Content-Type': 'application/json',
-  //         },
-  //       });
-
-  //       console.log(response.data)
-
-  //       setProfileData({
-  //         name: response.data.name,
-  //         image: response.data.image || defaultProfile, 
-  //       });
-  //     } catch (error) {
-  //       if (error.response) {
-  //         console.error('Server error:', error.response.data);
-  //       } else if (error.request) {
-  //         console.error('No response from the server:', error.request);
-  //       } else {
-  //         console.error('Error:', error.message);
-  //       }
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
-  
 
   return (
     <div className="bg-gray-200 flex justify-center items-center w-screen">
-      <Card className="w-full">
-        {/* thumnail */}
-        <div
-          className="m-0 grid place-items-start rounded-b-[20px] py-8 px-4 text-center"
-          style={{
-            backgroundImage: `url(${cover})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            height: '210px',
-          }}
-        >
-          <div className=" bg-opacity-40 w-full h-[210px] rounded-b-[20px] absolute top-0 left-0"></div>
-          <h1 className='relative -mt-5 mx-auto text-white text-lg'>Your Profile</h1>
-          <Link to="/Dashboard">
-            <IoIosArrowBack className="absolute top-3 left-5 text-gray-50/90 cursor-pointer hover:text-white h-6 w-6" />
-          </Link>
-          
-          <Link to={`/EditProfile/${_id}`}>
-            <AiOutlineEdit className="absolute top-3 right-5 text-gray-50/90 cursor-pointer hover:text-white h-6 w-6" />
-          </Link>
+    <Card className="w-full">
+    <div
+    className="m-0 grid place-items-start rounded-b-[20px] py-8 px-4 text-center bg-gradient-to-tl from-sky-400 via-blue-500 to-blue-600"
+  
+  >
+    <div className=" bg-opacity-40 w-full h-[210px] rounded-b-[20px] absolute top-0 left-0"></div>
+      <h1 className='relative -mt-5 mx-auto text-lg text-white'>Profile</h1>
+        {/* button back */}
+        <Link to="/Dashboard">
+        <IoIosArrowBack className="absolute top-3 left-5 text-gray-50/90 cursor-pointer hover:text-white h-6 w-6" />
+      </Link>
+        {/* button editProfile */}
+        <Link to="/EditProfile">
+        <CiEdit  className="absolute top-3 right-5 text-gray-50/90 cursor-pointer hover:text-white h-6 w-6" />
+      </Link>
+ 
+    
 
 
-          <div className="relative top-4 mt-5 flex">
-            <div className="mb-1 rounded-full border border-white/10 bg-white/10 p-2 text-white">
-              <img src={`data:image/jpeg;base64,${profileData.image}`} alt="Foto" className="h-24 w-24 object-cover rounded-full max-sm:h-16 max-sm:w-16" />
-            </div>
-            <div className="items-start mt-4 flex flex-col">
-              <h4 className="font-normal pl-4 text-white">Hallo,</h4>
-              <h4 className="font-medium pl-4 text-white">{profileData.nama}</h4>
-            </div>
-          </div>
+        <div className="relative top-4 mt-5 flex">
+        <div className="relative mb-1 rounded-full border border-white/10 bg-white/10 p-2 text-white">
+        <img
+          src={`data:image/png;base64, ${profileData.image}`}
+          className="h-24 w-24 object-cover rounded-full"
+        />
+
+
+    </div>
+
         </div>
-        <CardBody>
-          <Tabs value={type} className="-mt-1 overflow-hidden max-sm:-mt-4">
-            <TabsHeader className="relative z-0 bg-gray-200">
-              <Tab value="Account" onClick={() => setType("Account")}>
-                <div className="flex gap-1 items-center">
-                  <MdOutlineAccountCircle className="h-5 w-5" />
-                  <span className="font-medium">
-                    Account
-                  </span>
-                </div>
-              </Tab>
-              {/* <Tab value="Security" onClick={() => setType("Security")}>
-                <div className="flex gap-1 items-center">
-                  <BiLockOpenAlt className="h-5 w-5" />
-                  <span className="font-medium">
-                    Security
-                  </span>
-                </div>
-              </Tab> */}
-            </TabsHeader>
-            <TabsBody
-              className="!overflow-x-hidden"
-              animate={{
-                initial: {
-                  x: type === "Account" ? 400 : -400,
-                },
-                mount: {
-                  x: 0,
-                },
-                unmount: {
-                  x: type === "Account" ? 400 : -400,
-                },
-              }}
-            >
-              <TabPanel value="Account" className="p-0">
-                <form className="mt-1 flex flex-col mb-2 gap-4">
+      </div>
+      <CardBody>
+        <Tabs value={type} className="-mt-1 overflow-hidden max-sm:-mt-4">
+         
+          <TabsBody
+            className="!overflow-x-hidden"
+            animate={{
+              initial: {
+                x: type === "card" ? 400 : -400,
+              },
+              mount: {
+                x: 0,
+              },
+              unmount: {
+                x: type === "card" ? 400 : -400,
+              },
+            }}
+          >
+            <TabPanel value="card" className="p-0">
 
-                  <div className='flex justify-around'>
-                    <div className='flex mt-5'>
-                      <LuContact className='bg-white p-3 text-blue-600 text-[45px] rounded-full shadow-md mr-5' />
-                      <span className='flex flex-col'>
-                        <p className='font-medium text-base'>Username</p>
-                        <h1 className='font-normal text-sm'>{profileData.nama}</h1>
-                      </span>
-                    </div>
+            <span className='flex items-center gap-5'>
+              <p className='text-blue-600 font-medium'>Profile</p> 
+              <hr className='relative w-11/12 border-dashed border-gray-500'/>
+            </span>
 
-                    <div className='flex mt-5'>
-                      <AiOutlineMail className='bg-white p-3 text-red-600 text-[45px] rounded-full shadow-md mr-5' />
-                      <span className='flex flex-col'>
-                        <p className='font-medium text-base'>Email</p>
-                        <h1 className='font-normal text-sm'>{profileData.email}</h1>
-                      </span>
-                    </div>
-                  </div>
+            <span className='flex  gap-5 lg:gap-52 justify-start mt-10 max-md:flex-col max-lg:flex-col'>
+              <span className='relative lg:left-5 flex gap-2 item-center '>
+                <span className='flex items-center gap-1'>
+              <MdOutlinePermContactCalendar size={18} className='text-amber-500'/> <h1 className='font-medium text-gray-600'>Username:</h1>
+                </span>
+                <p>{profileData.name}</p>
+              </span>
 
-                  <div className='flex justify-around'>
-                    <div className='flex mt-5'>
-                      <AiOutlineEnvironment className='bg-white p-3 text-blue-600 text-[45px] rounded-full shadow-md mr-5' />
-                      <span className='flex flex-col'>
-                        <p className='font-medium text-base'>Alamat</p>
-                        <h1 className='font-normal text-sm'>{profileData.alamat}</h1>
-                      </span>
-                    </div>
+                <span className='relative lg:left-14 flex gap-2 items-center'>
+              <FaUsersCog  size={18} className='text-blue-400'/><h1 className='font-medium text-gray-600'>Roles:</h1> 
+               <p>{profileData.roles}</p>
+                </span>
 
-                    <div className='flex mt-5'>
-                      <AiOutlinePhone className='bg-white p-3 text-red-600 text-[45px] rounded-full shadow-md mr-5' />
-                      <span className='flex flex-col'>
-                        <p className='font-medium text-base'>No Telp</p>
-                        <h1 className='font-normal text-sm'>{profileData.notelpon}</h1>
-                      </span>
-                    </div>
-                  </div>
+              <span className='relative lg:left-20 flex gap-2 item-center '>
+                <span className='flex items-center gap-1'>
+              <MdOutlineEmail  size={18} className='text-red-400'/> <h1 className='font-medium text-gray-600'>Email:</h1>
+                </span>
+                <p>{profileData.email}</p>
+              </span>
+            </span>
 
-                  <div className='flex justify-around'>
-                    <div className='flex mt-5'>
-                      <AiOutlineTeam className='bg-white p-3 text-red-600 text-[45px] rounded-full shadow-md mr-5' />
-                      <span className='flex flex-col'>
-                        <p className='font-medium text-base'>Status</p>
-                        <h1 className='font-normal text-sm'>
-                          {profileData.is_admin ? 'Admin' : 'Staff'}
-                        </h1>
-                      </span>
-                    </div>
-                  </div>
+            <span className='flex items-center mt-10 gap-5'>
+              <p className='text-blue-600 font-medium'>International</p> 
+              <hr className='relative w-[88%] border-dashed border-gray-500'/>
+            </span>
 
-                </form>
-              </TabPanel>
-              {/* <TabPanel value="Security" className="p-0">
-                <form className="mt-12 flex flex-col gap-4">
-                </form>
-              </TabPanel> */}
-            </TabsBody>
-          </Tabs>
-        </CardBody>
-      </Card>
+            <span className='flex gap-5 lg:gap-52 justify-start mt-10  max-lg:flex-col'>
+            <span className='relative lg:left-5 flex items-center gap-2'>
+            <LiaMoneyBillWaveAltSolid className='text-green-500' size={18}/> <h1 className='text-gray-600 font-medium'>Currencies:</h1>
+             <p className='px-3 rounded-sm'>{profileData.currency}</p>
+             </span>
+              <span className='relative lg:left-[6rem] flex items-center gap-2'>
+              <VscSymbolEnum size={18}/><h1 className='text-gray-600 font-medium'>Position Symbol:</h1>
+             <p className='px-3 rounded-sm'>{profileData.currency_position}</p>
+             </span>
+
+             <span className='relative lg:left-[15px] flex items-center gap-2'>
+            <CiGlobe size={18} className='text-blue-500'/> <h1 className='text-gray-600 font-medium'>Language:</h1>
+            <p className='px-3 rounded-sm'>{profileData.languageImage}</p>
+            <p className='relative right-5 px-3 rounded-sm'>{profileData.language}</p>
+             </span>
+
+            </span>
+
+             
+
+            <span className='relative  flex lg:gap-56 gap-5 justify-start mt-5 lg:mt-10 max-md:flex-col'>
+            <span className='relative lg:left-5 flex items-center gap-2'>
+            <MdOutlineAccessTime  className='text-cyan-500' size={18}/> <h1 className='text-gray-600 font-medium'>Timezone:</h1>
+             <p className='px-3 rounded-sm'>{profileData.timezone_name}</p>
+             </span>
+            <span className='relative lg:left-5 flex items-center gap-2'>
+            <GiGlobe  className='text-emerald-500' size={18}/> <h1 className='text-gray-600 font-medium'>Culture:</h1>
+             <p className='px-3 rounded-sm'>{profileData.culture}</p>
+             </span>
+
+            </span>
+              
+
+
+           
+
+            </TabPanel>
+            <TabPanel value="Security" className="p-0">
+             
+
+
+
+            </TabPanel>
+          </TabsBody>
+        </Tabs>
+      </CardBody>
+    </Card>
     </div>
   );
 }

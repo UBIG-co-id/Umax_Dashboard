@@ -174,12 +174,8 @@ export default function CheckoutForm() {
     setIsConsPasswordVisible(!isConsPasswordVisible);
   };
 
-
   // ambil data dari fastApi
-
-
   const [profileData, setProfileData] = useState({
-    // user_id: _id,
     nama: "‎",
     image: defaultProfile,
     email: "",
@@ -193,12 +189,11 @@ export default function CheckoutForm() {
   console.log("Token Extrax", decodedToken);
 
   const _id = decodedToken.user_id;
-  console.log(_id);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const apiUrl = `https://umaxx-1-v8834930.deta.app/user-by-id`;
+        const apiUrl = `https://umaxx-1-v8834930.deta.app/profile`;
 
         const response = await Axios.get(apiUrl, {
           headers: {
@@ -512,25 +507,10 @@ export default function CheckoutForm() {
 
                       </div>
                       </div>
-              {/* <img src={security} className='relative top-[26px] max-sm:top-[21px] -z-10 max-sm:mx-auto max-sm:right-0 max-sm:mt-2 lg:right-36 max-md:right-10 right-20  w-60'/> */}
              
               </form>
 
               <Button className='font-normal mt-5 w-full text-base bg-blue-700'>Save Changes</Button>
-
-{/*               
-              <div className='w-full mt-10'>
-                <span className='relative -top-5 flex right-0 font-medium text-gray-800 text-xl'>
-                 <BsKey  className='text-gray-800  text-[30px]' />
-                 <h1 className='ml-3'>Two-factor authentication</h1>
-              </span>
-              </div>
-
-              <div className='w-full'>
-                  <span className='flex items-center justify-center'>
-                    <BiLockOpenAlt className='bg-blue-600 rounded-md p-3  text-white text-[50px]'/>
-                  </span>
-              </div> */}
 
             </TabPanel>
           </TabsBody>

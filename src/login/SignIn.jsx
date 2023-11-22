@@ -1,62 +1,96 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import logo from '../assets/logo.png';
 import bgLogin from '../assets/bg-default.svg';
 import { Link, useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
-
+import { useFormik } from 'formik';
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // const [email, setEmail] = useState('');
+  // const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  // ADD Data Campaigns
+ 
+  const formik = useFormik({
+    initialValues: {
+        email: '',
+        password: '',
+    },
+
+        onSubmit: (values) => {
+          // const { Token } = response.Data;
+            fetch(`https://umaxx-1-v8834930.deta.app/login`, {
+                method: 'POST',
+                headers: {
+                    'accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(values).toString(),
+            })
+
+                .then(response => response.json())
+                .then(data => {
+                  const {Token} = data
+                  console.log("ini token",Token)
+                    console.log(data);
+                    localStorage.setItem('jwtToken', Token);
+                    
+                    navigate('/Dashboard');
+                })
+                .catch(error => {
+                    // Handle errors, e.g., network errors
+                    console.error(error);
+                });
+
+        },
+});
+
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
   
-    try {
-      const response = await fetch(
-        `https://umaxx-1-v8834930.deta.app/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-          },
-        }
-      );
+  //   try {
+  //     const response = await fetch('https://umaxx-1-v8834930.deta.app/login', {
+  //       method: 'POST',
+  //       headers: {
+  //         accept: "application/json",
+  //         "Content-Type": "application/x-www-form-urlencoded",
+  //       },
+  //       body: JSON.stringify({
+  //         email,
+  //         password,
+  //       }),
+  //     });
+      
+  //     console.log('Response status:', response.status);
   
-      if (response.ok) {
-        const responseData = await response.json();
-        console.log (responseData)
-        const token = responseData
-        localStorage.setItem('jwtToken', token);
-        // const token = responseData.token;
-        // const user = responseData.user;
+  //     if (response.ok) {
+  //       const responseData = await response.json();
+  //       const { Token } = responseData.Data; 
   
-        // localStorage.setItem('jwtToken', token);
-        // localStorage.setItem('user_id', user.user_id);
-        
-        // console.log(localStorage.getItem('jwtToken'));
-        // console.log(user); // Tampilkan data pengguna
+  //       localStorage.setItem('jwtToken', Token);
+  //       navigate('/Dashboard');
+  //     } else {
+  //       setError('Invalid email or password');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error:', error.message);
+  //   }
+  // };
   
-        navigate('/Dashboard');
-      } else {
-        setError('Invalid email or password');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-    
+  
 
   return (
     <div className="relative min-h-screen overflow-hidden flex flex-col items-center justify-center">
-      <img src={bgLogin} className='absolute -z-10'/>
+      <img src={bgLogin} alt="background" className="absolute -z-10" />
       <div>
         <img src={logo} alt="logo" className="mx-auto pb-2 w-20" />
       </div>
       <div className="flex flex-col items-center justify-center mt-5 sm:mt-0">
-        <form onSubmit={handleSubmit} className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg border-2 ">
+        <form
+          onSubmit={formik.handleSubmit}
+          className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg border-2"
+        >
           <p className="font-semibold text-base text-[#5473E3] mb-5">Login</p>
           <input
             type="email"
@@ -64,8 +98,8 @@ const SignIn = () => {
             id="email"
             placeholder="Email"
             className="w-full h-9 rounded-[10px] pl-5 border border-blue mt-2 focus:outline-none focus:ring-1"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={formik.handleChange}
+            value={formik.values.email}
           />
           <input
             type="password"
@@ -73,8 +107,8 @@ const SignIn = () => {
             id="password"
             placeholder="Password"
             className="w-full h-9 rounded-[10px] pl-5 border border-blue mt-2 focus:outline-none focus:ring-1"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={formik.handleChange}
+            value={formik.values.password}
           />
           {error && <p className="text-red-500">{error}</p>}
           <button

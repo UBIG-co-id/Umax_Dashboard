@@ -12,8 +12,11 @@ import security2 from "../assets/security2.svg";
 import us from "../assets/us.png"
 import indonesia from "../assets/indonesia.png"
 import bgLogin from "../assets/bg-default.svg"
+import NotFound from "../assets/NotFound.png"
+import japan from "../assets/japan.jpg"
+import overlay from "../assets/overlay.svg"
 
 export {
-  logo, profile, tiktok, google, facebook, silang, meta,security, security2, defaultProfile, us, indonesia, cover,
-  bgLogin
+  japan, logo, profile, tiktok, google, facebook, silang, meta,security, security2, defaultProfile, us, indonesia, cover,
+  bgLogin, NotFound, overlay
 }

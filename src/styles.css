@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@100;200;300;400;600;700&display=swap');
+
 /* Gaya untuk kontainer tabel */
 .table-container {
   border-radius: 15px;
@@ -494,4 +496,7 @@ th svg.desc{
   flex: 1; /* Membagi ruang dengan rasio yang sama */
   min-width: 100px; /* Menentukan lebar minimum */
   max-width: 700px; /* Menentukan lebar maksimum */
+}
+.font{
+  font-family: 'Poppins', sans-serif;
 }

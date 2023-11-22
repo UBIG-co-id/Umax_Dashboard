@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import axios from 'axios';
+import Notfound from '../assets/NotFound.png';
+import "../styles.css";
+
 
 export default function Chart({ metricId }) {
   const [chartData, setChartData] = useState(null);
@@ -70,9 +73,17 @@ export default function Chart({ metricId }) {
       {chartData ? (
         <ReactApexChart options={options} series={series} type='area' height={'300px'} />
       ) : (
-        <div class="flex justify-center items-center">
-        <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-900"></div>
-     </div>  
+        <div className='w-full font font-medium h-80 flex items-center justify-center'>
+         <span className='flex items-center justify-between'>
+       
+          <span>
+            {/* <h1>PLEASE !!!</h1>
+            <h2>select campaign data first</h2> */}
+          </span>
+            <img className='h-72' src={Notfound} />
+            </span>
+
+        </div>
         )}
     </div>
   );

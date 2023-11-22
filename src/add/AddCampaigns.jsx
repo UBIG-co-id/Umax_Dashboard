@@ -77,7 +77,6 @@ const AddCampaigns = () => {
 
             onSubmit: (values) => {
                 const token = localStorage.getItem('jwtToken');
-                // Send a POST request to your FastAPI backend with form data
                 fetch(`${umaxUrl}/campaigns`, {
                     method: 'POST',
                     headers: {
@@ -90,10 +89,8 @@ const AddCampaigns = () => {
 
                     .then(response => response.json())
                     .then(data => {
-                        // Handle the response from the backend (e.g., success message or error)
                         console.log(data);
                         if (data.message === 'data berhasil ditambah') {
-                            // Redirect to the dashboard page
                         }
                         navigate('/Campaigns');
                     })

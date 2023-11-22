@@ -4,9 +4,9 @@ import Dashboard from './pages/Dashboard';
 import Campaigns from './pages/Campaigns';
 import Accounts from './pages/Accounts';
 import Clients from './pages/Clients';
+import Staff from './pages/Staff';
 import Login from './login/SignIn'
 import Register from './login/SignUp'
-
 import UpdateClient from './update/UpdateClient';
 import UpdateAccount from './update/UpdateAccount';
 import UpdateCampaign from './update/UpdateCampaign';
@@ -15,7 +15,8 @@ import EditProfile from './Profile/EditProfile';
 import AddClients from './add/AddClients'
 import AddAccounts from './add/AddAccounts'
 import AddCampaigns from './add/AddCampaigns'
-import useTheme from "./hooks/useTheme";
+import useTheme from './hooks/useTheme';
+import Tenant from './tenant/tenant';
 
 
 
@@ -26,6 +27,7 @@ const theme = useTheme()
     <Router>
       <Routes>
 
+        <Route path='/Staff' element={<Staff/>} />
         <Route path='/updatecampaigns/:_id' element={<UpdateCampaign/>}/>
         <Route path='/updateaccount/:_id' element={<UpdateAccount/>}/>
         <Route path='/updateclient/:_id' element={<UpdateClient/>}/>
@@ -39,7 +41,8 @@ const theme = useTheme()
         <Route path='/Accounts' element={<Accounts/> }  />
         <Route path='/Clients' element={<Clients/> }  />
         <Route path='/Profile' element={<Profile/> }  />
-        <Route path='/EditProfile/:_id' element={<EditProfile />} />
+        <Route path='/EditProfile' element={<EditProfile />} />
+        <Route path='/Tenant/:_id' element={<Tenant />} />
 
 
       </Routes>

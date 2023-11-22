@@ -6,7 +6,6 @@ import { Popover, Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
-
 const Metrics = ({
   title,
   titleBig,
@@ -84,50 +83,53 @@ const Metrics = ({
         >
           {/* modal */}
           <div className=" p-4 flex flex-col max-w-xs rounded-lg bg-white">
-          <Typography
-            id="modal-modal-title"
-            variant="h6"
-            component="h2"
-
-            style={{
-              alignItems: "center", 
-              fontSize: "15px",
-              display: "flex",
-              justifyContent: "space-between",
-              fontWeight: 600,
-              backgroundColor: "#3B82F6",
-              color: "white", 
-              padding: "6px", 
-              margin: "-16px", 
-              borderRadius: "5px 5px 0 0 ", 
-            }}
-              >
+            <Typography
+              id="modal-modal-title"
+              variant="h6"
+              component="h2"
+              style={{
+                alignItems: "center",
+                fontSize: "15px",
+                display: "flex",
+                justifyContent: "space-between",
+                fontWeight: 600,
+                backgroundColor: "#3B82F6",
+                color: "white",
+                padding: "6px",
+                margin: "-16px",
+                borderRadius: "5px 5px 0 0 ",
+              }}
+            >
               {title}
-              <span className="bg-gray-300 rounded-full hover:bg-slate-100" style={{ width: '20px', height: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <IconButton
-                onClick={handleCloseModal}
-                aria-label="close"
-                >
-                <CloseIcon style={{ fontSize: '16px', color: '#3B82F6'}} /> 
+              <span
+                className="bg-gray-300 rounded-full hover:bg-slate-100"
+                style={{
+                  width: "20px",
+                  height: "20px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <IconButton onClick={handleCloseModal} aria-label="close">
+                  <CloseIcon style={{ fontSize: "16px", color: "#3B82F6" }} />
                 </IconButton>
-                </span>
-
-
+              </span>
             </Typography>
             <div
-            id="modal-modal-description"
-            className="mt-6 text-gray-500 leading-5"
-            style={{
-            maxHeight: '80px',
-            overflowY: 'auto',
-            }}
+              id="modal-modal-description"
+              className="mt-6 text-gray-500 leading-5"
+              style={{
+                maxHeight: "80px",
+                overflowY: "auto",
+              }}
             >
-            {descModal}
+              {descModal}
             </div>
-            </div>
-            </Popover>
+          </div>
+        </Popover>
       </div>
-   
+
       <div className="flex mt-1">
         <div className="relative top-4 text-gray-600 text-xl font-bold">
           {value}
@@ -141,7 +143,6 @@ const Metrics = ({
                 {chartData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
-                   
                     fill={
                       index === chartData.length - 1
                         ? entry.value > chartData[chartData.length - 2].value
