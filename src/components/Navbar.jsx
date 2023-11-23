@@ -218,6 +218,8 @@ const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
             'Content-Type': 'application/json',
           },
         });
+        
+        localStorage.setItem('tenant_id', response.data.Data[0].tenant_id)
 
         console.log('API Response:', response);
 

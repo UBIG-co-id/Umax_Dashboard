@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useRef  } from 'react';
 import { defaultProfile } from '../assets';
 import { IoIosArrowBack,   } from 'react-icons/io';
@@ -180,7 +181,7 @@ export default function CheckoutForm() {
 
   const [profileData, setProfileData] = useState({
     // user_id: _id,
-    nama: "‎",
+    name: "‎",
     image: defaultProfile,
     email: "",
     alamat: "",
@@ -192,10 +193,67 @@ export default function CheckoutForm() {
   const decodedToken = jwt_decode(token);
   console.log("Token Extrax", decodedToken);
 
+  // if (decodedToken) {
+  //   setInputValueName(decodedToken.name)
+  // }
+
   const _id = decodedToken.user_id;
   console.log(_id);
 
+  const updateData = async () => {
+      try {
+        const apiUrl = `https://umaxx-1-v8834930.deta.app/profile`;
+        const bodyFormData = new FormData();
+        // bodyFormData.append('image', profileData.image)
+        bodyFormData.append('name', inputValueName)
+        bodyFormData.append('email', inputValueEmail)
+        bodyFormData.append('language', 'id')
+        bodyFormData.append('culture', 'id_ID')
+        bodyFormData.append('input_timezone', 'Asia/Jakarta')
+        bodyFormData.append('currency', 'Rp')
+        bodyFormData.append('currency_position', true)
+
+        // console.log(bodyFormData);
+        for (const [key, value] of bodyFormData) {
+          console.log(`${value}\n`);
+        }
+
+        const response = await Axios.put(apiUrl, bodyFormData,{
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        
+        setInputValueName(response.data.Data[0].name)
+        setInputValueEmail(response.data.Data[0].email)
+        setInputValueRole(response.data.Data[0].roles)
+        setProfileData({
+          nama: response.data.Data[0].name,
+          image: response.data.Data[0].image,
+          email: response.data.Data[0].email,
+          alamat: response.data.Data[0].alamat,
+          notelpon: response.data.Data[0].notelpon,
+          is_admin: response.data.Data[0].is_admin,
+        });
+
+
+        alert('data sukses diperbarui')
+      } catch (error) {
+        if (error.response) {
+          console.error('Server error:', error.response.data);
+        } else if (error.request) {
+          console.error('No response from the server:', error.request);
+        } else {
+          console.error('Error:', error.message);
+        }
+      }
+    };
+
   useEffect(() => {
+    const decodedToken = jwt_decode(token);
+    console.log("Token Extrax", decodedToken.name);
+
     const fetchData = async () => {
       try {
         const apiUrl = `https://umaxx-1-v8834930.deta.app/user-by-id`;
@@ -207,15 +265,18 @@ export default function CheckoutForm() {
           },
         });
 
-        console.log(response.data)
-
+        console.log('user by id = ', response)
+        
+        setInputValueName(response.data.Data[0].name)
+        setInputValueEmail(response.data.Data[0].email)
+        setInputValueRole(response.data.Data[0].roles)
         setProfileData({
-          nama: response.data.nama,
-          image: response.data.image,
-          email: response.data.email,
-          alamat: response.data.alamat,
-          notelpon: response.data.notelpon,
-          is_admin: response.data.is_admin,
+          nama: response.data.Data[0].name,
+          image: response.data.Data[0].image,
+          email: response.data.Data[0].email,
+          alamat: response.data.Data[0].alamat,
+          notelpon: response.data.Data[0].notelpon,
+          is_admin: response.data.Data[0].is_admin,
         });
       } catch (error) {
         if (error.response) {
@@ -390,6 +451,8 @@ export default function CheckoutForm() {
                       </div>
                     
                       <div className="relative w-full mt-3">
+
+                  {/* ganti value active ke admin, in active ke user */}
                   <label
                     className={`text-gray-600 absolute px-3 py-2 transition-all duration-300 transform ${
                       isFocusedRole || inputValueRole
@@ -407,8 +470,8 @@ export default function CheckoutForm() {
                     value={inputValueRole}
                   >
                     <option value="" hidden>‎ </option>
-                    <option value="active">Admin</option>
-                    <option value="inactive">User</option>
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
 
                   </select>
                 </div>
@@ -416,6 +479,7 @@ export default function CheckoutForm() {
                 </div>
                 <Button
                   className="font-normal text-base bg-blue-700"
+                  onClick={() => updateData()}
                 >
                   Save
                 </Button>
@@ -465,15 +529,15 @@ export default function CheckoutForm() {
                     value={inputValueRole}
                   >
                     <option value="" hidden>‎ </option>
-                    <option value="active">Admin</option>
-                    <option value="inactive">User</option>
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
 
                   </select>
                 </div>
              
               </form>
 
-              <Button className='font-normal mt-5 w-full text-base bg-blue-700'>Save Changes</Button>
+              <Button className='font-normal mt-5 w-full text-base bg-blue-700' onClick={() => updateData()}>Save Changes</Button>
 
 {/*               
               <div className='w-full mt-10'>
