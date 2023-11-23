@@ -61,7 +61,7 @@ const handleDelete = async (_id) => {
       try {
         const token = localStorage.getItem('jwtToken');
         const response = await axios.delete(
-          `${umaxUrl}/campaigns/${_id}`,
+          `${umaxUrl}/campaign-delete/?campaign_id=${_id}`,
           {
             headers: {
               'Authorization': `Bearer ${token}`,

@@ -53,7 +53,7 @@ function AccountTable() {
         try {
           const token = localStorage.getItem('jwtToken');
           const response = await axios.delete(
-            `${umaxUrl}/accounts/${_id}`,
+            `${umaxUrl}/account-delete/?account_id=${_id}`,
             {
               headers: {
                 'Authorization': `Bearer ${token}`,
@@ -97,7 +97,7 @@ function AccountTable() {
   async function fetchData() {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch(`${umaxUrl}/accounts`,{
+      const response = await fetch(`${umaxUrl}/account-by-tenant`,{
         headers: {
          'accept': 'application/json',
          'Content-Type': 'application/x-www-form-urlencoded',
@@ -198,19 +198,24 @@ function AccountTable() {
   };
   // END PAGINATION
 
- 
   const filteredData = useMemo(() => {
+    if (!tableData || !Array.isArray(tableData)) {
+      return [];
+    }
+  
     return tableData.filter((item) => {
       const statusFilter =
-        selectedFilter === "1" ? item.status === 1 : selectedFilter === "2" ? item.status === 2 : true;
-  
-      const platformFilter =
-      selectedPlatform === "1" ? item.platform === 1 : selectedPlatform === "2" ? item.platform === 2 :selectedPlatform === "3" ? item.platform === 3 : true;
-        // selectedPlatform === "" ? true : item.platform === parseInt(selectedPlatform);
-  
-      return statusFilter && platformFilter;
+      selectedFilter === "1" ? item.status === 1 : selectedFilter === "2" ? item.status === 2 : true;
+
+    const platformFilter =
+    selectedPlatform === "1" ? item.platform === 1 : selectedPlatform === "2" ? item.platform === 2 :selectedPlatform === "3" ? item.platform === 3 : true;
+      // selectedPlatform === "" ? true : item.platform === parseInt(selectedPlatform);
+
+    return statusFilter && platformFilter;
+
     });
   }, [selectedFilter, selectedPlatform, tableData]);
+
   
 
   const columns = React.useMemo(

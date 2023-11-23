@@ -39,7 +39,7 @@ const Dashboard = () => {
   const [barr, setBarr] = useState([]);
 
   const [metrics, setMetrics] = useState([]);
-  const [metric_id, setMetricId] = useState(""); // Inisialisasi dengan nilai default jika diperlukan.
+  const [campaign_id, setMetricId] = useState(""); // Inisialisasi dengan nilai default jika diperlukan.
   // const [selectedData, setSelectedData] = useState([]);
   const [error, setError] = useState(null);
   const [selectedTimeframe, setSelectedTimeframe] = useState("lastweek"); // Set ke string kosong
@@ -47,7 +47,7 @@ const Dashboard = () => {
   const [suggestionData, setSuggestionData] = useState([]);
 
   const fetchSuggestions = async () => {
-    const id = metric_id;
+    const id = campaign_id;
     console.log("ID CAMPAIGN", id);
     try {
       const response = await axios.get(
@@ -73,6 +73,8 @@ const Dashboard = () => {
     fetchMetricsData();
   }, []);
 
+
+  // ini metrics
   const fetchMetricsData = async () => {
     try {
       const token = localStorage.getItem("jwtToken");
@@ -90,10 +92,10 @@ const Dashboard = () => {
         const data = await response.json();
         setMetrics(data);
 
-        // Ambil metric_id dari data (misalnya, dari item pertama).
+        // Ambil campaign_id dari data (misalnya, dari item pertama).
         const metricIdFromData = data.length > 0 ? data[0]._id : "";
 
-        // Set metric_id ke dalam state.
+        // Set campaign_id ke dalam state.
         setMetricId(metricIdFromData);
       } else {
         console.error("Gagal mengambil data metrics");
@@ -103,7 +105,7 @@ const Dashboard = () => {
     }
   };
   const updateChartUrl = (timeframe) => {
-    if (selectedName && metric_id) {
+    if (selectedName && campaign_id) {
       const baseUrl = "https://umaxdashboard-1-w0775359.deta.app/"; // URL dasar
       const selectedTimeframe =
         timeframe === "lastweek"
@@ -112,16 +114,16 @@ const Dashboard = () => {
           ? "lastmonth"
           : "lastyear";
       // Ganti ini sesuai kebutuhan
-      const newUrl = `${baseUrl}${selectedTimeframe}/${metric_id}`;
+      const newUrl = `${baseUrl}${selectedTimeframe}/${campaign_id}`;
       setChartUrl(newUrl);
       console.log(newUrl);
     }
   };
 
-  const fetchHistoryData = async (metric_id) => {
+  const fetchHistoryData = async (campaign_id) => {
     try {
       const token = localStorage.getItem("jwtToken");
-      const apiUrl = `https://umaxdashboard-1-w0775359.deta.app/history/${metric_id}`; // Updated URL with metric_id
+      const apiUrl = `https://umaxdashboard-1-w0775359.deta.app/history/${campaign_id}`; // Updated URL with campaign_id
 
       const response = await fetch(apiUrl, {
         headers: {
@@ -146,12 +148,12 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    if (metric_id) {
+    if (campaign_id) {
       updateChartUrl(selectedTimeframe);
     } else {
       setSelectedData(null);
     }
-  }, [metric_id]);
+  }, [campaign_id]);
 
   const handleItemClick = (item) => {
     setSelectedTimeframe("lastweek");
@@ -242,10 +244,10 @@ const Dashboard = () => {
   // data metrics
   const metricsChart = async () => {
     try {
-      const id = metric_id;
+      const id = campaign_id;
       // console.log("ID METRICS",id)
       const token = localStorage.getItem("jwtToken");
-      const apiUrl = `https://umaxdashboard-1-w0775359.deta.app/lastweek/6549a4196a890c59d1ced723`;
+      const apiUrl = `https://umaxx-1-v8834930.deta.app/metrics-7?campaign_id=${id}`;
 
       const response = await fetch(apiUrl, {
         headers: {
@@ -259,10 +261,10 @@ const Dashboard = () => {
         const barr = await response.json();
         setBarr(barr);
 
-        // Ambil metric_id dari data (misalnya, dari item pertama).
+        // Ambil campaign_id dari data (misalnya, dari item pertama).
         const metricIdFromData = barr.length > 0 ? barr[0]._id : "";
 
-        // Set metric_id ke dalam state.
+        // Set campaign_id ke dalam state.
         setMetricId(metricIdFromData);
       } else {
         console.error("Gagal mengambil metrics");
@@ -308,18 +310,15 @@ const Dashboard = () => {
         "Jumlah total biaya yang kita keluarkan untuk pemasangan iklan",
     },
     {
-      title: translations["Impression"],
-      value: selectedData ? selectedData.impressions : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 12 },
-        { name: "Day5", value: 15 },
-        { name: "Day6", value: 10 },
-        { name: "Day7", value: 20 },
-      ],
-      persen: -2.0,
+      title: translations["Impressions"],
+      value: selectedData
+        ? selectedData.impressions
+        : barr.map((dayData) => dayData.impressions), // Ambil semua impressions dari barr
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.impressions.replace(/\D/g, "")),
+      })),
+      persen: 2.0,
       description: "Total Impression compared to last 7 day",
       descModal:
         "Jumlah iklan kita ditayangkan. Bedanya dengan Reach, user yang sama bisa dihitung melihat iklan yang sama lebih dari satu kali",
@@ -875,8 +874,8 @@ const Dashboard = () => {
       case "history":
         return (
           <div>
-            {metric_id ? (
-              <History metric_id={metric_id} />
+            {campaign_id ? (
+              <History campaign_id={campaign_id} />
             ) : (
               <p>Select a valid item</p>
             )}

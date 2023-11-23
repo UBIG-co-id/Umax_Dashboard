@@ -56,7 +56,7 @@ function ClientsTable() {
         try {
           const token = localStorage.getItem('jwtToken');
           const response = await axios.delete(
-            `${umaxUrl}/clients/${_id}`,
+            `${umaxUrl}/client-delete?client_id=${_id}`,
             {
               headers: {
                 'Authorization': `Bearer ${token}`,
@@ -93,7 +93,7 @@ function ClientsTable() {
   async function fetchData() {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch(`${umaxUrl}/clients`, {
+      const response = await fetch(`${umaxUrl}/client-by-tenant`, {
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -190,7 +190,13 @@ function ClientsTable() {
         return "Unknown";
     }
   };
+  
   const filteredData = useMemo(() => {
+    if (!Array.isArray(tableData)) {
+      console.error("tableData is not an array");
+      return [];
+    }
+  
     return tableData.filter((item) => {
       if (selectedFilter === "1") {
         return item.status === 1;
@@ -198,9 +204,9 @@ function ClientsTable() {
         return item.status === 2;
       } else {
         return true; // Tampilkan semua data jika "All" dipilih
-      }
-    });
+      }    });
   }, [selectedFilter, tableData]);
+
 
   const columns = React.useMemo(
     () => [
@@ -219,6 +225,10 @@ function ClientsTable() {
       {
         Header: 'Contact',
         accessor: 'contact',
+      },
+      {
+        Header: 'Email',
+        accessor: 'email',
       },
       {
         Header: 'Status',

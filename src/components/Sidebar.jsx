@@ -48,33 +48,40 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
     }
   };
 
-  const fetchData = async () => {
-    try {
-      const token = localStorage.getItem("jwtToken");
-      const response = await fetch(
-        "https://umaxdashboard-1-w0775359.deta.app/metrics",
-        {
-          headers: {
-            accept: "application/json",
-            "Content-Type": "application/x-www-form-urlencoded",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.ok) {
-        const responseData = await response.json(); // Rename to avoid conflict with 'data' state
-        setData(responseData); // Set the response data
-      } else {
-        console.error("Gagal mengambil data");
-      }
-    } catch (error) {
-      console.error("Terjadi kesalahan:", error);
-    }
-  };
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("jwtToken");
+        const response = await fetch(
+          "https://umaxx-1-v8834930.deta.app/metric-by-tenant-id",
+          {
+            headers: {
+              accept: "application/json",
+              "Content-Type": "application/x-www-form-urlencoded",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        if (response.ok) {
+          const responseData = await response.json();
+          console.log('data SideBar',responseData)
+          setData(responseData.Data);
+        } else {
+          console.error("Gagal mengambil data");
+        }
+      } catch (error) {
+        console.error("Terjadi kesalahan:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
     fetchData();
   }, []);
-
+  
   const handleScroll = () => {
     const container = document.querySelector(".lebar-list");
     if (container) {
@@ -129,8 +136,9 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
   };
 
   const handleSearchChange = (event) => {
-    setSearchText(event.target.value);
+    setSearchKeyword(event.target.value);
   };
+  
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -178,10 +186,12 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
       return <li className="mb-6 text-center">Tidak ada hasil</li>;
     }
 
-    // Tambahkan baris berikut untuk melakukan filtering berdasarkan kata kunci pencarian
-    const filteredByKeyword = filtered.filter((item) =>
-      item.campaign_name ? item.campaign_name.toLowerCase() : ""
-    );
+    const filteredByKeyword = Array.isArray(filtered)
+    ? filtered.filter((item) =>
+        item.campaign_name ? item.campaign_name.toLowerCase().includes(searchText.toLowerCase()) : ""
+      )
+    : [];
+  
 
     return filteredByKeyword.slice(0, itemsToShow).map((item, index) => {
       let circleColor;
@@ -255,15 +265,15 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
           <div className="aside__container-list_information mt-1">
             <div>
               <p>{translations["Amount Spent"]}</p>
-              <p>{rupiah(item.amountspent)}</p>
+              <p>{item.amountspent}</p>
             </div>
             <div>
               <p>{translations["Reach"]}</p>
-              <p>{formattedNumber(item.reach)}</p>
+              <p>{item.reach}</p>
             </div>
             <div>
               <p>{translations["Start Date"]}</p>
-              <p>{formatDate(item.campaign_startdate)}</p>
+              <p>{item.start_date}</p>
             </div>
           </div>
         </li>
@@ -324,12 +334,12 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
             <BiSearch />
           </span>
           <input
-            type="text"
-            placeholder={translations["Search"]}
-            className="w-full pl-8 px-2 py-1 bg-white border-searc border focus:outline-none focus:border-gray-500 text-slate-600 rounded-lg"
-            value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
-          />
+          type="text"
+          placeholder={translations["Search"]}
+          className="w-full pl-8 px-2 py-1 bg-white border-searc border focus:outline-none focus:border-gray-500 text-slate-600 rounded-lg"
+          value={searchKeyword}
+          onChange={handleSearchChange}
+        />
         </div>
 
         <div className="relative lebar-list -left-2 border-slate-500 pt-2  overflow-y-scroll max-h-[50rem]">
