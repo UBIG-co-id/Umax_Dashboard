@@ -136,7 +136,7 @@ const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
   };
 
   const TenantPage = () => {
-    navigate("/Tenant/:_id");
+    navigate("/Tenant");
   };
 
 
@@ -223,7 +223,7 @@ const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
 
         console.log('API Response:', response);
 
-        const selectedProfile = response.data[0];
+        const selectedProfile = response.data.Data[0];
 
         console.log('Image URL:', selectedProfile.image);
         console.log('respon role:', selectedProfile.roles);

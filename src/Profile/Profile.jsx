@@ -53,7 +53,7 @@ useEffect(() => {
 
       console.log('Respon API:', response);
 
-      const selectedProfile = response.data[0];
+      const selectedProfile = response.data.Data[0];
 
       console.log('URL Gambar:', selectedProfile.image);
       console.log('Respon role:', selectedProfile.roles);

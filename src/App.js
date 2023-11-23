@@ -42,7 +42,7 @@ const theme = useTheme()
         <Route path='/Clients' element={<Clients/> }  />
         <Route path='/Profile' element={<Profile/> }  />
         <Route path='/EditProfile' element={<EditProfile />} />
-        <Route path='/Tenant/:_id' element={<Tenant />} />
+        <Route path='/Tenant' element={<Tenant />} />
 
 
       </Routes>

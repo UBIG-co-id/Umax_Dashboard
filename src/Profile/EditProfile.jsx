@@ -489,92 +489,49 @@ export default function CheckoutForm() {
             <TabPanel value="Security" className="p-0">
               <form className="mt-12 border-b border-gray-800 pb-5 flex flex-row gap-4 max-sm:flex-col">
 
-
-                    <div className='flex flex-col w-full'>
-              <div className="relative w-2/3 mt-3 max-sm:w-full">
+              <div className="relative w-full mt-3">
                         <label
-                          className={`text-gray-600 absolute px-3 py-3 transition-all duration-300 transform ${
-                            isFocusedCurentPw || inputValueCurentPw
-                              ? '-translate-y-9 -translate-x-2 scale-75 text-md'
+                          className={`text-gray-600 absolute px-3 py-2 transition-all duration-300 transform ${
+                            isFocusedName || inputValueName
+                              ? '-translate-y-8 -translate-x-2 scale-75 text-md'
                               : 'translate-y-0 translate-x-0 scale-100 text-base'
                           }`}
                         >
-                          Current Password
+                          Nama
                         </label>
                         <input
-                          type='password'
-                          className="w-full border-2 border-gray-500 p-3 rounded-md focus:outline-none"
-                          onFocus={handleFocusCurentPw}
+                          id="nameInput"
+                          className="w-full border-2 border-gray-500 p-2 rounded-md focus:outline-none"
+                          onFocus={handleFocusName}
                           onBlur={handleBlur}
-                          onChange={handleChangeCurentPw}
-                          value={inputValueCurentPw}
+                          onChange={handleChangeName}
+                          value={inputValueName}
                         />
                       </div>
 
-            <div className='mt-6'>
-              <div className="relative w-2/3 mt-3 max-sm:w-full">
-                        <label
-                          className={`text-gray-600 absolute px-3 py-3 transition-all duration-300 transform ${
-                            isFocusedNewPw || inputValueNewPw
-                              ? '-translate-y-9 -translate-x-2 scale-75 text-md'
-                              : 'translate-y-0 translate-x-0 scale-100 text-base'
-                          }`}
-                        >
-                          New Password
-                        </label>
-                        <input
-                          type={NewPassword}
-                          className="w-full border-2 border-gray-500 p-3 rounded-md focus:outline-none"
-                          onFocus={handleFocusNewPw}
-                          onBlur={handleBlur}
-                          onChange={handleChangeNewPw}
-                          value={inputValueNewPw}
-                        />
-                        <span
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                          onClick={toggleNewPasswordVisibility}
-                        >
-                          {isNewPasswordVisible ? (
-                            <AiOutlineEye />
-                          ) : (
-                            <AiOutlineEyeInvisible />
-                          )}
-                        </span>
-                      </div>
+              <div className="relative w-full mt-3">
+                  <label
+                    className={`text-gray-600 absolute px-3 py-2 transition-all duration-300 transform ${
+                      isFocusedRole || inputValueRole
+                        ? '-translate-y-8 -translate-x-2 scale-75 text-md'
+                        : 'translate-y-0 translate-x-0 scale-100 text-base'
+                    }`}
+                  >
+                    Role
+                  </label>
+                  <select
+                    className="cursor-pointer w-full border-2 border-gray-500 p-2 rounded-md focus:outline-none"
+                    onFocus={handleFocusRole}
+                    onBlur={handleBlur}
+                    onChange={handleChangeRole}
+                    value={inputValueRole}
+                  >
+                    <option value="" hidden>‎ </option>
+                    <option value="active">Admin</option>
+                    <option value="inactive">User</option>
 
-              <div className="relative w-2/3 mt-6 max-sm:w-full">
-                        <label
-                          className={`text-gray-600 absolute px-3 py-3 transition-all duration-300 transform ${
-                            isFocusedConsPw || inputValueConsPw
-                              ? '-translate-y-9 -translate-x-2 scale-75 text-md'
-                              : 'translate-y-0 translate-x-0 scale-100 text-base'
-                          }`}
-                        >
-                         Confirm New Password
-                        </label>
-                        <input
-                           type={ConsPassword}
-                          className="w-full border-2 border-gray-500 p-3 rounded-md focus:outline-none"
-                          onFocus={handleFocusConsPw}
-                          onBlur={handleBlur}
-                          onChange={handleChangeConsPw}
-                          value={inputValueConsPw}
-                        />
-                            <span
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                          onClick={toggleConsPasswordVisibility}
-                        >
-                          {isConsPasswordVisible ? (
-                            <AiOutlineEye />
-                          ) : (
-                            <AiOutlineEyeInvisible />
-                          )}
-                        </span>
-                      </div>
-
-                      </div>
-                      </div>
-              {/* <img src={security} className='relative top-[26px] max-sm:top-[21px] -z-10 max-sm:mx-auto max-sm:right-0 max-sm:mt-2 lg:right-36 max-md:right-10 right-20  w-60'/> */}
+                  </select>
+                </div>
              
               </form>
 
