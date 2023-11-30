@@ -3,6 +3,7 @@ import { useFormik } from 'formik';
 import { Link, useNavigate, useParams, } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import ClientsTable from '../components/ClientsTable';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const AddDataClients = () => {
@@ -57,7 +58,9 @@ const AddDataClients = () => {
                         console.error(error);
                     });
             } else {
-                alert('Please fill in all required fields.');
+                toast.warning('Please fill in all required fields.', {
+                    position: 'top-right',
+                });
             }
         },
     });
@@ -98,7 +101,7 @@ const AddDataClients = () => {
                                 <h2 className="text-xl font-semibold mb-4" >Clients</h2>
                                 <div className="flex flex-col md:flex-row gap-4 mb-4">
                                     <div className="flex flex-col">
-                                        <label className='pb-2 text-sm ' htmlFor="name">Name</label>
+                                        <label className='pb-2 text-sm' htmlFor="name"><span className='text-red-600 text-lg'>*</span>Name</label>
                                         <input
                                             type="text"
                                             name='name'
@@ -109,7 +112,7 @@ const AddDataClients = () => {
                                         />
                                     </div>
                                     <div className="flex flex-col">
-                                        <label className='pb-2 text-sm ' htmlFor="address">Address</label>
+                                        <label className='pb-2 text-sm ' htmlFor="address"><span className='text-red-600 text-lg'>*</span>Address</label>
                                         <input
                                             type="text"
                                             name='address'
@@ -122,7 +125,7 @@ const AddDataClients = () => {
                                 </div>
                                 <div className="flex flex-col md:flex-row gap-4 mb-4">
                                     <div className="flex flex-col">
-                                        <label className='pb-2 text-sm ' htmlFor="contact">Contact</label>
+                                        <label className='pb-2 text-sm ' htmlFor="contact"><span className='text-red-600 text-lg'>*</span>Contact</label>
                                         <input
                                             type="number"
                                             id="contact"
@@ -133,7 +136,7 @@ const AddDataClients = () => {
                                         />
                                     </div>
                                     <div className="flex flex-col">
-                                        <label className='pb-2 text-sm' htmlFor="status">Status</label>
+                                        <label className='pb-2 text-sm' htmlFor="status"><span className='text-red-600 text-lg'>*</span>Status</label>
                                         <select
                                             name="status"
                                             id="status"
@@ -149,7 +152,7 @@ const AddDataClients = () => {
                                 </div>
                                 <div className="flex flex-col md:flex-row gap-4 mb-4">
                                     <div className="flex flex-col">
-                                        <label className='pb-2 text-sm ' htmlFor="contact">Email</label>
+                                        <label className='pb-2 text-sm ' htmlFor="contact"><span className='text-red-600 text-lg'>*</span>Email</label>
                                         <input
                                             type="email"
                                             id="email"
@@ -160,7 +163,7 @@ const AddDataClients = () => {
                                         />
                                     </div>
                                     <div className="flex flex-col">
-                                    <label className='pb-2 text-sm ' htmlFor="notes">Notes</label>
+                                    <label className='pb-2 text-sm ' htmlFor="notes"><span className='text-red-600 text-lg'>*</span>Notes</label>
                                         <textarea
                                             type='text'
                                             name='notes'
@@ -173,7 +176,7 @@ const AddDataClients = () => {
                                 </div>
                                 <div className="flex flex-col md:flex-row gap-4 mb-4">
                                     <div className="flex flex-col">
-                                        <label className='pb-2 text-sm ' htmlFor="name">Password</label>
+                                        <label className='pb-2 text-sm ' htmlFor="name"><span className='text-red-600 text-lg'>*</span>Password</label>
                                         <input
                                             type="password"
                                             name='password'
@@ -184,7 +187,7 @@ const AddDataClients = () => {
                                         />
                                     </div>
                                     <div className="flex flex-col">
-                                        <label className='pb-2 text-sm ' htmlFor="address">Confirm Password</label>
+                                        <label className='pb-2 text-sm ' htmlFor="address"><span className='text-red-600 text-lg'>*</span>Confirm Password</label>
                                         <input
                                             type="password"
                                             name='confirm_password'
@@ -219,6 +222,7 @@ const AddDataClients = () => {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </main>
     )
 }
