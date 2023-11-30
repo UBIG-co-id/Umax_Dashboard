@@ -10,10 +10,11 @@ const UpdateClient = () => {
     // url base
     const umaxUrl = 'https://umaxx-1-v8834930.deta.app';
 
+    const {client_id} =useParams();
     const {_id} =useParams();
     const token = localStorage.getItem('jwtToken');
     const [values,setValues] = useState({
-        _id:_id,
+      _id: _id ,
         name:'',
         address:'',
         contact:'',
@@ -21,14 +22,14 @@ const UpdateClient = () => {
         notes: '',
     })
     const headers = {
-        'accept': 'application/json',
+         'accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',
           'Authorization': `Bearer ${token}`,
     }
     const navigate = useNavigate();
     
    useEffect(()=> {
-    axios.get(`${umaxUrl}/clients/`+_id,{
+    axios.get(`${umaxUrl}/client-by-id?`+client_id,{
       headers:headers,
     })
     .then(res => 
@@ -41,14 +42,16 @@ const UpdateClient = () => {
     .catch(err => console.log(err))
    },[])
 
-    const handleSubmit =(e) => {
-        e.preventDefault();
-        axios.put (`${umaxUrl}/clients/`+_id,values,{headers})
-        .then(res => {
-            navigate('/Clients');
-        })
-        .catch(err => console.log(err))
-    }
+   const handleSubmit = (e) => {
+    e.preventDefault();
+  
+    axios.put(`${umaxUrl}/client-by-id?client_id=${_id}`, values, { headers })
+      .then((res) => {
+        navigate('/Clients');
+      })
+      .catch((err) => console.log(err));
+  };
+  
     
 
     

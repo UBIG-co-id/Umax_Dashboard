@@ -59,35 +59,31 @@ const History = ({ metric_id }) => {
     setSelectedData(selectedRowData);
   };
 
-  const fetchHistoryData = async (metric_id) => {
+  async function fetchData() {
     try {
-      const token = localStorage.getItem("jwtToken");
-      const apiUrl = `https://umaxdashboard-1-w0775359.deta.app/history/${metric_id}`;
-
-      const response = await fetch(apiUrl, {
+      const token = localStorage.getItem('jwtToken');
+      const response = await fetch("https://umaxx-1-v8834930.deta.app/metrics-7?campaign_id",{
         headers: {
-          accept: "application/json",
-          "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setData(data);
-      } else {
-        const errorData = await response.json();
-        setError(errorData.detail);
+         'accept': 'application/json',
+         'Content-Type': 'application/x-www-form-urlencoded',
+         'Authorization': `Bearer ${token}`,
+       },
+     });
+     
+     if (!response.ok) {
+       throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
       }
+      const data = await response.json();
+      console.log('response = ',data.Data);
+      setTableData(data.Data);
     } catch (error) {
-      console.error("Terjadi kesalahan:", error);
-      setError("Terjadi kesalahan dalam mengambil data.");
+      console.error("Error fetching data:", error.message);
     }
-  };
+  }
 
   useEffect(() => {
-    fetchHistoryData(metric_id);
-  }, [metric_id]);
+    fetchData();
+  }, []);
 
   // PAGINATION
   const paginationStyle = {

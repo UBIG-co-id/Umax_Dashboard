@@ -178,68 +178,68 @@ const Tenant = () => {
           {/* <hr className='relative w-11/12 border-dashed border-gray-500' /> */}
         </span>
 
-        {/* <div className='bg-gray-100 p-2 rounded-sm shadow-md'> */}
-        <div className='flex items-center gap-5 justify-around max-sm:flex-col'>
-          <div className='flex items-center ml-5 mt-5'>
-            <p className='text-red-500'>*</p><p className='font-medium text-lg text-slate-700'>company</p>
-            <input
-              className='border border-slate-600 ml-5 py-1 px-2 rounded-md'
-              type="text"
-              name="company"
-              value={profileData.company}
-              onChange={handleChange}
-            />
+        <div className='bg-gray-100 p-2 rounded-sm shadow-md'>
+          <div className='flex items-center gap-5 justify-around max-sm:flex-col'>
+            <div className='flex items-center ml-5 mt-5'>
+              <p className='text-red-500'>*</p><p className='font-medium text-lg text-slate-700'>company</p>
+              <input
+                className='border border-slate-600 ml-5 py-1 px-2 rounded-md'
+                type="text"
+                name="company"
+                value={profileData.company}
+                onChange={handleChange}
+              />
+            </div>
+            <div className='flex items-center ml-5 mt-5'>
+              <p className='text-red-500'>*</p><p className='font-medium text-lg text-slate-700'>Phone</p>
+              <input
+                className='border border-slate-600 ml-5 py-1 px-2 rounded-md'
+                type="text"
+                name="contact"
+                value={profileData.contact}
+                onChange={handleChange}
+              />
+            </div>
           </div>
-          <div className='flex items-center ml-5 mt-5'>
-            <p className='text-red-500'>*</p><p className='font-medium text-lg text-slate-700'>Phone</p>
-            <input
-              className='border border-slate-600 ml-5 py-1 px-2 rounded-md'
-              type="text"
-              name="contact"
-              value={profileData.contact}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-        </div>
 
-        <div className='flex items-center gap-5 justify-around max-sm:flex-col'>
-          <div className='flex items-center ml-5 mt-5'>
-            <p className='text-red-500'>*</p><p className='font-medium text-lg text-slate-700'>email</p>
-            <input
-              className='border border-slate-600 ml-5 py-1 px-2 rounded-md'
-              type="text"
-              name="company"
-              value={profileData.email}
-              onChange={handleChange}
-            />
+          <div className='flex items-center gap-5 justify-around max-sm:flex-col'>
+            <div className='flex items-center ml-5 mt-5'>
+              <p className='text-red-500'>*</p><p className='font-medium text-lg text-slate-700'>email</p>
+              <input
+                className='border border-slate-600 ml-5 py-1 px-2 rounded-md'
+                type="text"
+                name="company"
+                value={profileData.email}
+                onChange={handleChange}
+              />
+            </div>
+            <div className='flex items-center ml-5 mt-5'>
+              {/* <p className='text-red-500'>*</p> */}
+              <p className='font-medium text-lg text-slate-700'>language</p>
+              <input
+                className='border border-slate-600 ml-5 py-1 px-2 rounded-md'
+                type="text"
+                name="address"
+                value={profileData.address}
+                onChange={handleChange}
+              />
+            </div>
           </div>
-          <div className='flex items-center ml-5 mt-5'>
-            {/* <p className='text-red-500'>*</p> */}
-            <p className='font-medium text-lg text-slate-700'>language</p>
-            <input
-              className='border border-slate-600 ml-5 py-1 px-2 rounded-md'
-              type="text"
-              name="address"
-              value={profileData.address}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
 
-        <div className='flex items-center gap-5 justify-around max-sm:flex-col'>
-          <div className='flex items-center ml-5 mt-5'>
-            <p className='text-red-500'>*</p><p className='font-medium text-lg text-slate-700'>Address</p>
-            <input
-              className='border border-slate-600 ml-5 py-1 px-2 rounded-md'
-              type="text"
-              name="company"
-              value={profileData.company}
-              onChange={handleChange}
-            />
+          <div className='flex items-center gap-5 justify-around max-sm:flex-col'>
+            <div className='flex items-center ml-5 mt-5'>
+              <p className='text-red-500'>*</p><p className='font-medium text-lg text-slate-700'>Address</p>
+              <input
+                className='border border-slate-600 ml-5 py-1 px-2 rounded-md'
+                type="text"
+                name="company"
+                value={profileData.company}
+                onChange={handleChange}
+              />
+            </div>
           </div>
         </div>
-      {/* </div> */}
+      </div>
     </main>
   );
 };

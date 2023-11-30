@@ -6,7 +6,7 @@ import { BiRefresh } from "react-icons/bi";
 import CardInfo from "../components/CardInfo";
 import Chart from "../components/Chart";
 import Card from "../components/Card";
-  import Setting from "../components/Setting";
+import Setting from "../components/Setting";
 import Metrics from "../components/Metrics";
 import History from "../components/History";
 import { FiAlertTriangle } from "react-icons/fi";
@@ -17,16 +17,15 @@ import "../styles.css";
 import { setActiveItem, updateSelectedName } from "../components/Sidebar";
 import { useLanguage } from "../LanguageContext"; // Import the useLanguage hook
 import Translation from "../translation/Translation.json";
-import Notfound from '../assets/NotFound.png';
-
-
 import axios from "axios";
-import { rupiah } from "../helpers/rupiah";
 import { formattedKoma1 } from "../helpers/formattedKoma1";
-import { formattedNumber } from "../helpers/formattedNumber";
+import { useParams } from "react-router-dom";
 
 const Dashboard = () => {
   const [metricsData, setMetricsData] = useState([]);
+  const [campaignIdFromResponse, setCampaignIdFromResponse] = useState('');
+
+
   const [activeTab, setActiveTab] = useState("performance");
   const [campaigns, setCampaigns] = useState([]);
   const [selectedCampaignId, setSelectedCampaignId] = useState(null);
@@ -38,9 +37,9 @@ const Dashboard = () => {
   const [data, setData] = useState([]);
   const [barr, setBarr] = useState([]);
 
+  const [campaignId, setCampaignId] = useState('');
   const [metrics, setMetrics] = useState([]);
-  const [campaign_id, setMetricId] = useState(""); // Inisialisasi dengan nilai default jika diperlukan.
-  // const [selectedData, setSelectedData] = useState([]);
+  const [campaign_id, setMetricId] = useState(""); 
   const [error, setError] = useState(null);
   const [selectedTimeframe, setSelectedTimeframe] = useState("lastweek"); // Set ke string kosong
   const [chartUrl, setChartUrl] = useState("");
@@ -51,7 +50,7 @@ const Dashboard = () => {
     console.log("ID CAMPAIGN", id);
     try {
       const response = await axios.get(
-        `https://umaxdashboard-1-w0775359.deta.app/suggestion/${id}`
+        `https://umaxx-1-v8834930.deta.app/suggestion/${id}`
       );
       if (response.status === 200) {
         const data = response.data;
@@ -78,7 +77,7 @@ const Dashboard = () => {
   const fetchMetricsData = async () => {
     try {
       const token = localStorage.getItem("jwtToken");
-      const apiUrl = "https://umaxdashboard-1-w0775359.deta.app/metrics";
+      const apiUrl = "https://umaxx-1-v8834930.deta.app/metric-by-tenant-id";
 
       const response = await fetch(apiUrl, {
         headers: {
@@ -106,7 +105,7 @@ const Dashboard = () => {
   };
   const updateChartUrl = (timeframe) => {
     if (selectedName && campaign_id) {
-      const baseUrl = "https://umaxdashboard-1-w0775359.deta.app/"; // URL dasar
+      const baseUrl = "https://umaxx-1-v8834930.deta.app/"; // URL dasar
       const selectedTimeframe =
         timeframe === "lastweek"
           ? "lastweek"
@@ -245,9 +244,9 @@ const Dashboard = () => {
   const metricsChart = async () => {
     try {
       const id = campaign_id;
-      // console.log("ID METRICS",id)
+      console.log("ID METRICS", id)
       const token = localStorage.getItem("jwtToken");
-      const apiUrl = `https://umaxx-1-v8834930.deta.app/metrics-7?campaign_id=${id}`;
+      const apiUrl = `https://umaxx-1-v8834930.deta.app/last-week?campaign_id=${id}`;
 
       const response = await fetch(apiUrl, {
         headers: {
@@ -277,8 +276,6 @@ const Dashboard = () => {
     metricsChart();
   }, []);
 
-  //Data Baru
-  //Backend tinggal ikutin ini aja
 
   const metrixDatas = [
     {
@@ -310,7 +307,7 @@ const Dashboard = () => {
         "Jumlah total biaya yang kita keluarkan untuk pemasangan iklan",
     },
     {
-      title: translations["Impressions"],
+      title: translations["Impression"],
       value: selectedData
         ? selectedData.impressions
         : barr.map((dayData) => dayData.impressions), // Ambil semua impressions dari barr
@@ -508,18 +505,18 @@ const Dashboard = () => {
   //format value metrix
   const formatValueMetrix = (metrixData) => {
     const formatMap = {
-      "Amount Spent": (value) => `${rupiah(value)}`,
-      "Cost Per Click": (value) => `${rupiah(value)}`,
-      "Cost Per Result": (value) => `${rupiah(value)}`,
-      "Reach": (value) => `${formattedNumber(value)}`,
-      "Impression": (value) => `${formattedNumber(value)}`,
-      "Frequency": (value) => `${formattedKoma1(value)}`,
-      "Return on Ad Spent": (value) => `${formattedKoma1(value)}x`,
-      "Real ROAS": (value) => `${formattedKoma1(value)}x`,
-      "Reach Amount Spent Ratio": (value) => `${formattedKoma1(value)}%`,
-      "Outbont Click Landing Page": (value) => `${formattedKoma1(value)}%`,
-      "Click Through Rate": (value) => `${formattedKoma1(value)}%`,
-      "Add To Cart": (value) => `${formattedKoma1(value)}%`,
+      "Amount Spent": (value) => `${value}`,
+      "Cost Per Click": (value) => `${value}`,
+      "Cost Per Result": (value) => `${value}`,
+      "Reach": (value) => `${value}`,
+      "Impression": (value) => `${value}`,
+      "Frequency": (value) => `${value}`,
+      "Return on Ad Spent": (value) => `${value}`,
+      "Real ROAS": (value) => `${value}`,
+      "Reach Amount Spent Ratio": (value) => `${value}`,
+      "Outbont Click Landing Page": (value) => `${value}`,
+      "Click Through Rate": (value) => `${value}`,
+      "Add To Cart": (value) => `${value}`,
     };
 
     const formatFunction = formatMap[metrixData.title];
@@ -680,7 +677,7 @@ const Dashboard = () => {
                   <div className="md:w-8/12 w-full flex flex-col flex-wrap h-full gap-5">
                     <CardInfo
                       title={translations["Amount Spent"]}
-                      value={rupiah(selectedData.amountspent)}
+                      value={selectedData.amountspent}
                       color="text-sky-500"
                       popupContent="Jumlah total biaya yang kita keluarkan untuk pemasangan iklan"
                     />
@@ -975,33 +972,60 @@ const Dashboard = () => {
     });
   };
 
+  // get barr metrics
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("jwtToken");
+        const id = campaign_id;
+        const token = localStorage.getItem('jwtToken');
         const response = await axios.get(
-          "https://umaxdashboard-1-w0775359.deta.app/metricslastweek/6549a4196a890c59d1ced723",
+          `https://umaxx-1-v8834930.deta.app/metrics-7?campaign_id=${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
+              'accept': 'application/json',
             },
           }
         );
+
         if (response.status === 200) {
           const data = response.data;
-          console.log(data);
-          setMetricsData(data);
+          console.log('response data', data);
+
+          if (data.Data && data.Data.length > 0) {
+            const campaignId = data.Data[0].campaign_id;
+            setCampaignIdFromResponse(campaignId);
+
+            const nextResponse = await axios.get(
+              `https://umaxx-1-v8834930.deta.app/metrics-7?campaign_id=${campaignId}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  'accept': 'application/json',
+                },
+              }
+            );
+
+            if (nextResponse.status === 200) {
+              const nextData = nextResponse.data.Data;
+              console.log('next data metric', nextData);
+              setMetricsData(nextData);
+            } else {
+              console.error('Failed to fetch data from API');
+            }
+          } else {
+            console.error('No campaign data found in the response');
+          }
         } else {
-          console.error("Failed to fetch data from API");
+          console.error('Failed to fetch data from API');
         }
       } catch (error) {
-        console.error("An error occurred", error);
+        console.error('An error occurred', error);
       }
     };
 
     fetchData();
-  }, []);
+  }, []); 
 
   return (
     <main className="bg-slate-100 min-h-screen ">
