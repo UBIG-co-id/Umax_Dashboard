@@ -2,12 +2,13 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import Navbar from "../components/Navbar";
 import CampaignTable from "../components/CampaignTable";
 import { useFormik } from 'formik';
-import { Link, useNavigate } from 'react-router-dom';
-import { BsTrash3, BsPlus } from "react-icons/bs";
+import {  useNavigate } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const AddCampaigns = () => {
     // url base
-    const umaxUrl = 'https://umaxx-1-v8834930.deta.app';
+    const umaxUrl = 'https://umaxx-1-v8834930.deta.app/';
 
     const navigate = useNavigate();
     const [clientList, setClientList] = useState([]);
@@ -16,46 +17,47 @@ const AddCampaigns = () => {
     async function fetchClientData() {
         try {
             const token = localStorage.getItem('jwtToken');
-            const response = await fetch("https://umaxdashboard-1-w0775359.deta.app/clients",
+            const response = await fetch(`${umaxUrl}client-by-tenant`,
                 {
                     headers: {
                         'accept': 'application/json',
-                        'Content-Type': 'application/x-www-form-urlencoded',
                         'Authorization': `Bearer ${token}`,
                     },
                 });
-            if (!response.ok) {
-                throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
-            }
-            const data = await response.json();
-            setClientList(data); // Simpan data klien ke dalam state clientList
-        } catch (error) {
-            console.error("Error fetching client data:", error.message);
-        }
-    }
+                const data = await response.json();
+                if (data && Array.isArray(data.Data)) {
+                    setClientList(data.Data);
+                  } else {
+                    console.error('Error: Unexpected data format for client list');
+                  }
+                } catch (error) {
+                  console.error("Error fetching client data:", error.message);
+                }
+              }
     useEffect(() => {
         fetchClientData();
     }, []);
     // END GET DATA CLIENT
+
     async function fetchAccountData() {
         try {
             const token = localStorage.getItem('jwtToken');
-            const response = await fetch(`${umaxUrl}/accounts`, {
+            const response = await fetch(`${umaxUrl}account-by-tenant`, {
                 headers: {
                     'accept': 'application/json',
-                    'Content-Type': 'application/x-www-form-urlencoded',
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            if (!response.ok) {
-                throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
-            }
             const data = await response.json();
-            setAccountList(data); // Simpan data klien ke dalam state clientList
-        } catch (error) {
-            console.error("Error fetching Account data:", error.message);
-        }
-    }
+            if (data && Array.isArray(data.Data)) {
+                setAccountList(data.Data);
+              } else {
+                console.error('Error: Unexpected data format for account list');
+              }
+            } catch (error) {
+              console.error("Error fetching account data:", error.message);
+            }
+          }
     useEffect(() => {
         fetchAccountData();
     }, []);
@@ -120,8 +122,16 @@ const AddCampaigns = () => {
         };
     }, [navigate]);
     
+    // custom date
+    // const selectedDate = new Date(formik.values.startdate);
+    // const formattedDate = date ? date.toLocaleDateString('en-GB', {
+    //     day: '2-digit',
+    //     month: '2-digit',
+    //     year: 'numeric',
+    // }) : '';
+    
 
-        
+    
     return (
         <main className="bg-slate-100 min-h-screen">
             <div>
@@ -180,10 +190,10 @@ const AddCampaigns = () => {
                                     value={formik.values.client}
                                     className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
                                 >
-                                    <option hidden>Select Client</option>
+                                    <option hidden>Select Client...</option>
                                     {clientList.map((client) => (
-                                        <option key={client.id} value={client.id}>
-                                            {client.name}
+                                        <option key={client._id} value={client.name}>
+                                        {client.name}
                                         </option>
                                     ))}
                                 </select>
@@ -195,16 +205,16 @@ const AddCampaigns = () => {
                                     Account
                                 </label>
                                 <select
-                                    name="account"
-                                    id="account"
+                                    name="username"
+                                    id="username"
                                     onChange={formik.handleChange}
-                                    value={formik.values.account}
+                                    value={formik.values.username}
                                     className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
                                 >
                                     <option hidden>Select Account</option>
                                     {accountList.map((account) => (
-                                        <option key={account.id} value={account.id}>
-                                            {account.name}
+                                        <option key={account._id} value={account.username}>
+                                            {account.username}
                                         </option>
                                     ))}
                                 </select>
@@ -229,37 +239,54 @@ const AddCampaigns = () => {
                                     <option value="3">Tiktok Ads</option>
                                 </select>
                             </div>
+
+
                             <div className="flex flex-col">
-                                <label className="pb-2 text-sm " htmlFor="">
-                                    Start Date
-                                </label>
-                                <input
-                                    type="datetime-local"
-                                    name='startdate'
-                                    id="startdate"
-                                    onChange={formik.handleChange}
-                                    value={formik.values.startdate}
-                                    className="p-2 h-9 select-custom-width text-slate-500 border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
-                                />
-                            </div>
+                            <label className="pb-2 text-sm" htmlFor="startdate">
+                                Start Date
+                            </label>
+                            <DatePicker
+                                id="startdate"
+                                name="startdate"
+                                placeholderText="dd/mm/yyyy"
+                                selected={formik.values.startdate ? new Date(formik.values.startdate) : null}
+                                onChange={(date) => {
+                                    formik.setFieldValue(
+                                        'startdate',
+                                        date ? date.toISOString().split('T')[0] : '' // Mengubah ke format YYYY-MM-DD
+                                    );
+                                }}
+                                dateFormat="dd/MM/yyyy"
+                                className="p-2 h-9 select-custom-width text-slate-500 border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
+                            />
+                        </div>
 
                         </div>
 
                         <div className="flex flex-col md:flex-row gap-4 mb-4">
 
                             <div className="flex flex-col">
-                                <label className="pb-2 text-sm " htmlFor="">
+                                <label className="pb-2 text-sm " htmlFor="enddate">
                                     End Date
                                 </label>
-                                <input
-                                    type="datetime-local"
-                                    name='enddate'
-                                    id="enddate"
-                                    onChange={formik.handleChange}
-                                    value={formik.values.enddate}
-                                    className="p-2 h-9 select-custom-width text-slate-500 border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
-                                />
+                                <DatePicker
+                                id="enddate"
+                                name="enddate"
+                                placeholderText="dd/mm/yyyy"
+                                selected={formik.values.enddate ? new Date(formik.values.enddate) : null}
+                                onChange={(date) => {
+                                    formik.setFieldValue(
+                                        'enddate',
+                                        date ? date.toISOString().split('T')[0] : '' // Mengubah ke format YYYY-MM-DD
+                                    );
+                                }}
+                                dateFormat="dd/MM/yyyy"
+                                className="p-2 h-9 select-custom-width text-slate-500 border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
+                            />
+                               
                             </div>
+
+
                             <div className="flex flex-col">
                                 <label className="pb-2 text-sm " htmlFor="">
                                     Status

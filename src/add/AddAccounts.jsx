@@ -4,6 +4,7 @@ import AccountTable from '../components/AccountTable';
 import { useFormik } from 'formik';
 import { Link, useNavigate, useParams, } from 'react-router-dom';
 import { AiOutlineEdit, AiOutlineFilePdf, AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import Select from 'react-select';
 
 const AddDataAccounts = () => {
   const navigate = useNavigate();
@@ -16,32 +17,43 @@ const AddDataAccounts = () => {
   async function fetchClientData() {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch(`${umaxUrl}/clients`, {
+      const response = await fetch(`${umaxUrl}/client-by-tenant`, {
         headers: {
           'accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded',
           'Authorization': `Bearer ${token}`,
         },
       });
+
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
       }
+  
       const data = await response.json();
-      setClientList(data); // Simpan data klien ke dalam state clientList
+  
+      // Periksa apakah data berupa objek dan memiliki properti "Data" yang berupa array client
+      if (data && Array.isArray(data.Data)) {
+        setClientList(data.Data);
+      } else {
+        console.error('Error: Unexpected data format for client list');
+      }
     } catch (error) {
       console.error("Error fetching client data:", error.message);
     }
   }
+  
+  
   useEffect(() => {
     fetchClientData();
   }, []);
+  
   // END GET DATA CLIENT
 
   // ADD DATA
   const formik = useFormik({
     initialValues: {
-      name: '',
-      client: '',
+      _id: '',
+      username : '',
+      client_id : '',
       platform: '',
       email: '',
       password: '',
@@ -117,27 +129,27 @@ const AddDataAccounts = () => {
                 <label className='pb-2 text-sm ' htmlFor="">Name</label>
                 <input
                   type="text"
-                  name='name'
-                  id="name"
+                  name='username'
+                  id="username"
                   onChange={formik.handleChange}
-                  value={formik.values.name}
+                  value={formik.values.username}
                   className="p-2 h-9 w-56 border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                 />
               </div>
               <div className="flex flex-col">
-                <label className="pb-2 text-sm" htmlFor="client">
+                <label className="pb-2 text-sm" htmlFor="client_name">
                   Client
                 </label>
                 <select
-                  name="client"
-                  id="client"
+                  name="client_id"
+                  id="client_id"
                   onChange={formik.handleChange}
-                  value={formik.values.client}
+                  value={formik.values.client_id}
                   className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
                 >
                   <option hidden>Select Client...</option>
                   {clientList.map((client) => (
-                    <option key={client.id} value={client.id}>
+                    <option key={client._id} value={client.name}>
                       {client.name}
                     </option>
                   ))}

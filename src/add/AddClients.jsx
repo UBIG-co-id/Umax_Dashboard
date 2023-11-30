@@ -3,6 +3,7 @@ import { useFormik } from 'formik';
 import { Link, useNavigate, useParams, } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import ClientsTable from '../components/ClientsTable';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddDataClients = () => {
     // url base
@@ -15,6 +16,9 @@ const AddDataClients = () => {
             name: '',
             address: '',
             contact: '',
+            email: '',
+            password: '',
+            confirm_password: '',
             notes: '',
             status: '',
             is_admin: false,
@@ -22,30 +26,39 @@ const AddDataClients = () => {
 
         onSubmit: (values) => {
             const token = localStorage.getItem('jwtToken');
-            fetch(`${umaxUrl}/clients`, {
-                method: 'POST',
-                headers: {
-                    'accept': 'application/json',
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: new URLSearchParams(values).toString(),
-            })
-
-                .then(response => response.json())
-                .then(data => {
-                    // Handle the response from the backend (e.g., success message or error)
-                    console.log(data);
-                    if (data.message === 'data berhasil ditambah') {
-                        // Redirect to the dashboard page
-                    }
-                    navigate('/Clients');
+            // Validasi sebelum mengirim data
+            if (
+                values.name &&
+                values.address &&
+                values.contact &&
+                values.email &&
+                values.password &&
+                values.confirm_password &&
+                values.notes &&
+                values.status
+            ) {
+                fetch('https://umaxx-1-v8834930.deta.app/client-create', {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'accept': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(values).toString(),
                 })
-                .catch(error => {
-                    // Handle errors, e.g., network errors
-                    console.error(error);
-                });
-
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        if (data.message === 'data berhasil ditambah') {
+                            navigate('/Clients');
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            } else {
+                alert('Please fill in all required fields.');
+            }
         },
     });
     // END ADD DATA
@@ -89,7 +102,6 @@ const AddDataClients = () => {
                                         <input
                                             type="text"
                                             name='name'
-
                                             id="name"
                                             onChange={formik.handleChange}
                                             value={formik.values.name}
@@ -137,7 +149,18 @@ const AddDataClients = () => {
                                 </div>
                                 <div className="flex flex-col md:flex-row gap-4 mb-4">
                                     <div className="flex flex-col">
-                                        <label className='pb-2 text-sm ' htmlFor="notes">Notes</label>
+                                        <label className='pb-2 text-sm ' htmlFor="contact">Email</label>
+                                        <input
+                                            type="email"
+                                            id="email"
+                                            name='email'  
+                                            onChange={formik.handleChange}
+                                            value={formik.values.email}
+                                            className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
+                                        />
+                                    </div>
+                                    <div className="flex flex-col">
+                                    <label className='pb-2 text-sm ' htmlFor="notes">Notes</label>
                                         <textarea
                                             type='text'
                                             name='notes'
@@ -148,6 +171,31 @@ const AddDataClients = () => {
                                         ></textarea>
                                     </div>
                                 </div>
+                                <div className="flex flex-col md:flex-row gap-4 mb-4">
+                                    <div className="flex flex-col">
+                                        <label className='pb-2 text-sm ' htmlFor="name">Password</label>
+                                        <input
+                                            type="password"
+                                            name='password'
+                                            id="password"
+                                            onChange={formik.handleChange}
+                                            value={formik.values.password}
+                                            className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
+                                        />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <label className='pb-2 text-sm ' htmlFor="address">Confirm Password</label>
+                                        <input
+                                            type="password"
+                                            name='confirm_password'
+                                            id="confirm_password"
+                                            onChange={formik.handleChange}
+                                            value={formik.values.confirm_password}
+                                            className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
+                                        />
+                                    </div>
+                                </div>
+                               
                                 <div className="flex justify-end">
                                     {/* Tombol Save */}
                                     <Link to="/Clients">
@@ -161,7 +209,6 @@ const AddDataClients = () => {
                                     </Link>
                                     <button
                                         type="submit"
-
                                         className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
                                     >
                                         save

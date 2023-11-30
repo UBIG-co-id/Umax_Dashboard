@@ -98,28 +98,66 @@ const handleDelete = async (_id) => {
 };
 
 // END DELETE 
+
+// GET CLIENT
+
+async function fetchData() {
+  try {
+    const token = localStorage.getItem('jwtToken');
+    const response = await fetch("https://umaxx-1-v8834930.deta.app/client-by-tenant",{
+      headers: {
+       'accept': 'application/json',
+       'Content-Type': 'application/x-www-form-urlencoded',
+       'Authorization': `Bearer ${token}`,
+     },
+   });
+   
+   if (!response.ok) {
+     throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
+    }
+    const data = await response.json();
+    console.log('response = ',data.Data);
+    setTableData(data.Data);
+  } catch (error) {
+    console.error("Error fetching data:", error.message);
+  }
+}
+
+useEffect(() => {
+  fetchData();
+}, []);
+
 // END GET DATA CLIENT
-  //ambil data
+
+
+  //GET DATA
   async function fetchData() {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch(`${umaxUrl}/campaigns`,{
-      headers: {
-        'accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-      if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
+      const response = await fetch("https://umaxx-1-v8834930.deta.app/campaign-by-tenant",{
+        headers: {
+         'accept': 'application/json',
+         'Content-Type': 'application/x-www-form-urlencoded',
+         'Authorization': `Bearer ${token}`,
+       },
+     });
+     
+     if (!response.ok) {
+       throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
       }
       const data = await response.json();
-      console.log("Data berhasil diambil:", data); // Menampilkan data di console log
-      setTableData(data);
+      console.log('response = ',data.Data);
+      setTableData(data.Data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
   }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+// END GET
+
   //post data
 
   const formik = useFormik({
@@ -305,7 +343,7 @@ const handleDelete = async (_id) => {
       },
       {
         Header: "Client",
-        accessor: "client",
+        accessor: "client_name",
       },
       {
         Header: "Platform",
@@ -320,7 +358,7 @@ const handleDelete = async (_id) => {
       },
       {
         Header: "Account",
-        accessor: "account",
+        accessor: "account_name",
       },
       {
         Header: "Objective",
@@ -338,12 +376,12 @@ const handleDelete = async (_id) => {
       },
       {
         Header: "Start Date",
-        accessor: "startdate",
-        Cell: ({ value }) => {
-          const date = new Date(value);
-          const formattedTime = date.toLocaleTimeString('id-ID', { year:'numeric', day: '2-digit',month: '2-digit', hour: '2-digit', minute: '2-digit' });
-          return <div className="flex justify-center">{formattedTime}</div>;
-        },
+        accessor: "start_date",
+        // Cell: ({ value }) => {
+        //   const date = new Date(value);
+        //   const formattedTime = date.toLocaleTimeString('id-ID', { year:'numeric', day: '2-digit',month: '2-digit', hour: '2-digit', minute: '2-digit' });
+        //   return <div className="flex justify-center">{formattedTime}</div>;
+        // },
       },
       {
         Header: "Status",

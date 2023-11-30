@@ -47,7 +47,7 @@ useEffect(() => {
       const response = await Axios.get(apiUrl, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          'accept': 'application/json',
         },
       });
 

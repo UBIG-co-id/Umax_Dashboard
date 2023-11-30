@@ -93,22 +93,24 @@ function ClientsTable() {
   async function fetchData() {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch(`${umaxUrl}/client-by-tenant`, {
+      const response = await fetch("https://umaxx-1-v8834930.deta.app/client-by-tenant",{
         headers: {
-          'accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
+         'accept': 'application/json',
+         'Authorization': `Bearer ${token}`,
+       },
+     });
+     
+     if (!response.ok) {
+       throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
       }
       const data = await response.json();
-      setTableData(data);
+      console.log('response = ',data.Data);
+      setTableData(data.Data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
   }
+
   useEffect(() => {
     fetchData();
   }, []);

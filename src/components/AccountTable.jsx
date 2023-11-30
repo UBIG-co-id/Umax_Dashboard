@@ -32,8 +32,7 @@ function AccountTable() {
     navigate('/AddAccounts');
   };
 
-  // GET DATA CLIENT
-
+ 
   
    // Make a DELETE request to the FastAPI endpoint
    const handleDelete = async (_id) => {
@@ -97,8 +96,7 @@ function AccountTable() {
   async function fetchData() {
     try {
       const token = localStorage.getItem('jwtToken');
-      const tenantId = localStorage.getItem('tenant_id');
-      const response = await fetch(`${umaxUrl}/account-by-tenant?tenantId=${tenantId}`,{
+      const response = await fetch("https://umaxx-1-v8834930.deta.app/account-by-tenant",{
         headers: {
          'accept': 'application/json',
          'Content-Type': 'application/x-www-form-urlencoded',
@@ -225,11 +223,11 @@ function AccountTable() {
     () => [
       {
         Header: 'Name',
-        accessor: 'name',
+        accessor: 'username',
       },
       {
         Header: 'Client',
-        accessor: 'client',
+        accessor: 'client_name',
       },
       {
         Header: 'Platform',
@@ -309,9 +307,6 @@ function AccountTable() {
 
   // const { globalFilter } = state;
 
-  
-
-  
 
   const handleFilterChange = (e) => {
     const newValue = e.target.value;
