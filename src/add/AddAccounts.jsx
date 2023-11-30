@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react'
 import Navbar from '../components/Navbar';
 import AccountTable from '../components/AccountTable';
 import { useFormik } from 'formik';
-import { Link, useNavigate, useParams, } from 'react-router-dom';
-import { AiOutlineEdit, AiOutlineFilePdf, AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
-import Select from 'react-select';
+import { Link, useNavigate, } from 'react-router-dom';
+import {  AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddDataAccounts = () => {
   const navigate = useNavigate();
@@ -30,7 +31,6 @@ const AddDataAccounts = () => {
   
       const data = await response.json();
   
-      // Periksa apakah data berupa objek dan memiliki properti "Data" yang berupa array client
       if (data && Array.isArray(data.Data)) {
         setClientList(data.Data);
       } else {
@@ -63,7 +63,6 @@ const AddDataAccounts = () => {
 
     onSubmit: (values) => {
       const token = localStorage.getItem('jwtToken');
-      // Send a POST request to your FastAPI backend with form data
       fetch(`${umaxUrl}/accounts`, {
         method: 'POST',
         headers: {
@@ -126,7 +125,7 @@ const AddDataAccounts = () => {
             <h2 className="text-xl font-semibold mb-4">Account</h2>
             <div className="flex flex-col md:flex-row gap-4 mb-4">
               <div className="flex flex-col">
-                <label className='pb-2 text-sm ' htmlFor="">Name</label>
+                <label className='pb-2 text-sm ' htmlFor=""><span className='text-red-600 text-lg'>*</span>Name</label>
                 <input
                   type="text"
                   name='username'
@@ -138,7 +137,7 @@ const AddDataAccounts = () => {
               </div>
               <div className="flex flex-col">
                 <label className="pb-2 text-sm" htmlFor="client_name">
-                  Client
+                <span className='text-red-600 text-lg'>*</span>Client
                 </label>
                 <select
                   name="client_id"
@@ -155,22 +154,13 @@ const AddDataAccounts = () => {
                   ))}
                 </select>
 
-                {/* <Select
-                      options={options}
-                      value={selectedOption}
-                      onChange={handleSelectChange}
-                      styles={customStyles}
-                      isSearchable
-                      placeholder="‎"
-                    /> */}
-
               </div>
             </div>
             {/* </div> */}
 
             <div className="flex flex-col md:flex-row gap-4 mb-4">
               <div className="flex flex-col">
-                <label className='pb-2 text-sm ' htmlFor="">Platform</label>
+                <label className='pb-2 text-sm ' htmlFor=""><span className='text-red-600 text-lg'>*</span>Platform</label>
                 <select
                   name="platform"
                   id="platform"
@@ -187,7 +177,7 @@ const AddDataAccounts = () => {
 
               <div className='flex' >
                 <div className="flex flex-col">
-                  <label className='pb-2 text-sm ' htmlFor="">Email</label>
+                  <label className='pb-2 text-sm ' htmlFor=""><span className='text-red-600 text-lg'>*</span>Email</label>
                   <input type="email"
                     name='email'
                     id="email"
@@ -205,7 +195,7 @@ const AddDataAccounts = () => {
             <div className="flex flex-col md:flex-row gap-4 mb-4">
               <div className="flex flex-col">
                 <label className="pb-2 text-sm" htmlFor="">
-                  Password
+                <span className='text-red-600 text-lg'>*</span>Password
                 </label>
                 <div className="relative">
                   <input
@@ -232,7 +222,7 @@ const AddDataAccounts = () => {
 
 
               <div className="flex flex-col">
-                <label className='pb-2 text-sm' htmlFor="">Status</label>
+                <label className='pb-2 text-sm' htmlFor=""><span className='text-red-600 text-lg'>*</span>Status</label>
                 <select
                   name="status"
                   id="status"
@@ -251,7 +241,7 @@ const AddDataAccounts = () => {
 
             <div className="flex flex-col md:flex-row gap-4 mb-4">
               <div className="flex flex-col">
-                <label className='pb-2 text-sm ' htmlFor="">Notes</label>
+                <label className='pb-2 text-sm ' htmlFor=""><span className='text-red-600 text-lg'>*</span>Notes</label>
                 <textarea
                   name='notes'
                   id="notes"
