@@ -142,103 +142,154 @@ const Tenant = () => {
   return (
     <main className='p-1 bg-slate-100 min-h-screen'>
       <div className="m-3 p-3 min-h-screen rounded-md border border-gray-300 bg-white ">
+        <span className='flex items-end justify-end'>
+          <GoQuestion />
+        </span>
 
-        <div className='flex items-center justify-between'>
-          <h1 className='font-medium text-xl text-slate-700'>Tenant Profile </h1>
-          <GoQuestion size={17} className='cursor-pointer text-blue-600' />
+        <div className='flex items-center justify-center'>
+          <h1 className='font-medium text-xxl text-slate-700'>Tenant Profile ({profileData.company})</h1>
         </div>
 
-        <div className='grid grid-cols-7 gap-5 max-md:grid-cols-3 max-sm:grid-cols-2'>
+        <hr className="ml-3 flex-grow border-dashed border-gray-300 border-t-2 mt-1" />
+
+        <p className='text-blue-600 font-medium  text-lg  relative left-20 mt-2'>General</p>
+        <div className='bg-sky-50/100 border border-slate-300 p-2 rounded-md shadow-sm mx-5 sm:mx-20'>
+          <div className='flex items-center gap-5 justify-around max-sm:flex-col'>
+            <div className="relative w-full mt-3">
+              <p className='font-medium text-lg text-slate-700'><span className='text-red-500'>*</span>company</p>
+              <input
+                type='text'
+                name='company'
+                className="w-full border-2 border-gray-500 p-2 rounded-md focus:outline-none"
+                onChange={handleChange}
+                value={profileData.company}
+              />
+            </div>
+
+            <div className="relative w-full mt-3">
+              <p className='font-medium text-lg text-slate-700'><span className='text-red-500'>*</span>phone</p>
+              <input
+                type='text'
+                name='contact'
+                className="w-full border-2 border-gray-500 p-2 rounded-md focus:outline-none"
+                onChange={handleChange}
+                value={profileData.contact}
+              />
+            </div>
+          </div>
+
+          <div className='flex items-center gap-5 justify-around max-sm:flex-col'>
+            <div className="relative w-full mt-3">
+              <p className='font-medium text-lg text-slate-700'><span className='text-red-500'>*</span>email</p>
+              <input
+                type='email'
+                name='email'
+                className="w-full border-2 border-gray-500 p-2 rounded-md focus:outline-none"
+                onChange={handleChange}
+                value={profileData.email}
+              />
+            </div>
+
+            <div className="relative w-full mt-3">
+              <p className='font-medium text-lg text-slate-700'>language</p>
+              <input
+                type='text'
+                name='language'
+                className="w-full border-2 border-gray-500 p-2 rounded-md focus:outline-none"
+                onChange={handleChange}
+                value={profileData.language}
+              />
+            </div>
+          </div>
+
+          <div className="w-full">
+            <div className="my-4 flex items-center gap-4 max-sm:flex-col">
+              <div className="relative w-full mt-2">
+                <p className='font-medium text-lg text-slate-700'><span className='text-red-500'>*</span>Address</p>
+                <input
+                  type="text"
+                  className="w-full border-2 border-gray-500 p-2 rounded-md focus:outline-none"
+                  name="address"
+                  onChange={handleChange}
+                  value={profileData.address}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p className='text-blue-600 font-medium text-lg relative left-20 mt-5'>Format</p>
+
+        <div className='bg-sky-50/100 border border-slate-300 p-2 rounded-md shadow-sm mx-5 sm:mx-20'>
+          <div className='flex items-center gap-5 justify-around max-sm:flex-col'>
+            <div className="relative w-full mt-3">
+              <p className='font-medium text-lg text-slate-700'><span className='text-red-500'>*</span>curreency</p>
+              <input
+                type='text'
+                name='currency'
+                className="w-full border-2 border-gray-500 p-2 rounded-md focus:outline-none"
+                onChange={handleChange}
+                value={profileData.currency}
+              />
+            </div>
+
+            <div className="relative w-full mt-3">
+              <p className='font-medium text-lg text-slate-700'><span className='text-red-500'>*</span>timezone</p>
+              <input
+                type='text'
+                name='timezone'
+                className="w-full border-2 border-gray-500 p-2 rounded-md focus:outline-none"
+                onChange={handleChange}
+                value={profileData.timezone_name}
+              />
+            </div>
+          </div>
+
+          <div className='flex items-center gap-5 justify-around max-sm:flex-col'>
+            <div className="relative w-full mt-3">
+              <p className='font-medium text-lg text-slate-700'><span className='text-red-500'>*</span>culture</p>
+              <input
+                type='text'
+                name='culture'
+                className="w-full border-2 border-gray-500 p-2 rounded-md focus:outline-none"
+                onChange={handleChange}
+                value={profileData.culture}
+              />
+            </div>
+
+            <div className="relative w-full mt-3">
+              <p className='font-medium text-lg text-slate-700'><span className='text-red-500'>*</span>position</p>
+              <input
+                type='text'
+                name='position'
+                className="w-full border-2 border-gray-500 p-2 rounded-md focus:outline-none"
+                onChange={handleChange}
+                value={profileData.currency_position}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="w-full">
+        <div className='flex justify-center gap-5 max-md:grid-cols-7 max-sm:grid-cols-7'>
           {/* button save */}
           <button
             onClick={handleSave}
-            className='mt-4 text-gray-500 bg-slate-100 flex items-center gap-2 border border-slate-300 rounded-md py-1 px-3 justify-center'
+            className='mt-4 text-gray-500 bg-green-100 flex items-center gap-2 border border-slate-300 rounded-md py-1 px-6 justify-center transition duration-300 hover:bg-green-200'
           >
             <FaCheck className='text-green-600' /> Save
-          </button>
-
-          {/* button download */}
-          <button
-            className='mt-4 text-gray-500 bg-slate-100 flex items-center gap-2 border border-slate-300 rounded-md py-1 px-3 justify-center'
-          >
-            <AiOutlineDownload className='text-blue-600' /> Download
           </button>
 
           {/* button subscribe */}
           <button
             onClick={Dashboard}
-            className='mt-4 text-gray-500 bg-slate-100 flex items-center gap-2 border border-slate-300 rounded-md py-1 px-3 justify-center'
+            className='mt-4 text-gray-500 bg-red-100 flex items-center gap-2 border border-slate-300 rounded-md py-1 px-6 justify-center transition duration-300 hover:bg-red-200'
           >
             <MdOutlineCancel className='text-red-600' /> Cancel
           </button>
         </div>
-
-        <span className='flex items-center mt-5 gap-5'>
-          <p className='text-blue-600 font-medium'>General</p>
-          {/* <hr className='relative w-11/12 border-dashed border-gray-500' /> */}
-        </span>
-
-        <div className='bg-gray-100 p-2 rounded-sm shadow-md'>
-          <div className='flex items-center gap-5 justify-around max-sm:flex-col'>
-            <div className='flex items-center ml-5 mt-5'>
-              <p className='text-red-500'>*</p><p className='font-medium text-lg text-slate-700'>company</p>
-              <input
-                className='border border-slate-600 ml-5 py-1 px-2 rounded-md'
-                type="text"
-                name="company"
-                value={profileData.company}
-                onChange={handleChange}
-              />
-            </div>
-            <div className='flex items-center ml-5 mt-5'>
-              <p className='text-red-500'>*</p><p className='font-medium text-lg text-slate-700'>Phone</p>
-              <input
-                className='border border-slate-600 ml-5 py-1 px-2 rounded-md'
-                type="text"
-                name="contact"
-                value={profileData.contact}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          <div className='flex items-center gap-5 justify-around max-sm:flex-col'>
-            <div className='flex items-center ml-5 mt-5'>
-              <p className='text-red-500'>*</p><p className='font-medium text-lg text-slate-700'>email</p>
-              <input
-                className='border border-slate-600 ml-5 py-1 px-2 rounded-md'
-                type="text"
-                name="company"
-                value={profileData.email}
-                onChange={handleChange}
-              />
-            </div>
-            <div className='flex items-center ml-5 mt-5'>
-              {/* <p className='text-red-500'>*</p> */}
-              <p className='font-medium text-lg text-slate-700'>language</p>
-              <input
-                className='border border-slate-600 ml-5 py-1 px-2 rounded-md'
-                type="text"
-                name="address"
-                value={profileData.address}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          <div className='flex items-center gap-5 justify-around max-sm:flex-col'>
-            <div className='flex items-center ml-5 mt-5'>
-              <p className='text-red-500'>*</p><p className='font-medium text-lg text-slate-700'>Address</p>
-              <input
-                className='border border-slate-600 ml-5 py-1 px-2 rounded-md'
-                type="text"
-                name="company"
-                value={profileData.company}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
         </div>
+
       </div>
     </main>
   );
