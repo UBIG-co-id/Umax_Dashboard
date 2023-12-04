@@ -24,6 +24,7 @@ function ClientsTable() {
   const navigate = useNavigate();
 
   const [selectedFilter, setSelectedFilter] = useState("");
+  
   // variable base url
   const umaxUrl = 'https://umaxx-1-v8834930.deta.app';
 
@@ -31,14 +32,7 @@ function ClientsTable() {
     navigate('/AddClients');
   };
 
- 
-  // UPDATE DATA
-
-  // END UPDATE
-
-
   // DELETE
-  // Make a DELETE request to the FastAPI endpoint
   const handleDelete = async (_id) => {
     Swal.fire({
       title: 'Anda Yakin?',
@@ -76,10 +70,24 @@ function ClientsTable() {
               },
             });
           } else {
-            Swal.fire('Error', 'An error occurred while deleting the data.', 'error');
+            Swal.fire({
+              title: 'Error',
+              text: 'Terjadi kesalahan saat menghapus data',
+              icon: 'error',
+              customClass: {
+                confirmButton: 'custom-error-button-class',
+              },
+            });
           }
         } catch (error) {
-          Swal.fire('Error', 'An error occurred while deleting the data.', 'error');
+          Swal.fire({
+            title: 'Error',
+            text: 'Terjadi kesalahan saat menghapus data',
+            icon: 'error',
+            customClass: {
+              confirmButton: 'custom-error-button-class',
+            },
+          });
         }
       }
     });
@@ -93,7 +101,7 @@ function ClientsTable() {
   async function fetchData() {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch("https://umaxx-1-v8834930.deta.app/client-by-tenant",{
+      const response = await fetch(`${umaxUrl}/client-by-tenant`,{
         headers: {
          'accept': 'application/json',
          'Authorization': `Bearer ${token}`,
@@ -117,10 +125,6 @@ function ClientsTable() {
   // END GET DATA
 
 
-
-  // UPDATE DATA
-
-  // END UPDATE DATA
 
   // PAGINATION
   const paginationStyle = {
@@ -160,6 +164,7 @@ function ClientsTable() {
   const getStatusString = (status) => {
     let statusStyle = {}; // Objek gaya status
 
+    // CASE UNTUK STATUS
     switch (status) {
       case 1:
         statusStyle = {
@@ -298,8 +303,6 @@ function ClientsTable() {
     usePagination
   );
 
-
-
   const handleFilterChange = (e) => {
     const newValue = e.target.value;
     if (newValue !== selectedFilter) {
@@ -313,6 +316,7 @@ function ClientsTable() {
   };
 
 
+  // FUNGSI CLOSE ESC
   useEffect(() => {
     const closePopupOnEscape = (e) => {
       if (e.key === "Escape") {
@@ -330,6 +334,7 @@ function ClientsTable() {
     };
   }, [showAddPopup]);
 
+
   //export table ke excel
   const { onDownload } = useDownloadExcel({
     currentTableRef: tableRef.current,
@@ -337,12 +342,13 @@ function ClientsTable() {
     sheet: "DataClients",
   });
 
+  // FUNGSI EXPORT PDF
   const componentPDF = useRef();
-
   const generatePDF = () => {
     const doc = new jsPDF();
     doc.text('Client Data', 14, 15);
 
+  // FUNGSI FILTER SELECT
     const filteredData = tableData.map((row) => ({
       Name: row.name,
       Address: row.address,
@@ -363,15 +369,14 @@ function ClientsTable() {
   };
 
 
-
-
   return (
     <div>
     <div className="border-2 border-slate-200 bg-white p-0 m-2 lg:m-10 mt-8 rounded-lg relative">
         <div className="container mx-auto p-4">
         <div className="grid grid-cols-12 gap-2 px-2 md:px-0 mb-2">
-          {/* Search bar */}
-          <div className="relative col-span-4 lg:col-span-2">
+
+          {/* SEARCH BARR */}
+          <div className="relative col-span-4 lg:col-span-2  max-sm:col-span-full">
             <input
               type="text"
               value={globalFilter}
@@ -385,8 +390,8 @@ function ClientsTable() {
           </div>
           {/* End */}
 
-          {/* bagian status */}
-          <div className="relative col-span-4 lg:col-span-2">
+          {/* BAGIAN STATUS */}
+          <div className="relative col-span-4 lg:col-span-2 max-sm:col-span-full">
             <select
               className="w-full min-w-0 px-1 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
               value={selectedFilter}
@@ -396,16 +401,14 @@ function ClientsTable() {
               <option value="1">Active</option>
               <option value="2">Deactive</option>
             </select>
-
-
-
           </div>
           {/* End */}
 
-          {/* div kosong untuk memberi jarak */}
+          {/* DIV KOSONG, MEMBERI JARAK */}
           <div className="hidden lg:flex col-span-7"></div>
 
-          <div className="gap-2 flex lg:justify-end">
+          {/* BUTTON ADD */}
+          <div className="gap-2 flex lg:justify-end max-sm:col-span-5">
           <button
               type="button"
               data-te-ripple-init
@@ -419,22 +422,9 @@ function ClientsTable() {
               <BsPlus className="font-medium text-lg" />
               <span >Add</span>
             </button>
+          {/* END */}
 
-
-
-          {/* menu add data */}
-
-
-
-
-          {/* Pop-up menu */}
-         
-
-
-
-          {/* end */}
-
-          {/* Button export excel */}
+          {/* BUTTON EXCEL */}
           <button
             type="button"
             className="col-span-2 max-sm:col-span-4 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
@@ -444,11 +434,8 @@ function ClientsTable() {
           </button>
           {/* End */}
 
-          {/* Button export pdf */}
-          {/* Button export pdf */}
-          {/* End */}
 
-          {/* End */}
+          {/* BUTTON PDF */}
           <button
             type="button"
             className="col-span-2 max-sm:col-span-4 lg:col-span-1 grid place-items-center border border-slate-300 h-9 rounded-md bg-white p-2 hover:bg-gray-50"
@@ -458,6 +445,8 @@ function ClientsTable() {
           </button>
           </div>
         </div>
+          {/* End */}
+
 
         <div className=" w-full rounded-md overflow-hidden outline-none shadow-lg shadow-slate-900/10 border-none max-md:overflow-x-auto" ref={componentPDF}>
 
@@ -501,7 +490,7 @@ function ClientsTable() {
                           {...cell.getCellProps()}
 
                           className={`p-2  border-b-0 border-slate-300 ${cell.column.id === 'status' || cell.column.id === 'action'
-                            ? 'text-center action-column' // Terapkan kelas CSS khusus
+                            ? 'text-center action-column' 
                             : 'text-left'
                             }`}
                         >
@@ -515,7 +504,8 @@ function ClientsTable() {
             </tbody>
           </table>
         </div>
-        {/* Pagination */}
+
+        {/* PAGINATION */}
         <div style={paginationStyle}>
           <button
             onClick={() => gotoPage(0)}

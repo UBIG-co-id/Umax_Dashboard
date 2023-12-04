@@ -18,7 +18,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import "../styles.css";
 
-const History = ({ metric_id }) => {
+const History = ({ campaign_id }) => {
   const [tableData, setTableData] = useState([]);
 
   // state buat sort history
@@ -28,62 +28,36 @@ const History = ({ metric_id }) => {
   const [selectedData, setSelectedData] = useState([]);
   const [error, setError] = useState(null);
 
-  const fetchCampaignData = async () => {
-    try {
-      const token = localStorage.getItem("jwtToken");
-      const response = await fetch(
-        "https://umaxdashboard-1-w0775359.deta.app/metrics",
-        {
-          headers: {
-            accept: "application/json",
-            "Content-Type": "application/x-www-form-urlencoded",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setData(data);
-      } else {
-        console.error("Gagal mengambil data");
-      }
-    } catch (error) {
-      console.error("Terjadi kesalahan:", error);
-    }
-  };
-
   useEffect(() => {
+    const fetchCampaignData = async () => {
+      try {
+        const token = localStorage.getItem("jwtToken");
+        const response = await fetch(
+          `https://umaxx-1-v8834930.deta.app/history?campaign_id=${campaign_id}`,
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setData(data.Data);
+        } else {
+          console.error("Gagal mengambil data");
+        }
+      } catch (error) {
+        console.error("Terjadi kesalahan:", error);
+      }
+    };
+
     fetchCampaignData();
-  }, []);
+  }, [setData, campaign_id]);
+
   const handleRowSelection = (selectedRowData) => {
     setSelectedData(selectedRowData);
   };
-
-  async function fetchData() {
-    try {
-      const token = localStorage.getItem('jwtToken');
-      const response = await fetch("https://umaxx-1-v8834930.deta.app/metrics-7?campaign_id",{
-        headers: {
-         'accept': 'application/json',
-         'Content-Type': 'application/x-www-form-urlencoded',
-         'Authorization': `Bearer ${token}`,
-       },
-     });
-     
-     if (!response.ok) {
-       throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
-      }
-      const data = await response.json();
-      console.log('response = ',data.Data);
-      setTableData(data.Data);
-    } catch (error) {
-      console.error("Error fetching data:", error.message);
-    }
-  }
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   // PAGINATION
   const paginationStyle = {
@@ -161,6 +135,7 @@ const History = ({ metric_id }) => {
         return "Unknown";
     }
   };
+
   const getObjectiveString = (objective) => {
     switch (objective) {
       case 1:
@@ -329,7 +304,6 @@ const History = ({ metric_id }) => {
             <button onClick={() => setSortHistory("terlama")}>terlama</button>
           </div>
           <div className="grid grid-cols-12 gap-3 px-2 md:px-0 mb-2">
-
             {/* div kosong untuk memberi jarak */}
             <div className="hidden lg:flex col-span-11 "></div>
 

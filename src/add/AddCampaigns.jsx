@@ -7,38 +7,13 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const AddCampaigns = () => {
-    // url base
+    // / URL BASE
     const umaxUrl = 'https://umaxx-1-v8834930.deta.app/';
 
     const navigate = useNavigate();
-    const [clientList, setClientList] = useState([]);
     const [accountList, setAccountList] = useState([]);
-    // GET DATA CLIENT
-    async function fetchClientData() {
-        try {
-            const token = localStorage.getItem('jwtToken');
-            const response = await fetch(`${umaxUrl}client-by-tenant`,
-                {
-                    headers: {
-                        'accept': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
-                const data = await response.json();
-                if (data && Array.isArray(data.Data)) {
-                    setClientList(data.Data);
-                  } else {
-                    console.error('Error: Unexpected data format for client list');
-                  }
-                } catch (error) {
-                  console.error("Error fetching client data:", error.message);
-                }
-              }
-    useEffect(() => {
-        fetchClientData();
-    }, []);
-    // END GET DATA CLIENT
-
+  
+    // GET LIST ACCOUNT
     async function fetchAccountData() {
         try {
             const token = localStorage.getItem('jwtToken');
@@ -61,18 +36,15 @@ const AddCampaigns = () => {
     useEffect(() => {
         fetchAccountData();
     }, []);
-    // GET DATA ACCOUNT
 
     // ADD Data Campaigns
     const formik = useFormik({
         initialValues: {
             name: '',
+            account_id: '',
             objective: '',
-            client: '',
-            account: '',
-            platform: '',
-            startdate: '',
-            enddate: '',
+            start_date: '',
+            end_date: '',
             status: '',
             notes: '',
         },
@@ -97,7 +69,6 @@ const AddCampaigns = () => {
                         navigate('/Campaigns');
                     })
                     .catch(error => {
-                        // Handle errors, e.g., network errors
                         console.error(error);
                     });
 
@@ -121,17 +92,10 @@ const AddCampaigns = () => {
             window.removeEventListener("keydown", handleKeyDown);
         };
     }, [navigate]);
-    
-    // custom date
-    // const selectedDate = new Date(formik.values.startdate);
-    // const formattedDate = date ? date.toLocaleDateString('en-GB', {
-    //     day: '2-digit',
-    //     month: '2-digit',
-    //     year: 'numeric',
-    // }) : '';
-    
+    // END
+  
 
-    
+    // RENDER UI
     return (
         <main className="bg-slate-100 min-h-screen">
             <div>
@@ -170,7 +134,7 @@ const AddCampaigns = () => {
                                     onChange={formik.handleChange}
                                     value={formik.values.objective}
                                     className="px-3 text-slate-500 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width">
-                                    <option hidden>Select Objective...</option>
+                                    <option hidden>-Select Objective-</option>
                                     <option value="1">Awareness</option>
                                     <option value="2">Conversion</option>
                                     <option value="3">Consideration</option>
@@ -180,79 +144,38 @@ const AddCampaigns = () => {
 
                         <div className="flex flex-col md:flex-row gap-4 mb-4">
                             <div className="flex flex-col">
-                                <label className="pb-2 text-sm" htmlFor="">
-                                    Client
-                                </label>
-                                <select
-                                    name="client"
-                                    id="client"
-                                    onChange={formik.handleChange}
-                                    value={formik.values.client}
-                                    className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
-                                >
-                                    <option hidden>Select Client...</option>
-                                    {clientList.map((client) => (
-                                        <option key={client._id} value={client.name}>
-                                        {client.name}
-                                        </option>
-                                    ))}
-                                </select>
-
-                            </div>
-
-                            <div className="flex flex-col">
-                                <label className="pb-2 text-sm" htmlFor="">
+                                <label className="pb-2 text-sm">
                                     Account
                                 </label>
                                 <select
-                                    name="username"
-                                    id="username"
+                                    name="account_id "
+                                    id="account_id "
                                     onChange={formik.handleChange}
-                                    value={formik.values.username}
+                                    value={formik.values.account_id}
                                     className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
                                 >
-                                    <option hidden>Select Account</option>
+                                    <option hidden>-Select Account-</option>
                                     {accountList.map((account) => (
-                                        <option key={account._id} value={account.username}>
+                                        <option key={account._id } value={account._id }>
                                             {account.username}
                                         </option>
                                     ))}
                                 </select>
 
                             </div>
-                        </div>
-
-                        <div className="flex flex-col md:flex-row gap-4 mb-4">
-                            <div className="flex flex-col">
-                                <label className="pb-2 text-sm " htmlFor="">
-                                    Platform
-                                </label>
-                                <select
-                                    name="platform"
-                                    id="platform"
-                                    onChange={formik.handleChange}
-                                    value={formik.values.platform}
-                                    className="px-3 text-slate-500 h-9 w-full border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width">
-                                    <option hidden>Select Platform...</option>
-                                    <option value="1">Meta Ads</option>
-                                    <option value="2">Google Ads</option>
-                                    <option value="3">Tiktok Ads</option>
-                                </select>
-                            </div>
-
 
                             <div className="flex flex-col">
-                            <label className="pb-2 text-sm" htmlFor="startdate">
+                            <label className="pb-2 text-sm" htmlFor="start_date">
                                 Start Date
                             </label>
                             <DatePicker
-                                id="startdate"
-                                name="startdate"
+                                id="start_date"
+                                name="start_date"
                                 placeholderText="dd/mm/yyyy"
-                                selected={formik.values.startdate ? new Date(formik.values.startdate) : null}
+                                selected={formik.values.start_date ? new Date(formik.values.start_date) : null}
                                 onChange={(date) => {
                                     formik.setFieldValue(
-                                        'startdate',
+                                        'start_date',
                                         date ? date.toISOString().split('T')[0] : '' // Mengubah ke format YYYY-MM-DD
                                     );
                                 }}
@@ -260,23 +183,22 @@ const AddCampaigns = () => {
                                 className="p-2 h-9 select-custom-width text-slate-500 border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                             />
                         </div>
-
                         </div>
 
                         <div className="flex flex-col md:flex-row gap-4 mb-4">
 
                             <div className="flex flex-col">
-                                <label className="pb-2 text-sm " htmlFor="enddate">
+                                <label className="pb-2 text-sm " htmlFor="end_date">
                                     End Date
                                 </label>
                                 <DatePicker
-                                id="enddate"
-                                name="enddate"
+                                id="end_date"
+                                name="end_date"
                                 placeholderText="dd/mm/yyyy"
-                                selected={formik.values.enddate ? new Date(formik.values.enddate) : null}
+                                selected={formik.values.end_date ? new Date(formik.values.end_date) : null}
                                 onChange={(date) => {
                                     formik.setFieldValue(
-                                        'enddate',
+                                        'end_date',
                                         date ? date.toISOString().split('T')[0] : '' // Mengubah ke format YYYY-MM-DD
                                     );
                                 }}
@@ -298,7 +220,7 @@ const AddCampaigns = () => {
                                     value={formik.values.status}
                                     className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width">
 
-                                    <option hidden>Select Status...</option>
+                                    <option hidden>-Select Status-</option>
                                     <option value="1">Active</option>
                                     <option value="2">Draft</option>
                                     <option value="3">Complated</option>
