@@ -21,34 +21,34 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
   const { selectedLanguage } = useLanguage(); // Get selectedLanguage from context
   const translations = Translation[selectedLanguage];
   const [searchKeyword, setSearchKeyword] = useState("");
-
   const [filteredCampaigns, setFilteredCampaigns] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     // Fungsi ini akan dipanggil setiap kali activeTab atau campaigns berubah
+    const filterCampaignsByStatus = () => {
+      if (activeTab === "all") {
+        setFilteredCampaigns(data);
+      } else {
+        const filtered = data.filter((item) => {
+          if (activeTab === "draft" && item.campaign_status === 2) {
+            return true;
+          }
+          if (activeTab === "active" && item.campaign_status === 1) {
+            return true;
+          }
+          if (activeTab === "completed" && item.campaign_status === 3) {
+            return true;
+          }
+          return false;
+        });
+
+        setFilteredCampaigns(filtered);
+      }
+    };
+
     filterCampaignsByStatus();
-  }, [activeTab, data]);
-
-  const filterCampaignsByStatus = () => {
-    if (activeTab === "all") {
-      setFilteredCampaigns(data);
-    } else {
-      const filtered = data.filter((item) => {
-        if (activeTab === "draft" && item.campaign_status === 2) {
-          return true;
-        }
-        if (activeTab === "active" && item.campaign_status === 1) {
-          return true;
-        }
-        if (activeTab === "completed" && item.campaign_status === 3) {
-          return true;
-        }
-        return false;
-      });
-      setFilteredCampaigns(filtered);
-    }
-  };
-
-  const [loading, setLoading] = useState(true);
+  }, [activeTab, data, setFilteredCampaigns]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,16 +58,15 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
           "https://umaxx-1-v8834930.deta.app/metric-by-tenant-id",
           {
             headers: {
-              accept: "application/json",
-              "Content-Type": "application/x-www-form-urlencoded",
+              Accept: "application/json",
               Authorization: `Bearer ${token}`,
             },
           }
         );
-  
+
         if (response.ok) {
           const responseData = await response.json();
-          console.log('data SideBar',responseData)
+          console.log("data SideBar", responseData);
           setData(responseData.Data);
         } else {
           console.error("Gagal mengambil data");
@@ -78,10 +77,10 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
         setLoading(false);
       }
     };
-  
+
     fetchData();
-  }, []);
-  
+  }, [setData, setLoading]);
+
   const handleScroll = () => {
     const container = document.querySelector(".lebar-list");
     if (container) {
@@ -108,12 +107,12 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
   }, [itemsToShow]);
 
   const handleItemClick = (item) => {
-    setActiveItem(item._id);
+    setActiveItem(item.campaign_id);
     updateSelectedName(item);
     setSelectedData(item);
 
     // Add this part to set metric_id based on selectedData
-    const metricIdFromSelectedData = item._id;
+    const metricIdFromSelectedData = item.campaign_id;
     setMetricId(metricIdFromSelectedData);
   };
 
@@ -125,6 +124,7 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
     "#FF8A00",
     "#FF8A00",
   ];
+
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
     return new Date(dateString).toLocaleDateString(undefined, options);
@@ -138,7 +138,6 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
   const handleSearchChange = (event) => {
     setSearchKeyword(event.target.value);
   };
-  
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -187,11 +186,14 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
     }
 
     const filteredByKeyword = Array.isArray(filtered)
-    ? filtered.filter((item) =>
-        item.campaign_name ? item.campaign_name.toLowerCase().includes(searchText.toLowerCase()) : ""
-      )
-    : [];
-  
+      ? filtered.filter((item) =>
+          item.campaign_name
+            ? item.campaign_name
+                .toLowerCase()
+                .includes(searchText.toLowerCase())
+            : ""
+        )
+      : [];
 
     return filteredByKeyword.slice(0, itemsToShow).map((item, index) => {
       let circleColor;
@@ -210,14 +212,14 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
         circleColor = "#8F8F8F"; // Default: Abu-abu
       }
 
-      const isItemActive = activeItem === item._id; // Menggunakan 'name' alih-alih 'title'
+      const isItemActive = activeItem === item.campaign_id; // Menggunakan 'name' alih-alih 'title'
       const listItemClasses = `flex flex-col h-24 mb-0 -ml-2 ${
         isItemActive ? "bg-blue-200 " : ""
       } ${!isItemActive ? nonActiveHoverClass : ""}`;
 
       return (
         <li
-          key={item._id}
+          key={item.campaign_id}
           className={listItemClasses}
           onClick={() => handleItemClick(item)}
         >
@@ -334,12 +336,12 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
             <BiSearch />
           </span>
           <input
-          type="text"
-          placeholder={translations["Search"]}
-          className="w-full pl-8 px-2 py-1 bg-white border-searc border focus:outline-none focus:border-gray-500 text-slate-600 rounded-lg"
-          value={searchKeyword}
-          onChange={handleSearchChange}
-        />
+            type="text"
+            placeholder={translations["Search"]}
+            className="w-full pl-8 px-2 py-1 bg-white border-searc border focus:outline-none focus:border-gray-500 text-slate-600 rounded-lg"
+            value={searchKeyword}
+            onChange={handleSearchChange}
+          />
         </div>
 
         <div className="relative lebar-list -left-2 border-slate-500 pt-2  overflow-y-scroll max-h-[50rem]">

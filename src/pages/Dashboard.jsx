@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import ContainerCard from "../components/ContainerCard";
@@ -22,112 +22,89 @@ import { formattedKoma1 } from "../helpers/formattedKoma1";
 import { useParams } from "react-router-dom";
 
 const Dashboard = () => {
+  const { selectedLanguage } = useLanguage(); // Get selectedLanguage from context
+  const translations = Translation[selectedLanguage];
+
   const [metricsData, setMetricsData] = useState([]);
-  const [campaignIdFromResponse, setCampaignIdFromResponse] = useState('');
-
-
+  const [campaignIdFromResponse, setCampaignIdFromResponse] = useState("");
   const [activeTab, setActiveTab] = useState("performance");
   const [campaigns, setCampaigns] = useState([]);
   const [selectedCampaignId, setSelectedCampaignId] = useState(null);
   const [activeItem, setActiveItem] = useState(null);
   const [selectedData, setSelectedData] = useState(null);
   const [selectedName, setSelectedName] = useState("");
-  const { selectedLanguage } = useLanguage(); // Get selectedLanguage from context
-  const translations = Translation[selectedLanguage];
   const [data, setData] = useState([]);
   const [barr, setBarr] = useState([]);
 
-  const [campaignId, setCampaignId] = useState('');
+  // const [campaignId, setCampaignId] = useState("");
   const [metrics, setMetrics] = useState([]);
-  const [campaign_id, setMetricId] = useState(""); 
+  const [campaign_id, setMetricId] = useState("");
   const [error, setError] = useState(null);
-  const [selectedTimeframe, setSelectedTimeframe] = useState("lastweek"); // Set ke string kosong
+  const [selectedTimeframe, setSelectedTimeframe] = useState("last-week");
   const [chartUrl, setChartUrl] = useState("");
   const [suggestionData, setSuggestionData] = useState([]);
 
-  const fetchSuggestions = async () => {
-    const id = campaign_id;
-    console.log("ID CAMPAIGN", id);
-    try {
-      const response = await axios.get(
-        `https://umaxx-1-v8834930.deta.app/suggestion/${id}`
-      );
-      if (response.status === 200) {
-        const data = response.data;
-        setSuggestionData(data);
-      } else {
-        console.error("Failed to fetch suggestion data from API");
-      }
-    } catch (error) {
-      console.error("An error occurred while fetching suggestion data", error);
-    }
-  };
   useEffect(() => {
-    // Fetch metrics data and set it in the state
+    const fetchSuggestions = async () => {
+      const id = campaign_id;
+      console.log("ID CAMPAIGN", id);
+
+      try {
+        const token = localStorage.getItem("jwtToken");
+        const response = await axios.get(
+          `https://umaxx-1-v8834930.deta.app/suggestions?campaign_id=${id}`,
+          {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          const data = response.data.Data;
+          setSuggestionData(data);
+        } else {
+          console.error("Failed to fetch suggestion data from API");
+        }
+      } catch (error) {
+        console.error(
+          "An error occurred while fetching suggestion data",
+          error
+        );
+      }
+    };
+
     fetchSuggestions();
-  }, []);
+  }, [setSuggestionData, campaign_id]);
 
-  useEffect(() => {
-    // Fetch metrics data and set it in the state
-    fetchMetricsData();
-  }, []);
+  // wrap function pakai useCallback karena function ini dipakai di dalam useEffect
+  const updateChartUrl = useCallback(
+    (timeframe) => {
+      if (selectedName && campaign_id) {
+        const baseUrl = "https://umaxx-1-v8834930.deta.app/"; // URL dasar
 
+        // Ganti ini sesuai kebutuhan
+        const newUrl = `${baseUrl}${timeframe}?campaign_id=${campaign_id}`;
+        setChartUrl(newUrl);
 
-  // ini metrics
-  const fetchMetricsData = async () => {
-    try {
-      const token = localStorage.getItem("jwtToken");
-      const apiUrl = "https://umaxx-1-v8834930.deta.app/metric-by-tenant-id";
-
-      const response = await fetch(apiUrl, {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setMetrics(data);
-
-        // Ambil campaign_id dari data (misalnya, dari item pertama).
-        const metricIdFromData = data.length > 0 ? data[0]._id : "";
-
-        // Set campaign_id ke dalam state.
-        setMetricId(metricIdFromData);
-      } else {
-        console.error("Gagal mengambil data metrics");
+        console.log(`New URL: ${newUrl}`);
       }
-    } catch (error) {
-      console.error("Terjadi kesalahan:", error);
-    }
-  };
-  const updateChartUrl = (timeframe) => {
-    if (selectedName && campaign_id) {
-      const baseUrl = "https://umaxx-1-v8834930.deta.app/"; // URL dasar
-      const selectedTimeframe =
-        timeframe === "lastweek"
-          ? "lastweek"
-          : timeframe === "lastmonth"
-          ? "lastmonth"
-          : "lastyear";
-      // Ganti ini sesuai kebutuhan
-      const newUrl = `${baseUrl}${selectedTimeframe}/${campaign_id}`;
-      setChartUrl(newUrl);
-      console.log(newUrl);
-    }
-  };
+    },
+    [setChartUrl, selectedName, campaign_id]
+  );
 
+  /*
   const fetchHistoryData = async (campaign_id) => {
     try {
       const token = localStorage.getItem("jwtToken");
-      const apiUrl = `https://umaxdashboard-1-w0775359.deta.app/history/${campaign_id}`; // Updated URL with campaign_id
+      const apiUrl = `https://umaxx-1-v8834930.deta.app/history?campaign_id=${campaign_id}`; // Updated URL with campaign_id
 
       const response = await fetch(apiUrl, {
         headers: {
-          accept: "application/json",
-          "Content-Type": "application/x-www-form-urlencoded",
+          Accept: "application/json",
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
@@ -145,6 +122,7 @@ const Dashboard = () => {
       setError("Terjadi kesalahan dalam mengambil data.");
     }
   };
+  */
 
   useEffect(() => {
     if (campaign_id) {
@@ -152,10 +130,11 @@ const Dashboard = () => {
     } else {
       setSelectedData(null);
     }
-  }, [campaign_id]);
+  }, [campaign_id, setSelectedData, updateChartUrl, selectedTimeframe]);
 
   const handleItemClick = (item) => {
-    setSelectedTimeframe("lastweek");
+    // setSelectedTimeframe(item);
+
     setActiveItem(item.campaign_name);
     setSelectedName(item.campaign_name);
     setSuggestionData(suggestionData);
@@ -167,62 +146,6 @@ const Dashboard = () => {
     setSelectedName(item);
     console.log("Selected Name:", item);
   };
-
-  const fetchCampaignData = async () => {
-    try {
-      const token = localStorage.getItem("jwtToken");
-      const response = await fetch(
-        "https://umaxdashboard-1-w0775359.deta.app/metrics",
-        {
-          headers: {
-            accept: "application/json",
-            "Content-Type": "application/x-www-form-urlencoded",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setData(data);
-      } else {
-        console.error("Gagal mengambil data");
-      }
-    } catch (error) {
-      console.error("Terjadi kesalahan:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchCampaignData();
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem("jwtToken");
-        const response = await axios.get(
-          "https://umax-1-z7228928.deta.app/metrics/",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          const data = response.data;
-          setMetricsData(data);
-        } else {
-          console.error("Failed to fetch data from API");
-        }
-      } catch (error) {
-        console.error("An error occurred", error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const [state, setState] = useState({
     toggleNavbar: false,
@@ -241,41 +164,44 @@ const Dashboard = () => {
   };
 
   // data metrics
-  const metricsChart = async () => {
-    try {
-      const id = campaign_id;
-      console.log("ID METRICS", id)
-      const token = localStorage.getItem("jwtToken");
-      const apiUrl = `https://umaxx-1-v8834930.deta.app/last-week?campaign_id=${id}`;
-
-      const response = await fetch(apiUrl, {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const barr = await response.json();
-        setBarr(barr);
-
-        // Ambil campaign_id dari data (misalnya, dari item pertama).
-        const metricIdFromData = barr.length > 0 ? barr[0]._id : "";
-
-        // Set campaign_id ke dalam state.
-        setMetricId(metricIdFromData);
-      } else {
-        console.error("Gagal mengambil metrics");
-      }
-    } catch (error) {
-      console.error("Terjadi kesalahan:", error);
-    }
-  };
   useEffect(() => {
-    metricsChart();
-  }, []);
+    const metricsChart = async () => {
+      try {
+        const id = campaign_id;
+        const token = localStorage.getItem("jwtToken");
 
+        // pakai value dari selectedTimeFrame agar lebih dinamis
+        // default value dari selectedTimeFrame: last-week
+        const apiUrl = `https://umaxx-1-v8834930.deta.app/${selectedTimeframe}?campaign_id=${id}`;
+
+        const response = await fetch(apiUrl, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const barr = await response.json();
+          setBarr(barr.Data);
+
+          // Ambil campaign_id dari data (misalnya, dari item pertama).
+          const metricIdFromData =
+            barr.Data.length > 0 ? barr.Data[0].campaign_id : "";
+
+          // Set campaign_id ke dalam state.
+          setMetricId(metricIdFromData);
+        } else {
+          console.error("Gagal mengambil metrics");
+        }
+      } catch (error) {
+        console.error("Terjadi kesalahan:", error);
+      }
+    };
+
+    metricsChart();
+  }, [setMetricId, setBarr, campaign_id, selectedTimeframe]);
 
   const metrixDatas = [
     {
@@ -567,7 +493,7 @@ const Dashboard = () => {
             textOverflow: "ellipsis",
           }}
         >
-          {description}sdf
+          {description}
         </p>
       ),
       "Cost per Click":
@@ -630,6 +556,7 @@ const Dashboard = () => {
 
     return metrixData.description;
   };
+
   const handleTimeframeChange = (event) => {
     const selectedTimeframe = event.target.value;
     setSelectedTimeframe(selectedTimeframe);
@@ -649,6 +576,7 @@ const Dashboard = () => {
                   Feb 4, 20:12
                 </div>
                 <select
+                  defaultValue="last-week"
                   name=""
                   id=""
                   className="focus:outline-none p-2 px-5 border border-gray-300 text-gray-500 rounded-md"
@@ -658,11 +586,11 @@ const Dashboard = () => {
                   <option hidden value="">
                     Filter Data
                   </option>
-                  <option value="lastweek">{translations["Last Week"]}</option>
-                  <option value="lastmonth">
+                  <option value="last-week">{translations["Last Week"]}</option>
+                  <option value="last-month">
                     {translations["Last Month"]}
                   </option>
-                  <option value="lastyear">{translations["Last Year"]}</option>
+                  <option value="last-year">{translations["Last Year"]}</option>
                 </select>
               </div>
             </div>
@@ -673,38 +601,36 @@ const Dashboard = () => {
               <div className="flex flex-col md:flex-row mt-5 md:gap-5">
                 {/* Card Info */}
 
-                {selectedData && (
-                  <div className="md:w-8/12 w-full flex flex-col flex-wrap h-full gap-5">
-                    <CardInfo
-                      title={translations["Amount Spent"]}
-                      value={selectedData.amountspent}
-                      color="text-sky-500"
-                      popupContent="Jumlah total biaya yang kita keluarkan untuk pemasangan iklan"
-                    />
-                    <CardInfo
-                      title={translations["Reach Amount Spent Ratio"]}
-                      value={selectedData.rar}
-                      color="text-yellow-500"
-                      popupContent="Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut"
-                    />
-                    <CardInfo
-                      title={translations["Click Through Rate"]}
-                      value={selectedData.ctr}
-                      color="text-green-500"
-                      popupContent="Rasio jumlah klik pada iklan kita dibandingkan dengan jumlah iklan ditayangkan"
-                    />
-                    <CardInfo
-                      title="OCLP"
-                      value={selectedData.oclp}
-                      popupContent="Mendorong pengunjung untuk mengklik tautan atau tombol yang mengarahkan mereka ke halaman atau situs web eksternal yang relevan"
-                    />
-                  </div>
-                )}
+                <div className="md:w-8/12 w-full flex flex-col flex-wrap h-full gap-5">
+                  <CardInfo
+                    title={translations["Amount Spent"]}
+                    value={selectedData ? selectedData.amountspent : "Rp.-"}
+                    color="text-sky-500"
+                    popupContent="Jumlah total biaya yang kita keluarkan untuk pemasangan iklan"
+                  />
+                  <CardInfo
+                    title={translations["Reach Amount Spent Ratio"]}
+                    value={selectedData ? selectedData.rar : "-%"}
+                    color="text-yellow-500"
+                    popupContent="Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut"
+                  />
+                  <CardInfo
+                    title={translations["Click Through Rate"]}
+                    value={selectedData ? selectedData.ctr : "-%"}
+                    color="text-green-500"
+                    popupContent="Rasio jumlah klik pada iklan kita dibandingkan dengan jumlah iklan ditayangkan"
+                  />
+                  <CardInfo
+                    title="OCLP"
+                    value={selectedData ? selectedData.oclp : "-%"}
+                    popupContent="Mendorong pengunjung untuk mengklik tautan atau tombol yang mengarahkan mereka ke halaman atau situs web eksternal yang relevan"
+                  />
+                </div>
 
                 {/* Chart */}
                 <div className="flex justify-between flex-col w-full">
                   <div className="w-full mt-1 flex flex-col">
-                    <Chart metricId={chartUrl} />
+                    <Chart chartUrl={chartUrl} />
                   </div>
 
                   {selectedData && (
@@ -860,10 +786,10 @@ const Dashboard = () => {
                   />
                 ))
               ) : (
-                  <div>
-                    <img src={NotFound} className="h-80"/>
-                  </div>
-                )}
+                <div>
+                  <img src={NotFound} className="h-80" />
+                </div>
+              )}
             </div>
           </div>
         );
@@ -977,20 +903,20 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         const id = campaign_id;
-        const token = localStorage.getItem('jwtToken');
+        const token = localStorage.getItem("jwtToken");
         const response = await axios.get(
           `https://umaxx-1-v8834930.deta.app/metrics-7?campaign_id=${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
-              'accept': 'application/json',
+              Accept: "application/json",
             },
           }
         );
 
         if (response.status === 200) {
           const data = response.data;
-          console.log('response data', data);
+          console.log("response data", data);
 
           if (data.Data && data.Data.length > 0) {
             const campaignId = data.Data[0].campaign_id;
@@ -1001,31 +927,31 @@ const Dashboard = () => {
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
-                  'accept': 'application/json',
+                  Accept: "application/json",
                 },
               }
             );
 
             if (nextResponse.status === 200) {
               const nextData = nextResponse.data.Data;
-              console.log('next data metric', nextData);
+              console.log("next data metric", nextData);
               setMetricsData(nextData);
             } else {
-              console.error('Failed to fetch data from API');
+              console.error("Failed to fetch data from API");
             }
           } else {
-            console.error('No campaign data found in the response');
+            console.error("No campaign data found in the response");
           }
         } else {
-          console.error('Failed to fetch data from API');
+          console.error("Failed to fetch data from API");
         }
       } catch (error) {
-        console.error('An error occurred', error);
+        console.error("An error occurred", error);
       }
     };
 
     fetchData();
-  }, []); 
+  }, [campaign_id, setMetricsData, setCampaignIdFromResponse]);
 
   return (
     <main className="bg-slate-100 min-h-screen ">

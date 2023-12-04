@@ -375,7 +375,7 @@ useEffect(() => {
 const currencyOptions = Array.isArray(currencyData)
   ? currencyData.map(item => ({
       value: item.value,
-      label: item.symbol,
+      label: item.currency,
     }))
   : [];
 
@@ -461,9 +461,7 @@ const handleCurrencyChange = value => {
               <form className="mt-1 flex flex-col  gap-4">
 
                 <div className="w-full">
-                  <div className="my-4 flex items-center gap-4 max-sm:flex-col">
-
-                  </div>
+                 
                   <div className="my-4 flex items-center gap-4 max-sm:flex-col">
 
                     <div className="relative w-full mt-3">

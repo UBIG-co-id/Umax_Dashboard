@@ -20,7 +20,8 @@ function AccountTable() {
   const [tableData, setTableData] = useState([]);
   const tableRef = useRef(null);
   const navigate = useNavigate();
-  // url base
+
+  // URL BASE
   const umaxUrl = 'https://umaxx-1-v8834930.deta.app';
  
   const [showAddPopup, setShowAddPopup] = useState(false);
@@ -32,7 +33,6 @@ function AccountTable() {
     navigate('/AddAccounts');
   };
 
- 
   
    // Make a DELETE request to the FastAPI endpoint
    const handleDelete = async (_id) => {
@@ -52,7 +52,7 @@ function AccountTable() {
         try {
           const token = localStorage.getItem('jwtToken');
           const response = await axios.delete(
-            `${umaxUrl}/account-delete/?account_id=${_id}`,
+            `${umaxUrl}/account-delete?account_id=${_id}`,
             {
               headers: {
                 'Authorization': `Bearer ${token}`,
@@ -72,11 +72,25 @@ function AccountTable() {
               },
             });
           } else {
-            Swal.fire('Error', 'An error occurred while deleting the data.', 'error');
+            Swal.fire({
+              title: 'Error',
+              text: 'Terjadi kesalahan saat menghapus data',
+              icon: 'error',
+              customClass: {
+                confirmButton: 'custom-error-button-class',
+              },
+            });
           }
         } catch (error) {
-          Swal.fire('Error', 'An error occurred while deleting the data.', 'error');
-        }
+          Swal.fire({
+            title: 'Error',
+            text: 'Terjadi kesalahan saat menghapus data',
+            icon: 'error',
+            customClass: {
+              confirmButton: 'custom-error-button-class',
+            },
+          });
+     }
       }
     });
   };
@@ -96,7 +110,7 @@ function AccountTable() {
   async function fetchData() {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch("https://umaxx-1-v8834930.deta.app/account-by-tenant",{
+      const response = await fetch(`${umaxUrl}/account-by-tenant`,{
         headers: {
          'accept': 'application/json',
          'Content-Type': 'application/x-www-form-urlencoded',
@@ -350,12 +364,7 @@ function AccountTable() {
   });
 
 
-  // select 2
-
-
-
-
-
+  // FUNGSI EXPORT PDF 
   const componentPDF = useRef();
 
 
@@ -404,11 +413,6 @@ function AccountTable() {
           </div>
           {/* End */}
 
-          {/* Seleksi filter Platform dan objective */}
-
-          {/* bagian platform */}
-
-
           {/* bagian Platform */}
           <div className="relative col-span-4 lg:col-span-2">
             <select
@@ -455,10 +459,6 @@ function AccountTable() {
               <BsPlus className="font-medium text-lg" />
               <span >Add</span>
             </button>
-
-          {/* menu add data */}
-          {/* Pop-up menu */}
-
 
 
           {/* Button export excel */}

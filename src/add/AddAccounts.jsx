@@ -9,7 +9,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const AddDataAccounts = () => {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
   const [clientList, setClientList] = useState([]);
   // url base
   const umaxUrl = 'https://umaxx-1-v8834930.deta.app';
@@ -49,49 +48,85 @@ const AddDataAccounts = () => {
   // END GET DATA CLIENT
 
   // ADD DATA
+  const [passwordMatch, setPasswordMatch] = useState(true);
   const formik = useFormik({
     initialValues: {
-      _id: '',
-      username : '',
-      client_id : '',
+      username: '',
+      client_id: '',
       platform: '',
       email: '',
       password: '',
+      confirm_password: '',
       status: '',
-      notes: ''
+      notes: '',
     },
+   
 
     onSubmit: (values) => {
+      if (values.password !== values.confirm_password) {
+        setPasswordMatch(false);
+        return;
+    }
       const token = localStorage.getItem('jwtToken');
-      fetch(`${umaxUrl}/accounts`, {
-        method: 'POST',
-        headers: {
-          'accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: new URLSearchParams(values).toString(),
+      if (
+        values.username &&
+        values.client_id &&
+        values.platform &&
+        values.email &&
+        values.password &&
+        values.confirm_password &&
+        values.status &&
+        values.notes
+    ) {
+      fetch(`${umaxUrl}/account-create`, {
+          method: 'POST',
+          headers: {
+              'accept': 'application/json',
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'Authorization': `Bearer ${token}`,
+          },
+          body: new URLSearchParams(values).toString(),
       })
-
-        .then(response => response.json())
-        .then(data => {
-          // Handle the response from the backend (e.g., success message or error)
-          console.log(data);
-          if (data.message === 'data berhasil ditambah') {
-            // Redirect to the dashboard page
-          }
-          navigate('/Accounts');
-        })
-        .catch(error => {
-          // Handle errors, e.g., network errors
-          console.error(error);
-        });
-
+          .then(response => response.json())
+          .then(data => {
+              console.log(data);
+              if (data && data.success) {
+                toast.success('Data added successfully!', {
+                  position: toast.POSITION.TOP_CENTER,
+                });
+                navigate('/Accounts');
+              } else {
+                // Menampilkan toast ketika data berhasil ditambah
+                toast.success('Data added successfully!', {
+                  position: 'top-right',
+                });
+                // navigate('/Accounts');
+              }
+          })
+          .catch(error => {
+            console.error(error);
+            toast.error('Terjadi kesalahan. Silakan coba lagi nanti.', {
+              position: 'top-right',
+            });
+          }); 
+        } else {
+          toast.warning('Silakan isi semua field yang wajib diisi.', {
+              position: 'top-right',
+          });
+        }
     },
   });
   // END ADD DATA
+  
+  // hide password
+  const [showPassword, setShowPassword] = useState(false);
+  const [showKonfirmasiPassword, setShowKonfirmasiPassword] = useState(false);
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+  const toggleKonfirmasiPasswordVisibility = () => {
+    setShowKonfirmasiPassword(!showKonfirmasiPassword);
   };
 
   // close menggunakan esc
@@ -146,9 +181,9 @@ const AddDataAccounts = () => {
                   value={formik.values.client_id}
                   className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
                 >
-                  <option hidden>Select Client...</option>
-                  {clientList.map((client) => (
-                    <option key={client._id} value={client.name}>
+                  <option hidden>-Select Client-</option>   
+                  {clientList.map((client) => ( 
+                    <option key={client._id} value={client._id}>
                       {client.name}
                     </option>
                   ))}
@@ -190,8 +225,6 @@ const AddDataAccounts = () => {
 
             </div>
 
-
-
             <div className="flex flex-col md:flex-row gap-4 mb-4">
               <div className="flex flex-col">
                 <label className="pb-2 text-sm" htmlFor="">
@@ -219,9 +252,47 @@ const AddDataAccounts = () => {
                 </div>
               </div>
 
-
-
               <div className="flex flex-col">
+                <label className="pb-2 text-sm" htmlFor="">
+                <span className='text-red-600 text-lg'>*</span>Confirm password 
+                </label>
+                <div className="relative">
+                  <input
+                    type={showKonfirmasiPassword ? 'text' : 'password'}
+                    name='confirm_password'
+                    id="confirm_password"
+                    onChange={formik.handleChange}
+                    value={formik.values.confirm_password }
+                    className="p-2 h-9 w-56 border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md pr-10"
+                  />
+                 
+                  <div
+                    className="absolute top-3 right-2  cursor-pointer"
+                    onClick={toggleKonfirmasiPasswordVisibility}
+                  >
+                    {showKonfirmasiPassword ? (
+                      <AiOutlineEyeInvisible size={15} />
+                    ) : (
+                      <AiOutlineEye size={15} />
+                    )}
+                    
+                  </div>
+                  
+                </div>
+                {!passwordMatch && (
+                    <span className="text-red-500 text-sm relative bottom-0 left-0 mb-2 ml-2">
+                    Password tidak sama!
+                    </span>
+                    )}
+                    
+              </div>
+    
+            </div>
+
+
+
+            <div className="flex flex-col md:flex-row gap-4 mb-4">
+            <div className="flex flex-col">
                 <label className='pb-2 text-sm' htmlFor=""><span className='text-red-600 text-lg'>*</span>Status</label>
                 <select
                   name="status"
@@ -235,11 +306,8 @@ const AddDataAccounts = () => {
                   <option value="2">Deactive</option>
                 </select>
               </div>
-            </div>
 
 
-
-            <div className="flex flex-col md:flex-row gap-4 mb-4">
               <div className="flex flex-col">
                 <label className='pb-2 text-sm ' htmlFor=""><span className='text-red-600 text-lg'>*</span>Notes</label>
                 <textarea
@@ -278,6 +346,7 @@ const AddDataAccounts = () => {
           </form>
         </div>
       </div>
+      <ToastContainer />
     </main>
   )
 }

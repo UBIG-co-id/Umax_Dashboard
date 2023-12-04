@@ -1,10 +1,11 @@
-import  {useEffect, React} from 'react'
+import  {useEffect, React, useState} from 'react'
 import { useFormik } from 'formik';
 import { Link, useNavigate, useParams, } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import ClientsTable from '../components/ClientsTable';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {  AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 const AddDataClients = () => {
     // url base
@@ -12,6 +13,8 @@ const AddDataClients = () => {
 
     const navigate = useNavigate();
     // ADD DATA
+
+    const [passwordMatch, setPasswordMatch] = useState(true);
     const formik = useFormik({
         initialValues: {
             name: '',
@@ -26,8 +29,12 @@ const AddDataClients = () => {
         },
 
         onSubmit: (values) => {
-            const token = localStorage.getItem('jwtToken');
             // Validasi sebelum mengirim data
+            if (values.password !== values.confirm_password) {
+                setPasswordMatch(false);
+                return;
+            }
+            const token = localStorage.getItem('jwtToken');
             if (
                 values.name &&
                 values.address &&
@@ -38,7 +45,7 @@ const AddDataClients = () => {
                 values.notes &&
                 values.status
             ) {
-                fetch('https://umaxx-1-v8834930.deta.app/client-create', {
+                fetch(`${umaxUrl}/client-create`, {
                     method: 'POST',
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -53,18 +60,40 @@ const AddDataClients = () => {
                         if (data.message === 'data berhasil ditambah') {
                             navigate('/Clients');
                         }
+                        else {
+                            // Menampilkan toast ketika data berhasil ditambah
+                            toast.success('Data added successfully!', {
+                              position: 'top-right',
+                            });
+                            // navigate('/Accounts');
+                          }
                     })
                     .catch(error => {
                         console.error(error);
-                    });
+                        toast.error('Terjadi kesalahan. Silakan coba lagi nanti.', {
+                          position: 'top-right',
+                        });
+                      }); 
             } else {
-                toast.warning('Please fill in all required fields.', {
+                toast.warning('Silakan isi semua field yang wajib diisi.', {
                     position: 'top-right',
                 });
             }
         },
     });
     // END ADD DATA
+
+    // hide password
+  const [showPassword, setShowPassword] = useState(false);
+  const [showKonfirmasiPassword, setShowKonfirmasiPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+  const toggleKonfirmasiPasswordVisibility = () => {
+    setShowKonfirmasiPassword(!showKonfirmasiPassword);
+  };
+
 
     // fungsi untuk menutup page menggunakan esc
     useEffect(() => {
@@ -178,24 +207,60 @@ const AddDataClients = () => {
                                     <div className="flex flex-col">
                                         <label className='pb-2 text-sm ' htmlFor="name"><span className='text-red-600 text-lg'>*</span>Password</label>
                                         <input
-                                            type="password"
+                                            type={showPassword ? 'text' : 'password'}
                                             name='password'
                                             id="password"
                                             onChange={formik.handleChange}
                                             value={formik.values.password}
                                             className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                                         />
+                                      <div
+                                        className="relative bottom-6 left-44  cursor-pointer"
+                                        onClick={togglePasswordVisibility}
+                                    >
+                                        {showPassword ? (
+                                        <AiOutlineEyeInvisible size={15} />
+                                        ) : (
+                                        <AiOutlineEye size={15} />
+                                        )}
+                                    </div>
+
                                     </div>
                                     <div className="flex flex-col">
                                         <label className='pb-2 text-sm ' htmlFor="address"><span className='text-red-600 text-lg'>*</span>Confirm Password</label>
                                         <input
-                                            type="password"
-                                            name='confirm_password'
-                                            id="confirm_password"
-                                            onChange={formik.handleChange}
-                                            value={formik.values.confirm_password}
-                                            className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
-                                        />
+                                                type="password"
+                                                name='confirm_password'
+                                                id="confirm_password"
+                                                onChange={(e) => {
+                                                    formik.handleChange(e);
+                                                    setPasswordMatch(true);
+                                                }}
+                                                onBlur={formik.handleBlur}
+                                                value={formik.values.confirm_password}
+                                                className={`p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md ${
+                                                    !passwordMatch && formik.errors.confirm_password
+                                                        ? 'border-red-500'
+                                                        : ''
+                                                }`}
+                                            />
+                                              <div
+                                                className="relative bottom-6 left-44  cursor-pointer"
+                                                onClick={toggleKonfirmasiPasswordVisibility}
+                                            >
+                                                {showKonfirmasiPassword ? (
+                                                <AiOutlineEyeInvisible size={15} />
+                                                ) : (
+                                                <AiOutlineEye size={15} />
+                                                )}
+                                                
+                                            </div>
+                                            
+                                             {!passwordMatch && (
+                                                <span className="text-red-500 text-sm relative bottom-0 left-0 mb-2 ml-2">
+                                                Password tidak sama!
+                                                </span>
+                                                )}
                                     </div>
                                 </div>
                                
