@@ -248,16 +248,13 @@ const Dashboard = () => {
     },
     {
       title: translations["Frequency"],
-      value: selectedData ? selectedData.frequency : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 20 },
-        { name: "Day5", value: 10 },
-        { name: "Day6", value: 15 },
-        { name: "Day7", value: 5 },
-      ],
+      value: selectedData
+      ? selectedData.frequency
+      : barr.map((dayData) => dayData.frequency), // Ambil semua frequency dari barr
+    chart: barr.map((dayData) => ({
+      name: dayData.TglUpdate,
+      value: parseFloat(dayData.frequency.replace(/\D/g, "")),
+    })),
       persen: -2.0,
       description: "Total Impression compared to last 7 day",
       descModal:
@@ -265,16 +262,13 @@ const Dashboard = () => {
     },
     {
       title: translations["Reach Amount Spent Ratio"],
-      value: selectedData ? selectedData.rar : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 20 },
-        { name: "Day5", value: 10 },
-        { name: "Day6", value: 15 },
-        { name: "Day7", value: 20 },
-      ],
+      value: selectedData
+      ? selectedData.rar
+      : barr.map((dayData) => dayData.rar), // Ambil semua rar dari barr
+    chart: barr.map((dayData) => ({
+      name: dayData.TglUpdate,
+      value: parseFloat(dayData.rar.replace(/\D/g, "")),
+    })),
       persen: 2.0,
       description: "Total Reach Amount Spent ratio compared to last 7 day",
       descModal:
@@ -282,16 +276,13 @@ const Dashboard = () => {
     },
     {
       title: translations["Cost Per Click"],
-      value: selectedData ? selectedData.cpc : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 12 },
-        { name: "Day5", value: 15 },
-        { name: "Day6", value: 10 },
-        { name: "Day7", value: 20 },
-      ],
+      value: selectedData
+      ? selectedData.cpr
+      : barr.map((dayData) => dayData.cpr), // Ambil semua cpr dari barr
+    chart: barr.map((dayData) => ({
+      name: dayData.TglUpdate,
+      value: parseFloat(dayData.cpr.replace(/\D/g, "")),
+    })),
       persen: 2.0,
       description: "Total Cost per Click compared to last 7 day",
       descModal:
@@ -299,16 +290,13 @@ const Dashboard = () => {
     },
     {
       title: translations["Click Through Rate"],
-      value: selectedData ? selectedData.ctr : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 12 },
-        { name: "Day5", value: 15 },
-        { name: "Day6", value: 10 },
-        { name: "Day7", value: 15 },
-      ],
+      value: selectedData
+      ? selectedData.ctr
+      : barr.map((dayData) => dayData.ctr), // Ambil semua ctr dari barr
+    chart: barr.map((dayData) => ({
+      name: dayData.TglUpdate,
+      value: parseFloat(dayData.ctr.replace(/\D/g, "")),
+    })),
       persen: 2.0,
       description: "Total Click Through Rate compared to last 7 day",
       descModal:
@@ -316,16 +304,13 @@ const Dashboard = () => {
     },
     {
       title: translations["Outbont Click Landing Page"],
-      value: selectedData ? selectedData.oclp : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 12 },
-        { name: "Day5", value: 15 },
-        { name: "Day6", value: 10 },
-        { name: "Day7", value: 5 },
-      ],
+      value: selectedData
+      ? selectedData.oclp
+      : barr.map((dayData) => dayData.oclp), // Ambil semua oclp dari barr
+    chart: barr.map((dayData) => ({
+      name: dayData.TglUpdate,
+      value: parseFloat(dayData.oclp.replace(/\D/g, "")),
+    })),
       persen: -2.0,
       description: "Total OCLP compared to last 7 day",
       descModal:
@@ -333,16 +318,13 @@ const Dashboard = () => {
     },
     {
       title: translations["Cost Per Result"],
-      value: selectedData ? selectedData.cpr : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 12 },
-        { name: "Day5", value: 15 },
-        { name: "Day6", value: 10 },
-        { name: "Day7", value: 20 },
-      ],
+      value: selectedData
+      ? selectedData.cpr
+      : barr.map((dayData) => dayData.cpr), // Ambil semua cpr dari barr
+    chart: barr.map((dayData) => ({
+      name: dayData.TglUpdate,
+      value: parseFloat(dayData.cpr.replace(/\D/g, "")),
+    })),
       persen: 2.0,
       description: "Total Cost per Result compared to last 7 day",
       descModal:
@@ -350,16 +332,13 @@ const Dashboard = () => {
     },
     {
       title: translations["Add To Cart"],
-      value: selectedData ? selectedData.atc : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 12 },
-        { name: "Day5", value: 15 },
-        { name: "Day6", value: 10 },
-        { name: "Day7", value: 20 },
-      ],
+      value: selectedData
+      ? selectedData.atc
+      : barr.map((dayData) => dayData.atc), // Ambil semua atc dari barr
+    chart: barr.map((dayData) => ({
+      name: dayData.TglUpdate,
+      value: parseFloat(dayData.atc.replace(/\D/g, "")),
+    })),
       persen: 2.0,
       description: "Total Add to Cart compared to last 7 day",
       descModal:
@@ -367,16 +346,13 @@ const Dashboard = () => {
     },
     {
       title: translations["Return on Ad Spent"],
-      value: selectedData ? selectedData.roas : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 12 },
-        { name: "Day5", value: 15 },
-        { name: "Day6", value: 10 },
-        { name: "Day7", value: 20 },
-      ],
+      value: selectedData
+      ? selectedData.roas
+      : barr.map((dayData) => dayData.roas), // Ambil semua roas dari barr
+    chart: barr.map((dayData) => ({
+      name: dayData.TglUpdate,
+      value: parseFloat(dayData.roas.replace(/\D/g, "")),
+    })),
       persen: 2.0,
       description: "Total ROAS to last 7 day",
       descModal:
@@ -384,16 +360,13 @@ const Dashboard = () => {
     },
     {
       title: translations["Real ROAS"],
-      value: selectedData ? selectedData.realroas : null,
-      chart: [
-        { name: "Day1", value: 10 },
-        { name: "Day2", value: 15 },
-        { name: "Day3", value: 7 },
-        { name: "Day4", value: 12 },
-        { name: "Day5", value: 15 },
-        { name: "Day6", value: 10 },
-        { name: "Day7", value: 20 },
-      ],
+         value: selectedData
+        ? selectedData.realroas
+        : barr.map((dayData) => dayData.realroas), // Ambil semua realroas dari barr
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.realroas.replace(/\D/g, "")),
+      })),
       persen: 2.0,
       description: "Total Real ROAS to last 7 day",
       descModal:
