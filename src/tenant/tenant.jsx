@@ -41,7 +41,7 @@ const Tenant = () => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('jwtToken');
-        const apiUrl = 'https://umaxx-1-v8834930.deta.app/tenant-by-id';
+        const apiUrl = 'https://umaxxnew-1-d6861606.deta.app/tenant-by-id';
 
         const response = await Axios.get(apiUrl, {
           headers: {
@@ -109,7 +109,7 @@ const Tenant = () => {
   const handleSave = async () => {
     try {
       const token = localStorage.getItem('jwtToken');
-      const apiUrl = 'https://umaxx-1-v8834930.deta.app/tenant-edit';
+      const apiUrl = 'https://umaxxnew-1-d6861606.deta.app/tenant-edit';
 
       const changes = {};
       Object.keys(profileData).forEach((key) => {

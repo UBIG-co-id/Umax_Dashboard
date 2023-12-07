@@ -21,7 +21,7 @@ const SignIn = () => {
 
     onSubmit: (values) => {
       // const { Token } = response.Data;
-      fetch(`https://umaxx-1-v8834930.deta.app/login`, {
+      fetch(`https://umaxxnew-1-d6861606.deta.app/login`, {
         method: 'POST',
         headers: {
           'accept': 'application/json',
@@ -51,7 +51,7 @@ const SignIn = () => {
   //   event.preventDefault();
 
   //   try {
-  //     const response = await fetch('https://umaxx-1-v8834930.deta.app/login', {
+  //     const response = await fetch('https://umaxxnew-1-d6861606.deta.app/login', {
   //       method: 'POST',
   //       headers: {
   //         accept: "application/json",

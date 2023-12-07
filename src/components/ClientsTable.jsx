@@ -26,7 +26,7 @@ function ClientsTable() {
   const [selectedFilter, setSelectedFilter] = useState("");
   
   // variable base url
-  const umaxUrl = 'https://umaxx-1-v8834930.deta.app';
+  const umaxUrl = 'https://umaxxnew-1-d6861606.deta.app';
 
   const handleAddClick = () => {
     navigate('/AddClients');

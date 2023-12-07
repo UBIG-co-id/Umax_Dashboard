@@ -37,7 +37,7 @@ function DataTable() {
   const [selectedObjective, setSelectedObjective] = useState("");
   
   // url base
-  const umaxUrl = 'https://umaxx-1-v8834930.deta.app';
+  const umaxUrl = 'https://umaxxnew-1-d6861606.deta.app';
 
   const handleAddClick = () => {
     navigate('/AddCampaigns');
@@ -104,7 +104,7 @@ const handleDelete = async (_id) => {
 async function fetchData() {
   try {
     const token = localStorage.getItem('jwtToken');
-    const response = await fetch("https://umaxx-1-v8834930.deta.app/client-by-tenant",{
+    const response = await fetch("https://umaxxnew-1-d6861606.deta.app/client-by-tenant",{
       headers: {
        'accept': 'application/json',
        'Content-Type': 'application/x-www-form-urlencoded',
@@ -134,7 +134,7 @@ useEffect(() => {
   async function fetchData() {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch("https://umaxx-1-v8834930.deta.app/campaign-by-tenant",{
+      const response = await fetch("https://umaxxnew-1-d6861606.deta.app/campaign-by-tenant",{
         headers: {
          'accept': 'application/json',
          'Content-Type': 'application/x-www-form-urlencoded',

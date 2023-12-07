@@ -33,7 +33,7 @@ const History = ({ campaign_id }) => {
       try {
         const token = localStorage.getItem("jwtToken");
         const response = await fetch(
-          `https://umaxx-1-v8834930.deta.app/history?campaign_id=${campaign_id}`,
+          `https://umaxxnew-1-d6861606.deta.app/history?campaign_id=${campaign_id}`,
           {
             headers: {
               Accept: "application/json",

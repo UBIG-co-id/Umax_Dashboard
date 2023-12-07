@@ -52,7 +52,7 @@ const Dashboard = () => {
       try {
         const token = localStorage.getItem("jwtToken");
         const response = await axios.get(
-          `https://umaxx-1-v8834930.deta.app/suggestions?campaign_id=${id}`,
+          `https://umaxxnew-1-d6861606.deta.app/suggestions?campaign_id=${id}`,
           {
             headers: {
               Accept: "application/json",
@@ -83,7 +83,7 @@ const Dashboard = () => {
   const updateChartUrl = useCallback(
     (timeframe) => {
       if (selectedName && campaign_id) {
-        const baseUrl = "https://umaxx-1-v8834930.deta.app/"; // URL dasar
+        const baseUrl = "https://umaxxnew-1-d6861606.deta.app/"; // URL dasar
 
         // Ganti ini sesuai kebutuhan
         const newUrl = `${baseUrl}${timeframe}?campaign_id=${campaign_id}`;
@@ -99,7 +99,7 @@ const Dashboard = () => {
   const fetchHistoryData = async (campaign_id) => {
     try {
       const token = localStorage.getItem("jwtToken");
-      const apiUrl = `https://umaxx-1-v8834930.deta.app/history?campaign_id=${campaign_id}`; // Updated URL with campaign_id
+      const apiUrl = `https://umaxxnew-1-d6861606.deta.app/history?campaign_id=${campaign_id}`; // Updated URL with campaign_id
 
       const response = await fetch(apiUrl, {
         headers: {
@@ -172,7 +172,7 @@ const Dashboard = () => {
 
         // pakai value dari selectedTimeFrame agar lebih dinamis
         // default value dari selectedTimeFrame: last-week
-        const apiUrl = `https://umaxx-1-v8834930.deta.app/${selectedTimeframe}?campaign_id=${id}`;
+        const apiUrl = `https://umaxxnew-1-d6861606.deta.app/${selectedTimeframe}?campaign_id=${id}`;
 
         const response = await fetch(apiUrl, {
           headers: {
@@ -878,7 +878,7 @@ const Dashboard = () => {
         const id = campaign_id;
         const token = localStorage.getItem("jwtToken");
         const response = await axios.get(
-          `https://umaxx-1-v8834930.deta.app/metrics-7?campaign_id=${id}`,
+          `https://umaxxnew-1-d6861606.deta.app/metrics-7?campaign_id=${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -896,7 +896,7 @@ const Dashboard = () => {
             setCampaignIdFromResponse(campaignId);
 
             const nextResponse = await axios.get(
-              `https://umaxx-1-v8834930.deta.app/metrics-7?campaign_id=${campaignId}`,
+              `https://umaxxnew-1-d6861606.deta.app/metrics-7?campaign_id=${campaignId}`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,

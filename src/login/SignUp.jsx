@@ -19,7 +19,7 @@ const SignUp = () => {
 
   const navigate = useNavigate();
   // url base
-  const umaxUrl = 'https://umaxx-1-v8834930.deta.app';
+  const umaxUrl = 'https://umaxxnew-1-d6861606.deta.app';
 
   const formik = useFormik({
     initialValues: {

@@ -55,7 +55,7 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
       try {
         const token = localStorage.getItem("jwtToken");
         const response = await fetch(
-          "https://umaxx-1-v8834930.deta.app/metric-by-tenant-id",
+          "https://umaxxnew-1-d6861606.deta.app/metric-by-tenant-id",
           {
             headers: {
               Accept: "application/json",

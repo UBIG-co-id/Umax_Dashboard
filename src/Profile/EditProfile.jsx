@@ -72,7 +72,7 @@ useEffect(() => {
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('jwtToken');
-      const apiUrl = 'https://umaxx-1-v8834930.deta.app/user-by-id';
+      const apiUrl = 'https://umaxxnew-1-d6861606.deta.app/user-by-id';
 
       const culture = await Axios.get(apiUrl, {
         headers: {
@@ -120,7 +120,7 @@ useEffect(() => {
 
   const updateData = async () => {
       try {
-        const apiUrl = `https://umaxx-1-v8834930.deta.app/profile`;
+        const apiUrl = `https://umaxxnew-1-d6861606.deta.app/profile`;
         const bodyFormData = new FormData();
         // bodyFormData.append('image', profileData.image)
         bodyFormData.append('name', inputValueName)
@@ -186,7 +186,7 @@ useEffect(() => {
 
     const fetchData = async () => {
       try {
-        const apiUrl = `https://umaxx-1-v8834930.deta.app/user-by-id`;
+        const apiUrl = `https://umaxxnew-1-d6861606.deta.app/user-by-id`;
 
         const response = await Axios.get(apiUrl, {
           headers: {
@@ -246,7 +246,7 @@ const handleToggleLanguage = (language) => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('jwtToken');
-        const apiUrl = 'https://umaxx-1-v8834930.deta.app/culture';
+        const apiUrl = 'https://umaxxnew-1-d6861606.deta.app/culture';
 
         const response = await Axios.get(apiUrl, {
           headers: {
@@ -310,7 +310,7 @@ const handleToggleLanguage = (language) => {
     const fetchTimezoneData = async () => {
       try {
         const token = localStorage.getItem('jwtToken');
-        const apiUrl = 'https://umaxx-1-v8834930.deta.app/timezone';
+        const apiUrl = 'https://umaxxnew-1-d6861606.deta.app/timezone';
   
         const response = await Axios.get(apiUrl, {
           headers: {
@@ -352,7 +352,7 @@ useEffect(() => {
   const fetchCurrencyData = async () => {
     try {
       const token = localStorage.getItem('jwtToken');
-      const apiUrl = 'https://umaxx-1-v8834930.deta.app/currency';
+      const apiUrl = 'https://umaxxnew-1-d6861606.deta.app/currency';
 
       const response = await Axios.get(apiUrl, {
         headers: {

@@ -42,7 +42,7 @@ useEffect(() => {
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('jwtToken');
-      const apiUrl = 'https://umaxx-1-v8834930.deta.app/user-by-id';
+      const apiUrl = 'https://umaxxnew-1-d6861606.deta.app/user-by-id';
 
       const response = await Axios.get(apiUrl, {
         headers: {
