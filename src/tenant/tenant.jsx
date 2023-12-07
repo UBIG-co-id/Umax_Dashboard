@@ -90,6 +90,7 @@ const Tenant = () => {
           culture: selectedProfile.culture,
           company: selectedProfile.company,
           contact: selectedProfile.contact,
+          address: selectedProfile.address,
         });
 
         setOriginalProfileData({
@@ -271,21 +272,21 @@ const Tenant = () => {
         </div>
 
         <div className="w-full">
-        <div className='flex justify-center gap-5 max-md:grid-cols-7 max-sm:grid-cols-7'>
+        <div className='flex justify-end gap-5 max-md:grid-cols-7 max-sm:grid-cols-7'>
           {/* button save */}
           <button
             onClick={handleSave}
-            className='mt-4 text-gray-500 bg-green-100 flex items-center gap-2 border border-slate-300 rounded-md py-1 px-6 justify-center transition duration-300 hover:bg-green-200'
+            className='mt-4 text-white bg-blue-600 flex items-center gap-2 border border-slate-300  rounded-md py-1 px-6 justify-center transition duration-300 hover:bg-blue-800'
           >
-            <FaCheck className='text-green-600' /> Save
+            <FaCheck className='text-white' /> Save  
           </button>
-
+                   
           {/* button subscribe */}
           <button
             onClick={Dashboard}
-            className='mt-4 text-gray-500 bg-red-100 flex items-center gap-2 border border-slate-300 rounded-md py-1 px-6 justify-center transition duration-300 hover:bg-red-200'
+            className='mt-4 text-white bg-red-600 flex items-center gap-2 border border-slate-300 rounded-md py-1 px-6 justify-center transition duration-300 hover:bg-red-700'
           >
-            <MdOutlineCancel className='text-red-600' /> Cancel
+            <MdOutlineCancel className='text-white' /> Cancel
           </button>
         </div>
         </div>

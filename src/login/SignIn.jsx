@@ -3,6 +3,7 @@ import logo from '../assets/logo.png';
 import bgLogin from '../assets/bg-default.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -11,44 +12,44 @@ const SignIn = () => {
   const [error, setError] = useState(null);
 
   // ADD Data Campaigns
- 
+
   const formik = useFormik({
     initialValues: {
-        email: '',
-        password: '',
+      email: '',
+      password: '',
     },
 
-        onSubmit: (values) => {
-          // const { Token } = response.Data;
-            fetch(`https://umaxx-1-v8834930.deta.app/login`, {
-                method: 'POST',
-                headers: {
-                    'accept': 'application/json',
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams(values).toString(),
-            })
-
-                .then(response => response.json())
-                .then(data => {
-                  const {Token} = data
-                  console.log("ini token",Token)
-                    console.log(data);
-                    localStorage.setItem('jwtToken', Token);
-                    
-                    navigate('/Dashboard');
-                })
-                .catch(error => {
-                    // Handle errors, e.g., network errors
-                    console.error(error);
-                });
-
+    onSubmit: (values) => {
+      // const { Token } = response.Data;
+      fetch(`https://umaxx-1-v8834930.deta.app/login`, {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-});
+        body: new URLSearchParams(values).toString(),
+      })
+
+        .then(response => response.json())
+        .then(data => {
+          const { Token } = data
+          console.log("ini token", Token)
+          console.log(data);
+          localStorage.setItem('jwtToken', Token);
+
+          navigate('/Dashboard');
+        })
+        .catch(error => {
+          // Handle errors, e.g., network errors
+          console.error(error);
+        });
+
+    },
+  });
 
   // const handleSubmit = async (event) => {
   //   event.preventDefault();
-  
+
   //   try {
   //     const response = await fetch('https://umaxx-1-v8834930.deta.app/login', {
   //       method: 'POST',
@@ -61,13 +62,13 @@ const SignIn = () => {
   //         password,
   //       }),
   //     });
-      
+
   //     console.log('Response status:', response.status);
-  
+
   //     if (response.ok) {
   //       const responseData = await response.json();
   //       const { Token } = responseData.Data; 
-  
+
   //       localStorage.setItem('jwtToken', Token);
   //       navigate('/Dashboard');
   //     } else {
@@ -77,8 +78,13 @@ const SignIn = () => {
   //     console.error('Error:', error.message);
   //   }
   // };
-  
-  
+
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+
 
   return (
     <div className="relative min-h-screen overflow-hidden flex flex-col items-center justify-center">
@@ -89,7 +95,7 @@ const SignIn = () => {
       <div className="flex flex-col items-center justify-center mt-5 sm:mt-0">
         <form
           onSubmit={formik.handleSubmit}
-          className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg border-2"
+          className="w-full  p-6 bg-white rounded-lg shadow-lg border-2"
         >
           <p className="font-semibold text-base text-[#5473E3] mb-5">Login</p>
           <input
@@ -101,15 +107,28 @@ const SignIn = () => {
             onChange={formik.handleChange}
             value={formik.values.email}
           />
-          <input
-            type="password"
-            name="password"
-            id="password"
-            placeholder="Password"
-            className="w-full h-9 rounded-[10px] pl-5 border border-blue mt-2 focus:outline-none focus:ring-1"
-            onChange={formik.handleChange}
-            value={formik.values.password}
-          />
+          <div className="relative flex items-center">
+            <input
+             type={showPassword ? 'text' : 'password'}
+              name="password"
+              id="password"
+              placeholder="Password"
+              className="w-full h-9 rounded-[10px] pl-5 border border-blue mt-2 focus:outline-none focus:ring-1"
+              onChange={formik.handleChange}
+              value={formik.values.password}
+            />
+            <div
+            className="absolute top-3 right-2  cursor-pointer"
+            onClick={togglePasswordVisibility} 
+          >
+            {showPassword ? (
+              <AiOutlineEye size={15} />
+            ) : (
+              <AiOutlineEyeInvisible size={15} />
+            )}
+
+          </div>
+          </div>
           {error && <p className="text-red-500">{error}</p>}
           <button
             type="submit"

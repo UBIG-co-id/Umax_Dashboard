@@ -239,16 +239,6 @@ const AddDataAccounts = () => {
                     value={formik.values.password}
                     className="p-2 h-9 w-56 border  focus:border-blue-500 focus:outline-none  focus:border-2 bg-slate-100 border-slate-300 rounded-md pr-10"
                   />
-                  <div
-                    className="absolute top-3 right-2  cursor-pointer"
-                    onClick={togglePasswordVisibility}
-                  >
-                    {showPassword ? (
-                      <AiOutlineEyeInvisible size={15} />
-                    ) : (
-                      <AiOutlineEye size={15} />
-                    )}
-                  </div>
                 </div>
               </div>
 
@@ -271,9 +261,9 @@ const AddDataAccounts = () => {
                     onClick={toggleKonfirmasiPasswordVisibility}
                   >
                     {showKonfirmasiPassword ? (
-                      <AiOutlineEyeInvisible size={15} />
-                    ) : (
                       <AiOutlineEye size={15} />
+                    ) : (
+                      <AiOutlineEyeInvisible size={15} />
                     )}
                     
                   </div>
