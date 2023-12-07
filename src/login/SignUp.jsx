@@ -61,8 +61,8 @@ const SignUp = () => {
           }
         })
         .catch(error => {
-          console.error('Kesalahan Fetch:', error);
-          // console.error(error);
+          // console.error('Kesalahan Fetch:', error);
+          console.error(error);
         });
     },
   });
