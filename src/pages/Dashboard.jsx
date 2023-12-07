@@ -760,8 +760,9 @@ const Dashboard = () => {
                 ))
               ) : (
                 <div>
-                  <img src={NotFound} className="h-80" />
+                  <img src={NotFound} className="h-80"/>
                 </div>
+                
               )}
             </div>
           </div>
@@ -773,7 +774,9 @@ const Dashboard = () => {
             {campaign_id ? (
               <History campaign_id={campaign_id} />
             ) : (
-              <p>Select a valid item</p>
+             <div>
+             <img src={NotFound} className="relative mx-auto h-80 my-auto" />
+             </div>
             )}
           </div>
         );

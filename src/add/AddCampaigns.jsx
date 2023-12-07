@@ -5,8 +5,8 @@ import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddCampaigns = () => {
   // / URL BASE
@@ -52,6 +52,15 @@ const AddCampaigns = () => {
     },
 
     onSubmit: (values) => {
+      if (
+        values.name &&
+        values.account_id &&
+        values.objective &&
+        values.start_date &&
+        values.end_date &&
+        values.status &&
+        values.notes 
+    ) {
       const token = localStorage.getItem("jwtToken");
       fetch(`${umaxUrl}campaign-create`, {
         method: "POST",
@@ -72,6 +81,11 @@ const AddCampaigns = () => {
         .catch((error) => {
           console.error(error);
         });
+      } else {
+        toast.warning('Silakan isi semua field yang wajib diisi.', {
+            position: 'top-right',
+        });
+      }
     },
   });
   // END ADD DATA Campaigns
@@ -283,6 +297,7 @@ const AddCampaigns = () => {
           </form>
         </div>
       </div>
+      <ToastContainer />
     </main>
   );
 };

@@ -1,6 +1,6 @@
 {
     "english":{
-        "Dashboard"       : "Dahsboard",
+        "Dashboard"       : "Dashboard",
         "Campaigns"       : "Campaigns",
         "Accounts"        : "Accounts",
         "Clients"         : "Clients",
@@ -78,4 +78,4 @@
         
         
     }
-}
+} 

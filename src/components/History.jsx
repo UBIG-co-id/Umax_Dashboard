@@ -28,12 +28,15 @@ const History = ({ campaign_id }) => {
   const [selectedData, setSelectedData] = useState([]);
   const [error, setError] = useState(null);
 
+  // base url
+  const baseUrl = 'https://umaxx-1-v8834930.deta.app';
+
   useEffect(() => {
     const fetchCampaignData = async () => {
       try {
         const token = localStorage.getItem("jwtToken");
         const response = await fetch(
-          `https://umaxx-1-v8834930.deta.app/history?campaign_id=${campaign_id}`,
+          `${baseUrl}/history?campaign_id=${campaign_id}`,
           {
             headers: {
               Accept: "application/json",
@@ -41,7 +44,9 @@ const History = ({ campaign_id }) => {
             },
           }
         );
+        console.log('data history', response)
         if (response.ok) {
+
           const data = await response.json();
           setData(data.Data);
         } else {
@@ -53,7 +58,7 @@ const History = ({ campaign_id }) => {
     };
 
     fetchCampaignData();
-  }, [setData, campaign_id]);
+  }, [campaign_id]);
 
   const handleRowSelection = (selectedRowData) => {
     setSelectedData(selectedRowData);
@@ -153,7 +158,7 @@ const History = ({ campaign_id }) => {
     () => [
       {
         Header: "Last Update",
-        accessor: "perubahan.TglUpdate",
+        accessor: "perubahan.timestamp_update",
         Cell: ({ value }) => {
           const date = new Date(value);
           const formattedTime = date.toLocaleTimeString("id-ID", {
@@ -365,7 +370,7 @@ const History = ({ campaign_id }) => {
 
               <tbody {...getTableBodyProps()}>
                 {/** sort logic */}
-                {sortedHistory.map((row, i) => {
+                {page.map((row, i) => {
                   prepareRow(row);
                   return (
                     <tr
@@ -383,7 +388,7 @@ const History = ({ campaign_id }) => {
                           cell.column.id === "perubahan.atc" ||
                           cell.column.id === "perubahan.roas"
                             ? "text-center"
-                            : cell.column.id === "perubahan.TglUpdate"
+                            : cell.column.id === "perubahan.timestamp_update"
                             ? "text-left"
                             : "text-right"; // Assuming amount spent, reach, impressions, cpc, and cpr should be right-aligned.
                         return (
@@ -446,7 +451,7 @@ const History = ({ campaign_id }) => {
             style={{
               ...buttonStyle,
               ...(canNextPage ? {} : disabledButtonStyle),
-            }}
+            }}data
           >
             <IoIosArrowForward />
           </button>{" "}

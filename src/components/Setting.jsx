@@ -1,162 +1,238 @@
-import React from 'react'
-import { AiOutlinePercentage } from 'react-icons/ai';
-import { AiOutlineClose } from 'react-icons/ai';
-
-function InputGroup1({
-  label,
-  label2,
-  name,
-  value,
-  onChange,
-  decoration,
-  placeholder,
-  inputClassName = "",
-  decorationClassName = "",
-  disabled,
-}) {
-  return (
-    <div className="flex md:items-center gap-4 flex-row max-md:flex-col">
-      <div className="w-1/2  max-md:w-max  flex flex-col">
-        <span className="text-md font-medium">
-          {label}
-
-        </span>
-        <span className="text-md">
-          {label2}
-        </span>
-      </div>
-      <div className="relative w-52 ">
-        <input
-          id={name}
-          name={name}
-          value={value}
-          onChange={onChange}
-          type="number"
-          placeholder={placeholder}
-          aria-label={label}
-          className={`block w-full px-3 py-2 text-gray-500 bg-white border border-gray-400 focus:border-gray-600 focus:outline-none focus:ring-0 appearance-none rounded transition-colors duration-300 ${disabled ? "bg-gray-200" : ""
-            } ${inputClassName}`}
-          disabled={disabled}
-        />
-        <div
-          className={`absolute top-1/2 -right-1 transform -translate-y-1/2 flex items-center rounded-tl-none rounded-bl-none rounded px-3 py-3 text-gray-600 border bg-slate-300 border-gray-400 border-l-0 ${disabled ? "bg-gray-200" : ""
-            } ${decorationClassName}`}
-        >
-          {decoration}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-
-function InputGroup2({
-  label,
-  label2,
-  name,
-  value,
-  onChange,
-  placeholder,
-  inputClassName = "",
-  decorationClassName = "",
-  disabled,
-}) {
-  return (
-    <div className="flex md:items-center gap-4 flex-row max-md:flex-col">
-      <div className="relative bottom-2 w-1/2  max-md:w-max  flex flex-col">
-        <span className="text-md font-medium">
-          {label}
-        </span>
-        <span className="text-md">
-          {label2}
-        </span>
-      </div>
-      <div className="relative pt-5 w-52">
-        <input
-          id={name}
-          name={name}
-          value={value}
-          onChange={onChange}
-          type="number"
-          placeholder={placeholder}
-          aria-label={label}
-          className={`block absolute top-1/2 -right-1 transform -translate-y-1/2 w-44 px-3 py-2 text-gray-500 bg-white border border-gray-400 focus:border-gray-600 focus:outline-none focus:ring-0 appearance-none rounded transition-colors duration-300 ${disabled ? "bg-gray-200" : ""
-            } ${inputClassName}`}
-          disabled={disabled}
-        />
-        <select
-          id={`${name}-select`}
-          name={name}
-          value={value}
-          onChange={onChange}
-          className={`block absolute top-1/2 -left-1 transform -translate-y-1/2 rounded-l px-3 py-2 text-gray-500 bg-slate-300 border border-gray-400 focus:border-gray-600 focus:outline-none focus:ring-0 appearance-none rounded-r-none ${disabled ? "bg-gray-200" : ""
-            } ${decorationClassName}`}
-          disabled={disabled}
-        >
-          <option value="option1">Rp</option>
-          <option value="option2">$</option>
-        </select>
-      </div>
-    </div>
-
-  );
-}
-
+import React, { useState, useEffect } from 'react';
+import Axios from "axios";
 
 const Setting = () => {
+  const [profileData, setProfileData] = useState({
+    rar: '',
+    ctr: '',
+    oclp: '',
+    roas: '',
+    cpr: '',
+    cpc: '',
+  });
+
+  const baseUrl = 'https://umaxx-1-v8834930.deta.app';
+
+  
+  const [originalProfileData, setOriginalProfileData] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProfileData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+  
+
+  
+  // get data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('jwtToken');
+        const apiUrl = `${baseUrl}/metrics-settings-by?campaign_id=656404d2d0fe018977020031`;
+  
+        const response = await Axios.get(apiUrl, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        console.log('Respon setting:', response);
+  
+        const selectedProfile = response.data.Data[0];
+  
+        setProfileData({
+          rar: selectedProfile.rar,
+          ctr: selectedProfile.ctr,
+          oclp: selectedProfile.oclp,
+          roas: selectedProfile.roas,
+          cpr: selectedProfile.cpr,
+          cpc: selectedProfile.cpc,
+        });
+  
+        // Set originalProfileData setelah mendapatkan data
+        setOriginalProfileData({
+          rar: selectedProfile.rar,
+          ctr: selectedProfile.ctr,
+          oclp: selectedProfile.oclp,
+          roas: selectedProfile.roas,
+          cpr: selectedProfile.cpr,
+          cpc: selectedProfile.cpc,
+        });
+  
+      } catch (error) {
+        console.error('Error saat mengambil data:', error.message);
+      }
+    };
+  
+    fetchData();
+  }, []);
+
+  // edit setting
+  const handleSave = async () => {
+    try {
+      const token = localStorage.getItem('jwtToken');
+      const apiUrl = `${baseUrl}/metrics-settings?campaign_id=656404d2d0fe018977020031`;
+  
+      const changes = {};
+      Object.keys(profileData).forEach((key) => {
+        if (profileData[key] !== originalProfileData[key]) {
+          changes[key] = profileData[key];
+        }
+      });
+  
+      console.log('Payload Permintaan:', { changes });
+  
+      const response = await Axios.put(apiUrl, changes, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      console.log('Respon Simpan:', response);
+  
+      // Jika berhasil menyimpan, perbarui originalProfileData
+      setOriginalProfileData({ ...profileData });
+  
+    } catch (error) {
+      console.error('Error saat menyimpan perubahan:', error.message);
+  
+      if (error.response) {
+        console.error('Respon Error:', error.response.data);
+      }
+    }
+  };
+
+
+
   return (
-    <div>
-      <div className='bg-white border-2 rounded-lg p-20 h-Setting relative'>
-        <div className="relative right-20 -top-20 flex flex-col w-full p-5 gap-8 rounded-md">
-          <InputGroup1
-            name="RASR"
-            placeholder="5"
-            label="Reach Amount Spent Ratio (RASR)"
-            label2="Recommended value > 5%"
-            decoration={<AiOutlinePercentage size="1rem" />}
-          />
-          <InputGroup1
-            name="CTR"
-            placeholder="1.5"
-            label="Click Through Rate (CTR)"
-            label2="Recommended value > 1.5%"
-            decoration={<AiOutlinePercentage size="1rem" />}
-          />
-          <InputGroup1
-            name="OCLP"
-            placeholder="80"
-            label="Outbound Click Landing Page (OCLP)"
-            label2="Recommended value > 80%"
-            decoration={<AiOutlinePercentage size="1rem" />}
-          />
-          <InputGroup1
-            name="ROAS"
-            placeholder="3.0"
-            label="Return on AD Spent (ROAS)"
-            label2="Recommended value > 3.0x"
-            decoration={<AiOutlineClose size="1rem" />}
-          />
+    <main className='min-h-screen'>
+      <div className="p-3 min-h-screen rounded-md border border-gray-300 bg-white ">
 
-
-          <InputGroup2
-            name="CPC"
-            placeholder="5.000"
-            label="Cost per Result (CPR)"
-            label2="Recommended value < Rp 5.000"
-          />
-          <InputGroup2
-            name="CPC"
-            placeholder="1.000"
-            label="Cost per Click (CPC)"
-            label2="Recommended value < Rp 1.000"
-          />
+    <div className='flex flex-col gap-3'>
+      <div className="ml-3 mt-5 flex flex-col md:flex-row md:items-center">
+        <div className="md:mr-10 mb-3 md:mb-0 md:w-72">
+          <p className="text-gray-500 font-medium">Reach Amount Ratio (RAR)</p>
+          <p className="text-gray-500 font-base text-sm">Recommended value {'>'} 5%</p>
         </div>
-        <button className='absolute bottom-0 right-0 mb-4 mr-4 bg-sky-600 px-4 py-1 rounded-md text-white'>
-          Save
-        </button>
+        <div className="relative flex items-center">
+          <input
+            onChange={handleChange}
+            type="number"
+            value={profileData.rar}
+            className="block w-full p-2 rounded-l-md border rounded  border-r-0 border-gray-300 focus:outline-none focus:none focus:border-blue-500"
+          />
+          <button className="absolute inset-y-0 right-0 inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 bg-blue-400 text-white rounded-r-md">
+            %
+          </button>
+        </div>
+      </div>
+
+      <div className="ml-3 mt-5 flex flex-col md:flex-row md:items-center">
+        <div className="md:mr-10 mb-3 md:mb-0 md:w-72">
+          <p className="text-gray-500 font-medium">Click Through Rate (CTR)</p>
+          <p className="text-gray-500 font-base text-sm">Recommended value {">"} 1,5%</p>
+        </div>
+        <div className="relative flex items-center">
+          <input
+            type="number"
+            value={profileData.ctr}
+            className="block w-full p-2 rounded-l-md border rounded  border-r-0 border-gray-300 focus:outline-none focus:none focus:border-blue-500"
+          />
+          <button className="absolute inset-y-0 right-0 inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 bg-blue-400 text-white rounded-r-md">
+            %
+          </button>
+        </div>
+      </div>
+
+      <div className="ml-3 mt-5 flex flex-col md:flex-row md:items-center">
+        <div className="md:mr-10 mb-3 md:mb-0 md:w-72">
+          <p className="text-gray-500 font-medium">Outbont Click Landing Page (OCLP)</p>
+          <p className="text-gray-500 font-base text-sm">Recommended value {">"} 80%</p>
+        </div>
+        <div className="relative flex items-center">
+          <input
+            value={profileData.oclp}
+            type="number"
+            className="block w-full p-2 rounded-l-md border rounded  border-gray-300 focus:outline-none focus:none focus:border-blue-500"
+          />
+          <button className="absolute inset-y-0 right-0 inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 bg-blue-400 text-white rounded-r-md">
+            %
+          </button>
+        </div>
+      </div>
+
+      <div className="ml-3 mt-5 flex flex-col md:flex-row md:items-center">
+        <div className="md:mr-10 mb-3 md:mb-0 md:w-72">
+          <p className="text-gray-500 font-medium">Return on AD Spent (ROAS)</p>
+          <p className="text-gray-500 font-base text-sm">Recommended value {">"} 3.0x</p>
+        </div>
+        <div className="relative flex items-center">
+          <input
+            value={profileData.roas}
+            type="number"
+            className="block w-full p-2 rounded-l-md border rounded  border-r-0 border-gray-300 focus:outline-none focus:none focus:border-blue-500"
+          />
+          <button className="absolute inset-y-0 right-0 inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 bg-blue-400 text-white rounded-r-md">
+            X
+          </button>
+        </div> 
+      </div>
+      
+      <div className="ml-3 mt-5 flex flex-col md:flex-row md:items-center">
+        <div className="md:mr-10 mb-3 md:mb-0 md:w-72">
+          <p className="text-gray-500 font-medium">Cost per Result (CPR)</p>
+          <p className="text-gray-500 font-base text-sm">Recommended value {"<"} Rp. 5.000</p>
+        </div>
+        <div className="relative flex items-center">
+          <input
+            value={profileData.cpr}
+            type="number"
+            className="block w-full p-2 rounded-l-md border rounded text-center border-l-0 border-gray-300 focus:outline-none focus:none focus:border-blue-500"
+          />
+          <button className="absolute inset-y-0 left-0 inline-flex items-center px-4 py-2 border border-r-0 border-gray-300 bg-blue-400 text-white rounded-l-md">
+            Rp
+          </button>
+        </div> 
+      </div>  
+
+      <div className="ml-3 mt-5 flex flex-col md:flex-row md:items-center">
+        <div className="md:mr-10 mb-3 md:mb-0 md:w-72">
+          <p className="text-gray-500 font-medium">Cost per Click (CPC)</p>
+          <p className="text-gray-500 font-base text-sm">Recommended value {"<"} Rp. 1.000</p>
+        </div>
+        <div className="relative flex items-center">
+          <input
+            value={profileData.cpc}
+            type="number"
+            className="block w-full p-2 rounded-l-md border rounded text-center border-l-0 border-gray-300 focus:outline-none focus:none focus:border-blue-500"
+          />
+          <button className="absolute inset-y-0 left-0 inline-flex items-center px-4 py-2 border border-r-0 border-gray-300 bg-blue-400 text-white rounded-l-md">
+            Rp
+          </button>
+        </div> 
       </div>
     </div>
-  )
-}
 
-export default Setting
+
+        <div className='flex justify-end items-end gap-5 max-md:grid-cols-7 max-sm:grid-cols-7'>
+          {/* button save */}
+          <button
+            onClick={handleSave}
+            className='mt-20 text-white bg-blue-500  flex items-center gap-2  rounded-md py-1 px-6 justify-center transition duration-300 hover:bg-blue-600'
+          >
+           Save
+          </button>
+        
+        </div>
+
+      </div>
+    </main>
+  );
+};
+
+export default Setting;

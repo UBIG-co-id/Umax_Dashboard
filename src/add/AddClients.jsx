@@ -215,7 +215,7 @@ const AddDataClients = () => {
                                             className="p-2 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md"
                                         />
                                       <div
-                                        className="relative bottom-6 left-44  cursor-pointer"
+                                        className="relative bottom-6 left-44 w-5 cursor-pointer"
                                         onClick={togglePasswordVisibility}
                                     >
                                         {showPassword ? (
@@ -245,7 +245,7 @@ const AddDataClients = () => {
                                                 }`}
                                             />
                                               <div
-                                                className="relative bottom-6 left-44  cursor-pointer"
+                                                className="relative bottom-6 left-44 w-5     cursor-pointer"
                                                 onClick={toggleKonfirmasiPasswordVisibility}
                                             >
                                                 {showKonfirmasiPassword ? (

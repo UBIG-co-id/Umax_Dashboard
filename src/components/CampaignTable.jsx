@@ -9,7 +9,6 @@ import { RiFileExcel2Line } from "react-icons/ri";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import jsPDF from "jspdf";
 import 'jspdf-autotable';
-import { useReactToPrint } from 'react-to-print';
 import "../styles.css";
 import 'react-tabs/style/react-tabs.css';
 import { useFormik } from 'formik';
@@ -17,7 +16,6 @@ import { Link, useNavigate, useParams, } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import '../styles.css';
-
 
 
 function DataTable() {
@@ -61,7 +59,7 @@ const handleDelete = async (_id) => {
       try {
         const token = localStorage.getItem('jwtToken');
         const response = await axios.delete(
-          `${umaxUrl}/campaign-delete/?campaign_id=${_id}`,
+          `${umaxUrl}/campaign-delete?campaign_id=${_id}`,
           {
             headers: {
               'Authorization': `Bearer ${token}`,
