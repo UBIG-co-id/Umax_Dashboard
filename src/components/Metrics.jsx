@@ -140,19 +140,20 @@ const Metrics = ({
           <ResponsiveContainer>
             <BarChart data={chartData}>
               <Bar dataKey="value" shape={<CustomBar />}>
-                {chartData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={
-                      index === chartData.length - 1
-                        ? entry.value > chartData[chartData.length - 2].value
-                          ? "#1CD14F" // hijau jika nilai naik
-                          : "#FF3636" // merah jika nilai turun
-                        : "#8690A2" // Warna default
-                    }
-                    // ---------------------------------------------------------------------------------
-                  />
-                ))}
+                {chartData &&
+                  chartData.length > 0 &&
+                  chartData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={
+                        index === chartData.length - 1
+                          ? entry.value > chartData[chartData.length - 2].value
+                            ? "#1CD14F"
+                            : "#FF3636"
+                          : "#8690A2"
+                      }
+                    />
+                  ))}
               </Bar>
               <Tooltip
                 content={<CustomTooltip />}

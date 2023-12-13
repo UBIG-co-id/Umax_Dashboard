@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import { useFormik } from 'formik';
 import bgLogin from '../assets/bg-default.svg';
+import { toast, ToastContainer } from 'react-toastify';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 
@@ -23,52 +24,76 @@ const SignUp = () => {
 
   const formik = useFormik({
     initialValues: {
-      nama: '',
+      name: '',
       email: '',
       password: '',
-      konfirmasi_password: '',
+      confirm_password: '',
       role: '',
     },
     onSubmit: (values) => {
-      if (values.password !== values.konfirmasi_password) {
+      if (values.password !== values.confirm_password) {
         setPasswordMatch(false);
         return;
-    }
-    
-    const token = localStorage.getItem("jwtToken");
-      // Send a POST request to your FastAPI backend with form data
-      fetch(`${umaxUrl}/register`, {
-        method: 'POST',
-        headers: {
-          'accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: new URLSearchParams(values).toString(),
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log(data);
-          if (data.message === 'Registration successful') {
-            // Redirect based on user role
-            if (values.role === 'admin') {
-              navigate('/admin-dashboard');
-            } else if (values.role === 'staff') {
-              navigate('/staff-dashboard');
-            } else {
-              navigate('/login'); // Default for regular users
-            }
-          }
+      }
+
+      const token = localStorage.getItem("jwtToken");
+      if (
+        values.name &&
+        values.password &&
+        values.confirm_password &&
+        values.email &&
+        values.role
+      ) {
+        // Send a POST request to your FastAPI backend with form data
+        fetch(`${umaxUrl}/register`, {
+          method: 'POST',
+          headers: {
+            'accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: new URLSearchParams(values).toString(),
         })
-        .catch(error => {
-          // console.error('Kesalahan Fetch:', error);
-          console.error(error);
-        });
+          .then(response => response.json())
+          .then(data => {
+            console.log(data);
+            if (data.message === 'Registration successful') {
+              // Redirect based on user role
+              if (values.role === 'admin') {
+                navigate('/admin-dashboard');
+              } else if (values.role === 'staff') {
+                navigate('/staff-dashboard');
+              } else {
+                navigate('/login'); // Default for regular users
+              }
+            }
+          })
+          .catch(error => {
+            // console.error('Kesalahan Fetch:', error);
+            console.error(error);
+          });
+      }
     },
   });
 
+
   const [showPassword, setShowPassword] = useState(false);
   const [showKonfirmasiPassword, setShowKonfirmasiPassword] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        console.log("Esc key pressed");
+        navigate(-1);
+      };
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [navigate]);
 
   return (
     <div className="relative overflow-hidden min-h-screen flex flex-col items-center justify-center">
@@ -83,8 +108,8 @@ const SignUp = () => {
         <p className="font-semibold text-base text-[#5473E3] mb-5">Register</p>
         <input
           type="text"
-          id="nama"
-          name="nama"
+          id="name"
+          name="name"
           onChange={formik.handleChange}
           value={formik.values.nama}
           placeholder="Nama"
@@ -127,10 +152,10 @@ const SignUp = () => {
         <div className="relative flex items-center">
           <input
             type={showKonfirmasiPassword ? 'text' : 'password'}
-            id="konfirmasi_password"
-            name="konfirmasi_password"
+            id="confirm_password"
+            name="confirm_password"
             onChange={formik.handleChange}
-            value={formik.values.konfirmasi_password}
+            value={formik.values.confirm_password}
             placeholder="Konfirmasi Password"
             className="w-full h-9 rounded-md border pl-5 border-blue mt-2 focus:outline-none focus:ring-1 text-slate-500"
           />
@@ -146,11 +171,11 @@ const SignUp = () => {
 
           </div>
         </div>
-          {!passwordMatch && (
-            <span className="text-red-500 text-sm relative bottom-0 left-0 mb-2 ml-2">
-              Password tidak sama!
-            </span>
-          )}
+        {!passwordMatch && (
+          <span className="text-red-500 text-sm relative bottom-0 left-0 mb-2 ml-2">
+            Password tidak sama!
+          </span>
+        )}
         <select
           id="role"
           name="role"
@@ -171,14 +196,14 @@ const SignUp = () => {
           SIGN UP
         </button>
         <Link
-          to="/login"
+          to="/UsersTable"
           className="block text-[#5473E3] mt-3 text-center hover:text-[#2347C5] hover:underline"
         >
           Already have an account? Sign in
         </Link>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default SignUp;
+export default SignUp

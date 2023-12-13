@@ -17,6 +17,7 @@ import AddAccounts from './add/AddAccounts'
 import AddCampaigns from './add/AddCampaigns'
 import useTheme from './hooks/useTheme';
 import Tenant from './tenant/tenant';
+import UsersTable from './components/UserTable';
 
 
 
@@ -43,7 +44,8 @@ const theme = useTheme()
         <Route path='/Profile' element={<Profile/> }  />
         <Route path='/EditProfile' element={<EditProfile />} />
         <Route path='/Tenant' element={<Tenant />} />
-
+        <Route path='/UsersTable' element={<UsersTable />} />
+        
 
       </Routes>
     </Router>

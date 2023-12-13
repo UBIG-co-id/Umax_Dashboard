@@ -1,11 +1,12 @@
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Fragment, useState, useEffect, useContext } from "react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { MdDashboard, MdOutlineCampaign  } from "react-icons/md";
+import { MdDashboard, MdOutlineCampaign } from "react-icons/md";
 import { BiSolidMegaphone, BiGroup, BiBell, BiLogOut } from "react-icons/bi";
-import { AiOutlineUser, AiOutlineSearch,   } from "react-icons/ai";
-import { IoIosArrowDown, IoIosArrowBack  } from "react-icons/io";
-import { FaRegBuilding   } from "react-icons/fa";
+import { AiOutlineUser, AiOutlineSearch} from "react-icons/ai";
+import { IoIosArrowDown, IoIosArrowBack } from "react-icons/io";
+import { FaRegBuilding } from "react-icons/fa";
+import { LuUserPlus } from "react-icons/lu";
 
 import { logo, defaultProfile } from "../assets";
 import { FiSun, FiMoon } from "react-icons/fi";
@@ -20,7 +21,7 @@ import { useLanguage } from "../LanguageContext";
 import { us, indonesia } from "../assets";
 import jwt_decode from "jwt-decode";
 import { BiChevronDown, BiCheck } from "react-icons/bi";
-import { CiGlobe  } from "react-icons/ci";
+import { CiGlobe } from "react-icons/ci";
 
 // import LazyLoad from 'react-lazyload';
 
@@ -38,21 +39,21 @@ const navigation = [
 ];
 
 const Navbar = () => {
-  const [data, setData]= useState([])
+  const [data, setData] = useState([])
   // const [selectedLanguage, setSelectedLanguage] = useState("english");
   const { selectedLanguage, toggleLanguage } = useLanguage();
 
-    // open dropdown profile fungtion
+  // open dropdown profile fungtion
 
-    const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
 
-    const toggleDropdown = () => {
-      setDropdownOpen(!isDropdownOpen);
-    };
+  const toggleDropdown = () => {
+    setDropdownOpen(!isDropdownOpen);
+  };
 
 
-// bagian open draw
-const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
+  // bagian open draw
+  const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
 
 
   const handleToggleLanguage = (language) => {
@@ -80,7 +81,7 @@ const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
   const closeDrawerRight = () => {
     setOpenSettingsDrawer(false);
   };
-  const theme = { 
+  const theme = {
     drawer: {
       defaultProps: {
         size: 300,
@@ -138,6 +139,11 @@ const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
   const TenantPage = () => {
     navigate("/Tenant");
   };
+
+  const Users = () => {
+    navigate("/UsersTable");
+  };
+
 
 
   let { state, dispatch } = useContext(Context);
@@ -218,7 +224,7 @@ const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
             'Content-Type': 'application/json',
           },
         });
-        
+
         localStorage.setItem('tenant_id', response.data.Data[0].tenant_id)
 
         console.log('API Response:', response);
@@ -242,7 +248,7 @@ const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
 
     fetchData();
   }, []);
-  
+
 
   // select 2
   const [DataV2, DataSelect2] = useState(null);
@@ -329,7 +335,7 @@ const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
                         )}
                         onClick={() => setActivePage(item.href)}
                       >
-                       
+
                         <span className="relative top-1 mr-4 inline-block max-lg:hidden">
                           {translations[item.name] && (
                             <>
@@ -345,7 +351,7 @@ const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
                               {item.name === "Clients" && (
                                 <BiGroup className="h-5 w-5" />
                               )}
-                            
+
                             </>
                           )}
                         </span>
@@ -427,42 +433,41 @@ const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
                   </Transition>
                 )}
 
-                 {/* profile */}
-              <div className="relative ml-3 right-24">
-                <button
-                  className="relative flex rounded-full text-sm"
-                  onClick={toggleDropdown}
-                >
-                  <div className="rounded-full flex border-black/10 bg-black/10 p-1">
-                  <img src={`data:image/png;base64, ${profileData.image}`}  className="h-8 w-8 object-cover rounded-full" />
+                {/* profile */}
+                <div className="relative ml-3 right-24">
+                  <button
+                    className="relative flex rounded-full text-sm"
+                    onClick={toggleDropdown}
+                  >
+                    <div className="rounded-full flex border-black/10 bg-black/10 p-1">
+                      <img src={`data:image/png;base64, ${profileData.image}`} className="h-8 w-8 object-cover rounded-full" />
 
-                    <span className="absolute left-12  bottom-1 leading-5 flex-col font-medium flex items-start text-gray-800">
-                    <a className="text-gray-600 flex w-24 truncate" title={profileData.name}>
-                      {profileData.name}
-                    </a>
-                      <a className="font-normal text-xs text-gray-700">{profileData.roles}</a>
-                    </span>
-                  </div>
-                  {/* Arrow Icon */}
-                  <IoIosArrowDown   
-                  className={`relative left-28 top-3 h-4 w-4 transition-transform ${
-                      isDropdownOpen ? 'transform rotate-180' : ''
-                    }`}
-                    
+                      <span className="absolute left-12  bottom-1 leading-5 flex-col font-medium flex items-start text-gray-800">
+                        <a className="text-gray-600 flex w-24 truncate" title={profileData.name}>
+                          {profileData.name}
+                        </a>
+                        <a className="font-normal text-xs text-gray-700">{profileData.roles}</a>
+                      </span>
+                    </div>
+                    {/* Arrow Icon */}
+                    <IoIosArrowDown
+                      className={`relative left-28 top-3 h-4 w-4 transition-transform ${isDropdownOpen ? 'transform rotate-180' : ''
+                        }`}
+
                     />
 
-                </button>
+                  </button>
 
-                {/* dropdown */}
-                {isDropdownOpen && (
-                  <div className="absolute -left-5 mt-2 z-50 w-48 max-h-[12rem] p-4  bg-white border rounded-md rounded-t-none shadow-xl">
+                  {/* dropdown */}
+                  {isDropdownOpen && (
+                    <div className="absolute -left-5 mt-2 z-50 w-48 max-h-[15rem] p-4  bg-white border rounded-md rounded-t-none shadow-xl">
                       <span className="relative bottom-1">
                         <a className="truncate font-medium w-24 cursor-pointer flex text-gray-600 text-sm " title={profileData.name}>
                           {profileData.name}
                         </a>
                         <a className="relative font-normal text-gray-500 text-sm flex truncate  w-40">{profileData.email}</a>
                       </span>
-                      <hr className="mt-1 border-gray-400" />  
+                      <hr className="mt-1 border-gray-400" />
 
                       {/* <a
                         className={`text-sm flex items-center gap-2 mt-4 cursor-pointer ${
@@ -472,48 +477,52 @@ const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
                         <AiOutlineUser className={`${isActive ? 'text-blue-500' : 'text-gray-700'}`} />
                         User
                       </a> */}
-
+                      
+                      
+                      <div className="relative">
+                        <a
+                          onClick={Users}
+                          className="text-gray-700 text-sm flex items-center gap-2 mt-4 cursor-pointer hover:text-blue-500"
+                        >
+                          <LuUserPlus className="w-3 h-3" /> User
+                        </a>
+                      </div>
 
                       <div className="relative">
-                            <a
-                              onClick={profilePage}
-                              className="text-gray-700 text-sm flex items-center gap-2 mt-4 cursor-pointer hover:text-blue-500"
-                            >
-                              <AiOutlineUser  className="w-3 h-3" /> User Profile
-                            </a>
-
-                           
-                          </div>
-
+                        <a
+                          onClick={profilePage}
+                          className="text-gray-700 text-sm flex items-center gap-2 mt-4 cursor-pointer hover:text-blue-500"
+                        >
+                          <AiOutlineUser className="w-3 h-3" /> User Profile
+                        </a>
+                      </div>
 
                       <div className="relative">
-                          <a
-                            onClick={TenantPage}
-                            className="text-gray-700 text-sm flex items-center gap-2 mt-4 cursor-pointer hover:text-blue-500"
-                          >
-                            <FaRegBuilding  className="w-3 h-3" /> Tenant
+                        <a
+                          onClick={TenantPage}
+                          className="text-gray-700 text-sm flex items-center gap-2 mt-4 cursor-pointer hover:text-blue-500"
+                        >
+                          <FaRegBuilding className="w-3 h-3" /> Tenant
 
-                          </a>
+                        </a>
 
-                        </div>
+                      </div>
 
-                            <hr className="relative border-gray-300 top-3"/>
-                          
-                          <div className="relative">
-                            <button
-                                  onClick={handleSignOut}
-                                className="flex items-center text-gray-700 text-sm mt-5 hover:text-blue-500"
-                                >
-                                  <BiLogOut className="mr-2" /> Sign out
-                                </button>
-                        </div>    
+                      <hr className="relative border-gray-300 top-3" />
 
-                  </div>
+                      <div className="relative">
+                        <button
+                          onClick={handleSignOut}
+                          className="flex items-center text-gray-700 text-sm mt-5 hover:text-blue-500"
+                        >
+                          <BiLogOut className="mr-2" /> Sign out
+                        </button>
+                      </div>
 
-
-                )}
-              </div>
-              {/* end */}
+                    </div>
+                  )}
+                </div>
+                {/* end */}
 
               </div>
             </div>
@@ -601,9 +610,8 @@ const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
                       {selectedLanguage === "english" ? "English" : "Indonesia"}
                     </span>
                     <svg
-                      className={`w-4 h-4 transition-transform ${
-                        isDropdownOpen ? "transform -rotate-180" : ""
-                      }`}
+                      className={`w-4 h-4 transition-transform ${isDropdownOpen ? "transform -rotate-180" : ""
+                        }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -617,7 +625,7 @@ const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
                       />
                     </svg>
                   </button>
-                 
+
                   {isDropdownOpen && (
                     <ul className="dropdown-menu right-2 absolute mt-3  py-2 w-32 bg-white border border-gray-300 rounded-lg shadow-lg">
                       <li>
@@ -667,9 +675,8 @@ const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
               <div className="w-40 font-medium h-80">
                 <div
                   onClick={() => setBuka(!buka)}
-                  className={`bg-white border border-gray-600 w-full p-2 py-1 flex items-center justify-between rounded-md ${
-                    !selected && "text-gray-700"
-                  }`}
+                  className={`bg-white border border-gray-600 w-full p-2 py-1 flex items-center justify-between rounded-md ${!selected && "text-gray-700"
+                    }`}
                 >
                   {selected
                     ? selected?.length > 25
@@ -695,9 +702,8 @@ const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
                   </div>
                 </div>
                 <ul
-                  className={`bg-white  border-t-0  w-[158px] max-w-[160px] left-[1px] relative rounded-b-md shadow-md mb-5  overflow-y-auto ${
-                    buka ? "border-t-0 max-h-[160px]" : "max-h-0"
-                  } `}
+                  className={`bg-white  border-t-0  w-[158px] max-w-[160px] left-[1px] relative rounded-b-md shadow-md mb-5  overflow-y-auto ${buka ? "border-t-0 max-h-[160px]" : "max-h-0"
+                    } `}
                 >
                   <div className="flex items-center px-1  sticky top-0 ">
                     <AiOutlineSearch
@@ -719,17 +725,15 @@ const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
                       <li
                         key={country?.name}
                         className={`p-2 text-sm hover-bg-sky-400 hover-text-gray-800
-        ${
-          country?.name &&
-          country.name.toLowerCase() === selected?.toLowerCase() && (
-            <BiCheck className="text-blue-400 absolute" />
-          )
-        }
-        ${
-          country?.name?.toLowerCase().startsWith(inputValue)
-            ? "block"
-            : "hidden"
-        }`}
+        ${country?.name &&
+                          country.name.toLowerCase() === selected?.toLowerCase() && (
+                            <BiCheck className="text-blue-400 absolute" />
+                          )
+                          }
+        ${country?.name?.toLowerCase().startsWith(inputValue)
+                            ? "block"
+                            : "hidden"
+                          }`}
                         onClick={() => {
                           if (
                             country?.name?.toLowerCase() !==

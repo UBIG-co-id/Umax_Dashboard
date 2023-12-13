@@ -355,7 +355,7 @@ function ClientsTable() {
       Contact: row.contact,
       Status: getStatusString(row.status),
     }));
-
+    
     const tableColumnNames = Object.keys(filteredData[0]);
     const tableColumnValues = filteredData.map((row) => Object.values(row));
 

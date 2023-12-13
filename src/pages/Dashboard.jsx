@@ -251,7 +251,7 @@ const Dashboard = () => {
       value: selectedData
       ? selectedData.frequency
       : barr.map((dayData) => dayData.frequency), // Ambil semua frequency dari barr
-    chart: barr.map((dayData) => ({
+    chart: barr.map((dayData) => ({ 
       name: dayData.TglUpdate,
       value: parseFloat(dayData.frequency.replace(/\D/g, "")),
     })),
