@@ -15,7 +15,6 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Select from 'react-select';
 
-
 import {
   Card,
   CardBody,
@@ -101,6 +100,11 @@ useEffect(() => {
 }, []);
 
 
+// simpan data gambar
+const [selectedImage, setSelectedImage] = useState(null);
+const [crop, setCrop] = useState({ aspect: 1 / 1 });
+const [croppedImage, setCroppedImage] = useState(null);
+
 
   // put data
   const [profileData, setProfileData] = useState({
@@ -122,7 +126,9 @@ useEffect(() => {
       try {
         const apiUrl = `https://umaxxnew-1-d6861606.deta.app/profile`;
         const bodyFormData = new FormData();
-        // bodyFormData.append('image', profileData.image)
+        if (selectedImage) {
+          bodyFormData.append('image', selectedImage);
+        }
         bodyFormData.append('name', inputValueName)
         bodyFormData.append('email', inputValueEmail)
         bodyFormData.append('language', 'id')
@@ -404,20 +410,20 @@ const handleCurrencyChange = value => {
         <div className="relative top-4 mt-5 mx-auto flex">
         <div className="relative mb-1 rounded-full border border-white/10 bg-white/10 p-2 text-white">
         <img src={`data:image/jpeg;base64,${profileData.image}`} alt="Foto" className="h-24 w-24 object-cover rounded-full max-sm:h-16 max-sm:w-16" />
-      <div className="absolute bottom-0 right-0">
-        <input
-        type="file"
-        accept="image/*"
-        style={{ display: 'none' }}
+      <div className="absolute  cursor-pointer w-24 max-sm:-left-3  bottom-0 ">
+      <input
+          type="file"
+          accept="image/*"
+          className='opacity-0 w-24 relative z-50'
+          id="imageInput"
+          onChange={(e) => setSelectedImage(e.target.files[0])}
         />
-        <label htmlFor="imageInput">
-        <button
-        className="bg-blue-700 hover:bg-blue-800 max-sm:p-1 rounded-full p-2 text-white"
-        >
-        <AiOutlineCamera />
-        </button>
-        </label>
 
+        <label htmlFor="imageInput">
+          <button className="bg-blue-700 cursor-pointer absolute left-16 hover:bg-blue-800 max-sm:p-1 rounded-full p-2 text-white">
+            <AiOutlineCamera />
+          </button>
+        </label>
       </div>
     </div>
 
