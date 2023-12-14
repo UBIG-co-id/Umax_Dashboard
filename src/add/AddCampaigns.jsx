@@ -7,37 +7,43 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Axios from 'axios';
+import Select from 'react-select';
+
+
 
 const AddCampaigns = () => {
   // / URL BASE
   const umaxUrl = "https://umaxxnew-1-d6861606.deta.app/";
 
   const navigate = useNavigate();
-  const [accountList, setAccountList] = useState([]);
 
   // GET LIST ACCOUNT
-  async function fetchAccountData() {
+  const [data, setData] = useState([]);
+
+useEffect(() => {
+  const fetchData = async () => {
     try {
-      const token = localStorage.getItem("jwtToken");
-      const response = await fetch(`${umaxUrl}account-by-tenant`, {
+      const token = localStorage.getItem('jwtToken');
+      const apiUrl = `${umaxUrl}account-by-tenant`;
+
+      const response = await Axios.get(apiUrl, {
         headers: {
-          accept: "application/json",
           Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
       });
-      const data = await response.json();
-      if (data && Array.isArray(data.Data)) {
-        setAccountList(data.Data);
-      } else {
-        console.error("Error: Unexpected data format for account list");
-      }
+
+      setData(response.data.Data);
+      console.log('Response Account:', response.data);
     } catch (error) {
-      console.error("Error fetching account data:", error.message);
+      console.error('Error saat mengambil data:', error.message);
     }
-  }
-  useEffect(() => {
-    fetchAccountData();
-  }, []);
+  };
+
+  fetchData();
+}, []);
+// end
 
   // ADD Data Campaigns
   const formik = useFormik({
@@ -92,6 +98,40 @@ const AddCampaigns = () => {
     };
   }, [navigate]);
   // END
+
+  // option select v2
+  const options = data.map(item => ({
+    value: item._id, 
+    label: item.username,
+  }));
+
+// style select v2
+const customStyles = {
+  control: provided => ({
+    ...provided,
+    boxShadow: 'none',
+    backgroundColor: '#f2f6faff',
+    border: '1px solid #cad4e0ff',
+    borderRadius: '6px',
+  }),
+  container: provided => ({
+    ...provided,
+    height: '50px',
+    width: '200px',
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isSelected ? '#4CAF500' : '#fff', 
+    color: state.isSelected ? '#242424' : '#000', 
+  }),
+  menu: provided => ({
+    ...provided,
+    zIndex: 999, 
+    border: '2px solid #eee',
+    maxHeight: '200px', 
+    overflowY: 'hidden',
+  }),
+};
 
   // RENDER UI
   return (
@@ -152,20 +192,22 @@ const AddCampaigns = () => {
                   <span className="text-red-600 text-lg">*</span>
                   Account
                 </label>
-                <select
-                  name="account_id"
-                  id="account_id"
-                  onChange={formik.handleChange}
-                  value={formik.values.account_id} // Fix: Use formik.values.account_id here
-                  className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
+                <Select
+                 name="account_id"
+                 id="account_id"
+                 options={options}
+                 styles={customStyles}
+                 onChange={selectedOption => formik.setFieldValue("account_id", selectedOption.value)}  
+                 value={options.find(option => option.value === formik.values.account_id)}
+                  className=" text-slate-500 h-9 w-full  focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
                 >
-                  <option hidden>-Select Account-</option>
-                  {accountList.map((account) => (
-                    <option key={account._id} value={account._id}>
-                      {account.username}
-                    </option>
-                  ))}
-                </select>
+                 <option hidden>-Select Account-</option>
+                    {options.map(account => (
+                      <option key={account.value} value={account.value}>
+                        {account.label}
+                      </option>
+                    ))}
+                </Select>
               </div>
 
               <div className="flex flex-col">

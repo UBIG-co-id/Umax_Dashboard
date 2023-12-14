@@ -102,9 +102,6 @@ useEffect(() => {
 
 // simpan data gambar
 const [selectedImage, setSelectedImage] = useState(null);
-const [crop, setCrop] = useState({ aspect: 1 / 1 });
-const [croppedImage, setCroppedImage] = useState(null);
-
 
   // put data
   const [profileData, setProfileData] = useState({
@@ -504,7 +501,7 @@ const handleCurrencyChange = value => {
                   
                 </div>
                 <Button
-                  className="font-normal text-base bg-blue-700"
+                  className="font-normal py-2 text-base bg-blue-700"
                   onClick={() => updateData()}
                 >
                   Save
@@ -708,7 +705,7 @@ const handleCurrencyChange = value => {
               </form>
               
 
-              <Button className='font-normal w-full mt-32 sm:mt-1 text-base bg-blue-700' onClick={() => updateData()}>Save Changes</Button>
+              {/* <Button className='font-normal w-full mt-32 py-2 sm:mt-1 text-base bg-blue-700' onClick={() => updateData()}>Save Changes</Button> */}
 
 {/*               
               <div className='w-full mt-10'>

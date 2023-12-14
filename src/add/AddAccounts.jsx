@@ -6,6 +6,9 @@ import { Link, useNavigate, } from 'react-router-dom';
 import {  AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Select from 'react-select';
+import Axios from 'axios';
+
 
 const AddDataAccounts = () => {
   const navigate = useNavigate();
@@ -14,45 +17,38 @@ const AddDataAccounts = () => {
   const umaxUrl = 'https://umaxxnew-1-d6861606.deta.app';
 
   // GET DATA CLIENT
-  async function fetchClientData() {
+  const [data, setData] = useState([]);
+
+useEffect(() => {
+  const fetchData = async () => {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch(`${umaxUrl}/client-by-tenant`, {
+      const apiUrl = `${umaxUrl}/client-by-tenant`;
+
+      const response = await Axios.get(apiUrl, {
         headers: {
-          'accept': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
       });
 
-      if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
-      }
-  
-      const data = await response.json();
-  
-      if (data && Array.isArray(data.Data)) {
-        setClientList(data.Data);
-      } else {
-        console.error('Error: Unexpected data format for client list');
-      }
+      setData(response.data.Data);
+      console.log('Response Client:', response.data);
     } catch (error) {
-      console.error("Error fetching client data:", error.message);
+      console.error('Error saat mengambil data:', error.message);
     }
-  }
-  
-  
-  useEffect(() => {
-    fetchClientData();
-  }, []);
-  
+  };
+
+  fetchData();
+}, []);
   // END GET DATA CLIENT
 
   // ADD DATA
   const [passwordMatch, setPasswordMatch] = useState(true);
   const formik = useFormik({
     initialValues: {
-      username: '',
       client_id: '',
+      username: '',
       platform: '',
       email: '',
       password: '',
@@ -145,6 +141,40 @@ const AddDataAccounts = () => {
     };
   }, [navigate]);
 
+  // option select v2
+  const options = data.map(item => ({
+    value: item._id, 
+    label: item.name,
+  }));
+
+// style select v2
+const customStyles = {
+  control: provided => ({
+    ...provided,
+    boxShadow: 'none',
+    backgroundColor: '#f2f6faff',
+    border: '1px solid #cad4e0ff',
+    borderRadius: '6px',
+  }),
+  container: provided => ({
+    ...provided,
+    height: '50px',
+    width: '222px',
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isSelected ? '#4CAF500' : '#fff', 
+    color: state.isSelected ? '#242424' : '#000', 
+  }),
+  menu: provided => ({
+    ...provided,
+    zIndex: 999, 
+    border: '2px solid #eee',
+    maxHeight: '200px', 
+    overflowY: 'hidden',
+  }),
+};
+
 
   return (
     <main className='bg-slate-100 min-h-screen overflow-hidden'>
@@ -174,20 +204,22 @@ const AddDataAccounts = () => {
                 <label className="pb-2 text-sm" htmlFor="client_name">
                 <span className='text-red-600 text-lg'>*</span>Client
                 </label>
-                <select
+                <Select
                   name="client_id"
                   id="client_id"
-                  onChange={formik.handleChange}
-                  value={formik.values.client_id}
-                  className="px-3 text-slate-500 h-9 w-full border focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
+                  options={options}
+                  styles={customStyles}
+                  onChange={selectedOption => formik.setFieldValue("client_id", selectedOption.value)}
+                  value={options.find(option => option.value === formik.values.client_id)}
+                  className=" text-slate-500 h-9 w-full  focus:border-blue-500 focus:outline-none focus:border-2 bg-slate-100 border-slate-300 rounded-md select-custom-width"
                 >
-                  <option hidden>-Select Client-</option>   
-                  {clientList.map((client) => ( 
-                    <option key={client._id} value={client._id}>
-                      {client.name}
-                    </option>
-                  ))}
-                </select>
+                 <option hidden>-Select Client-</option>
+                    {options.map(client => (
+                      <option key={client.value} value={client.value}>
+                        {client.label}
+                      </option>
+                    ))}
+                </Select>
 
               </div>
             </div>
