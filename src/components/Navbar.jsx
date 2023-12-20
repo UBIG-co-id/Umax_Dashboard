@@ -304,7 +304,6 @@ const Navbar = () => {
                 </div>
                 <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-600">
                   <span className="absolute -inset-0.5" />
-                  <span className="sr-only">Open main menu</span>
                   {open ? (
                     <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
                   ) : (
@@ -320,7 +319,7 @@ const Navbar = () => {
                   onClick={toggle}
                 />
               </div>
-              <div className="hidden sm:ml-6 sm:block ">
+              <div className="hidden sm:-ml-10 sm:block ">
                 <div className="flex space-x-4">
                   {navigation.map((item) => {
                     return (
@@ -331,12 +330,12 @@ const Navbar = () => {
                           activePage === item.href
                             ? "bg-cyan-100 text-blue-600"
                             : "text-gray-500 ",
-                          "rounded-md px-3 py-2 text-sm font-medium"
+                          "rounded-md lg:px-1  py-2 text-sm font-medium"
                         )}
                         onClick={() => setActivePage(item.href)}
                       >
 
-                        <span className="relative top-1 mr-4 inline-block max-lg:hidden">
+                        <span className="relative top-1 lg:mr-4 md:mr-1 inline-block max-md:hidden">
                           {translations[item.name] && (
                             <>
                               {item.name === "Dashboard" && (
@@ -366,7 +365,7 @@ const Navbar = () => {
                 {/* tombol notif */}
                 <button
                   type="button"
-                  className="relative right-28 text-gray-500 hover:text-gray-800"
+                  className="relative right-24 text-gray-500 hover:text-gray-800"
                   onClick={toggleNotifications}
                 >
                   {notificationCount > 0 && (
@@ -374,7 +373,6 @@ const Navbar = () => {
                       {notificationCount}
                     </span>
                   )}
-                  <span className="sr-only">View notifications</span>
                   <BiBell className="h-6 w-6" aria-hidden="true" />
                 </button>
 
@@ -390,7 +388,7 @@ const Navbar = () => {
                   >
                     <Menu
                       as="div"
-                      className={`absolute z-10 -ml-48 mt-8 w-48 rounded-md py-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transition-transform `}
+                      className={`absolute z-50 bg-white -ml-48 mt-8 w-48 rounded-md py-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transition-transform `}
                     >
                       {/* Notifikasi Dropdown */}
                       <Menu.Item>
@@ -434,15 +432,15 @@ const Navbar = () => {
                 )}
 
                 {/* profile */}
-                <div className="relative ml-3 right-24">
+                <div className="relative  right-24">
                   <button
                     className="relative flex rounded-full text-sm"
                     onClick={toggleDropdown}
                   >
-                    <div className="rounded-full flex border-black/10 bg-black/10 p-1">
-                      <img src={`data:image/png;base64, ${profileData.image}`} className="h-8 w-8 object-cover rounded-full" />
+                    <div className="rounded-full flex relative left-4 border-black/10 bg-black/20 p-1">
+                      <img src={`data:image/png;base64, ${profileData.image}`} className="h-8 w-8  object-cover rounded-full" />
 
-                      <span className="absolute left-12  bottom-1 leading-5 flex-col font-medium flex items-start text-gray-800">
+                      <span className="absolute left-11 bottom-1 leading-5 flex-col font-medium flex items-start text-gray-800">
                         <a className="text-gray-600 flex w-24 truncate" title={profileData.name}>
                           {profileData.name}
                         </a>
@@ -469,14 +467,7 @@ const Navbar = () => {
                       </span>
                       <hr className="mt-1 border-gray-400" />
 
-                      {/* <a
-                        className={`text-sm flex items-center gap-2 mt-4 cursor-pointer ${
-                          isActive ? 'text-blue-500' : 'text-gray-700'
-                        }`}
-                      >
-                        <AiOutlineUser className={`${isActive ? 'text-blue-500' : 'text-gray-700'}`} />
-                        User
-                      </a> */}
+                    
                       
                       
                       <div className="relative">
@@ -757,7 +748,7 @@ const Navbar = () => {
           </Drawer>
 
           <Disclosure.Panel className="sm:hidden">
-            <div className="space-y-1 px-2 pb-3 pt-2">
+            <div className="space-y-1 text-center bg-slate-200 pb-3  pt-2">
               {navigation.map((item) => (
                 <Disclosure.Button
                   key={item.name}

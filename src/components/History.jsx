@@ -153,18 +153,18 @@ const History = ({ campaign_id }) => {
     () => [
       {
         Header: "Last Update",
-        accessor: "timestamp_update",
-        // Cell: ({ value }) => {
-        //   const date = new Date(value);
-        //   const formattedTime = date.toLocaleTimeString("id-ID", {
-        //     year: "numeric",
-        //     day: "2-digit",
-        //     month: "2-digit",
-        //     hour: "2-digit",
-        //     minute: "2-digit",
-        //   });
-        //   return <div className="flex justify-center">{formattedTime}</div>;
-        // },
+        accessor: "perubahan.TglUpdate",
+        Cell: ({ value }) => {
+          const date = new Date(value);
+          const formattedTime = date.toLocaleTimeString("id-ID", {
+            year: "numeric",
+            day: "2-digit",
+            month: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+          return <div className="flex justify-center">{formattedTime}</div>;
+        },
       },
       {
         Header: "Amount Spent",
@@ -240,22 +240,22 @@ const History = ({ campaign_id }) => {
       initialState: { pageIndex: 0, pageSize: 5 }, // Initial page settings
     },
     useGlobalFilter,
-    usePagination // Add this hook
+    usePagination
   );
 
   // sort history logic
   const sortedHistory = page.sort((a, b) => {
     if (sortHistory === "terbaru") {
       return (
-        new Date(a.values["timestamp_update"]).getTime() -
-        new Date(b.values["timestamp_update"]).getTime()
+        new Date(a.values["perubahan.TglUpdate"]).getTime() -
+        new Date(b.values["perubahan.TglUpdate"]).getTime()
       );
     }
 
     if (sortHistory === "terlama") {
       return (
-        new Date(b.values["timestamp_update"]).getTime() -
-        new Date(a.values["timestamp_update"]).getTime()
+        new Date(b.values["perubahan.TglUpdate"]).getTime() -
+        new Date(a.values["perubahan.TglUpdate"]).getTime()
       );
     }
   });
@@ -342,11 +342,7 @@ const History = ({ campaign_id }) => {
             className=" w-full table-container outline-none shadow-lg shadow-slate-900/10 border-none "
             ref={componentPDF}
           >
-            <table
-              {...getTableProps()}
-              ref={tableRef}
-              className="table-auto w-full"
-            >
+          <table {...getTableProps()} ref={tableRef} className="table-auto w-full">
               <thead>
                 {headerGroups.map((headerGroup) => (
                   <tr {...headerGroup.getHeaderGroupProps()}>
@@ -386,8 +382,8 @@ const History = ({ campaign_id }) => {
                             cell.column.id === "perubahan.roas"
                             ? "text-center"
                             : cell.column.id === "perubahan.TglUpdate"
-                              ? "text-left"
-                              : "text-right"; // Assuming amount spent, reach, impressions, cpc, and cpr should be right-aligned.
+                            ? "text-left"
+                            : "text-right"; // Assuming amount spent, reach, impressions, cpc, and cpr should be right-aligned.
                         return (
                           <td
                             {...cell.getCellProps()}
