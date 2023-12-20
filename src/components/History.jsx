@@ -153,62 +153,66 @@ const History = ({ campaign_id }) => {
     () => [
       {
         Header: "Last Update",
-        accessor: "perubahan.TglUpdate",
-        Cell: ({ value }) => {
-          const date = new Date(value);
-          const formattedTime = date.toLocaleTimeString("id-ID", {
-            year: "numeric",
-            day: "2-digit",
-            month: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-          });
-          return <div className="flex justify-center">{formattedTime}</div>;
-        },
+        accessor: "timestamp_update",
+        // Cell: ({ value }) => {
+        //   const date = new Date(value);
+        //   const formattedTime = date.toLocaleTimeString("id-ID", {
+        //     year: "numeric",
+        //     day: "2-digit",
+        //     month: "2-digit",
+        //     hour: "2-digit",
+        //     minute: "2-digit",
+        //   });
+        //   return <div className="flex justify-center">{formattedTime}</div>;
+        // },
       },
       {
         Header: "Amount Spent",
-        accessor: "perubahan.amountspent",
+        accessor: "amountspent",
       },
       {
         Header: "Reach",
-        accessor: "perubahan.reach",
+        accessor: "reach",
       },
       {
         Header: "Impressions",
-        accessor: "perubahan.impressions",
+        accessor: "impressions",
       },
       {
         Header: "Frequency",
-        accessor: "perubahan.frequency",
+        accessor: "frequency",
       },
       {
         Header: "RAR",
-        accessor: "perubahan.rar",
+        accessor: "rar",
       },
       {
         Header: "CPC",
-        accessor: "perubahan.cpc",
+        accessor: "cpc",
       },
       {
         Header: "CTR",
-        accessor: "perubahan.ctr",
+        accessor: "ctr",
       },
       {
         Header: "OCLP",
-        accessor: "perubahan.oclp",
+        accessor: "oclp",
       },
       {
         Header: "CPR",
-        accessor: "perubahan.cpr",
+        accessor: "cpr",
       },
       {
         Header: "ATC",
-        accessor: "perubahan.atc",
+        accessor: "atc",
       },
       {
         Header: "ROAS",
-        accessor: "perubahan.roas",
+        accessor: "roas",
+      },
+      {
+        Header: "Real ROAS",
+        accessor: "realroas",
       },
     ],
     []
@@ -243,15 +247,15 @@ const History = ({ campaign_id }) => {
   const sortedHistory = page.sort((a, b) => {
     if (sortHistory === "terbaru") {
       return (
-        new Date(a.values["perubahan.TglUpdate"]).getTime() -
-        new Date(b.values["perubahan.TglUpdate"]).getTime()
+        new Date(a.values["timestamp_update"]).getTime() -
+        new Date(b.values["timestamp_update"]).getTime()
       );
     }
 
     if (sortHistory === "terlama") {
       return (
-        new Date(b.values["perubahan.TglUpdate"]).getTime() -
-        new Date(a.values["perubahan.TglUpdate"]).getTime()
+        new Date(b.values["timestamp_update"]).getTime() -
+        new Date(a.values["timestamp_update"]).getTime()
       );
     }
   });
@@ -349,11 +353,10 @@ const History = ({ campaign_id }) => {
                     {headerGroup.headers.map((column) => (
                       <th
                         {...column.getHeaderProps()}
-                        className={`p-2 text-white bg-sky-500 font-medium border-t-0 border-slate-300 ${
-                          column.id === "status" || column.id === "id"
-                            ? "place-items-center"
-                            : "text-left"
-                        }`}
+                        className={`p-2 text-white bg-sky-500 font-medium border-t-0 border-slate-300 ${column.id === "status" || column.id === "id"
+                          ? "place-items-center"
+                          : "text-left"
+                          }`}
                         style={{ width: "50px" }} // Set the width to 20px
                       >
                         {column.render("Header")}
@@ -370,22 +373,21 @@ const History = ({ campaign_id }) => {
                   return (
                     <tr
                       {...row.getRowProps()}
-                      className={`text-gray-600 hover:bg-blue-200 hover:text-gray-700 ${
-                        i % 2 === 1 ? "bg-gray-100" : "bg-white"
-                      }`}
+                      className={`text-gray-600 hover:bg-blue-200 hover:text-gray-700 ${i % 2 === 1 ? "bg-gray-100" : "bg-white"
+                        }`}
                     >
                       {row.cells.map((cell) => {
                         const textAlign =
                           cell.column.id === "perubahan.frequency" ||
-                          cell.column.id === "perubahan.rar" ||
-                          cell.column.id === "perubahan.ctr" ||
-                          cell.column.id === "perubahan.oclp" ||
-                          cell.column.id === "perubahan.atc" ||
-                          cell.column.id === "perubahan.roas"
+                            cell.column.id === "perubahan.rar" ||
+                            cell.column.id === "perubahan.ctr" ||
+                            cell.column.id === "perubahan.oclp" ||
+                            cell.column.id === "perubahan.atc" ||
+                            cell.column.id === "perubahan.roas"
                             ? "text-center"
                             : cell.column.id === "perubahan.TglUpdate"
-                            ? "text-left"
-                            : "text-right"; // Assuming amount spent, reach, impressions, cpc, and cpr should be right-aligned.
+                              ? "text-left"
+                              : "text-right"; // Assuming amount spent, reach, impressions, cpc, and cpr should be right-aligned.
                         return (
                           <td
                             {...cell.getCellProps()}
