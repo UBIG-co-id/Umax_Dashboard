@@ -153,18 +153,18 @@ const History = ({ campaign_id }) => {
     () => [
       {
         Header: "Last Update",
-        accessor: "perubahan.TglUpdate",
-        Cell: ({ value }) => {
-          const date = new Date(value);
-          const formattedTime = date.toLocaleTimeString("id-ID", {
-            year: "numeric",
-            day: "2-digit",
-            month: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-          });
-          return <div className="flex justify-center">{formattedTime}</div>;
-        },
+        accessor: "timestamp_update",
+        // Cell: ({ value }) => {
+        //   const date = new Date(value);
+        //   const formattedTime = date.toLocaleTimeString("id-ID", {
+        //     year: "numeric",
+        //     day: "2-digit",
+        //     month: "2-digit",
+        //     hour: "2-digit",
+        //     minute: "2-digit",
+        //   });
+        //   return <div className="flex justify-center">{formattedTime}</div>;
+        // },
       },
       {
         Header: "Amount Spent",
