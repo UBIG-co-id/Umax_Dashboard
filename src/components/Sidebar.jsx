@@ -283,7 +283,7 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
     });
   };
   return (
-    <div className="relative flex max-sm:absolute max-sm:left-0 z-20">
+    <div className="relative mt-5 z-20">
       <button
         className={`relative top-2 right-2 sm:hidden text-gray-600 z-10`}
         onClick={toggleSidebar}
@@ -295,7 +295,7 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
         ></div>
       </button>
       <div
-        className={`relative bayangan max-w-70 top-5 -left-1  w-72 max-h-full bg-white  rounded-t-xl  max-sm:left-0 text-slate-500 p-4 transform ${
+        className={`relative max-sm:absolute max-sm:bottom-0 bayangan max-w-70 w-72 min-h-full max-h-full max-sm:h-full max-sm:overflow-scroll bg-white max-sm:rounded-xl rounded-s-xl  text-slate-500 p-4 transform ${
           state.toggleNavbar ? "block" : "hidden"
         } transition-transform duration-300 ease-in-out`}
       >
@@ -344,7 +344,7 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
           />
         </div>
 
-        <div className="relative lebar-list -left-2 border-slate-500 pt-2  overflow-y-scroll max-h-[50rem]">
+        <div className="relative lebar-list -left-2 border-slate-500 pt-2 overflow-y-scroll h-full max-sm:max-h-[30rem]">
           <ul className="cursor-pointer mt-2 ">
             {renderItems(filteredCampaigns)}{" "}
             {/* Menampilkan data yang sudah difilter */}

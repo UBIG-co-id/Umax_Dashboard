@@ -533,7 +533,7 @@ const Dashboard = () => {
   const handleTimeframeChange = (event) => {
     const selectedTimeframe = event.target.value;
     setSelectedTimeframe(selectedTimeframe);
-    updateChartUrl(selectedTimeframe); // Panggil fungsi ini untuk mengubah URL
+    updateChartUrl(selectedTimeframe); 
   };
 
   const renderContent = () => {
@@ -645,56 +645,72 @@ const Dashboard = () => {
 
             {/* bagian sugesti */}
             <div>
-              <div className="relative top-5 border-t-2 border-gray-600 p-5 px-10 pb-5">
+              <div className="relative top-5 border-t-2 border-gray-600 p-5 px-0 pb-5">
                 <h1 className="text-xl font-bold text-gray-700">
                   {translations["Suggestion"]}
                 </h1>
-                <div className="flex flex-col mt-5 md:flex-row gap-5 ">
-                  <div id="warning">
-                    <Card color="yellow">
-                      <div className=" max-w-sm">
+                <div className="flex flex-col mt-5 gap-5 ">
+                  <div>
+                    <Card color="red">
+                      <div className="w-full">
                         <div className="flex gap-3">
                           <div>
-                            <FiAlertTriangle
+                            <AiOutlineCloseCircle
                               size={25}
-                              className="text-yellow-500"
+                              className="text-red-500"
                             />
                           </div>
-                          {suggestionData.length > 0 && (
-                            <div>
-                              {suggestionData.map((suggestion, index) => (
-                                <div key={index}>
-                                  <h2>{suggestion.error3}</h2>
-                                  <p>{suggestion.message3}</p>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                          {/* <div>
-                          <div className='font-medium mb-2'>{translations['CTR Value']}</div>
-                          <p>{translations['Message CTR']}</p>
-                        </div> */}
+                          {suggestionData
+                        .filter((suggestion) => suggestion.rar && suggestion.rar.id === 1)
+                        .map((suggestion, index) => (
+                          <div key={index}>
+                            <h2 className="font-medium text-gray-900 max-sm:hidden">{suggestion.rar.title}</h2>
+                            <p className="leading-5 max-sm:hidden">{suggestion.rar.msg}</p>
+                            <hr className="border border-gray-500/30 w-full mt-3 max-sm:hidden"/>
+                        
+                         <div className="flex gap-10 mt-3">
+                         <span className="flex gap-2">
+                            <h1 className="font-medium font-sans max-sm:hidden "> Nilai:</h1> 
+                            <p className="font-sans text-red-600 max-sm:hidden">{suggestion.rar.value}</p>
+                          </span>
+                          <span className="flex gap-2">
+                            <h1 className="font-medium font-sans max-sm:hidden"> Target:</h1> 
+                            <p className="font-sans text-green-600 max-sm:hidden">{suggestion.rar.target}</p>
+                          </span>
+                         </div>
+
+                         <span className="flex relative top-3 gap-3">
+                          <h1 className="font-medium font-sans max-sm:hidden">Pesan:</h1>
+                          <p className="max-sm:hidden">{suggestion.rar.message}</p>
+                         </span>
+                        
+ 
+                          </div>
+                        ))}
+                         
                         </div>
                         <a
                           href="https://chat.openai.com/share/3bb35f6a-4b3b-4182-b6f9-c880722b3c72"
                           target="_blank"
-                          rel="noopener noreferrer"
                         >
-                          <div className="mt-2 hover:underline  text-end text-sm">
+                          <div className="mt-0">
+                            <p className=" text-end hover:underline text-sm">
                             {translations["Learn More"]}
+                            </p>
                           </div>
                         </a>
                       </div>
                     </Card>
-                  </div>
+                    </div>
 
-                  <Card color="red">
-                    <div className="max-w-sm">
+
+                  <Card color="yellow">
+                    <div className="w-full">
                       <div className="flex gap-3">
                         <div>
-                          <AiOutlineCloseCircle
+                          <FiAlertTriangle
                             size={25}
-                            className="text-red-500"
+                            className="text-yellow-500"
                           />
                         </div>
                         {suggestionData.length > 0 && (
@@ -927,11 +943,11 @@ const Dashboard = () => {
   }, [campaign_id, setMetricsData, setCampaignIdFromResponse]);
 
   return (
-    <main className="bg-slate-100 min-h-screen ">
+    <main className="bg-slate-100 max-sm:overflow-hidden max-h-full">
       <div>
         <Navbar />
       </div>
-      <div className="flex gap-5  px-5">
+      <div className="flex gap-5 px-3">
         <Sidebar
           state={state}
           toggleSidebar={toggleSidebar}
@@ -959,7 +975,7 @@ const Dashboard = () => {
                 />
               )}
               <h1
-                className={`text-2xl pl-3 font-bold ${
+                className={`text-2xl max-sm:text-base pl-3 font-bold ${
                   selectedName
                     ? "text-gray-600"
                     : "left-10 bg-gray-200 top-3 w-44 h-5 animate-pulse rounded-md relative"
@@ -968,15 +984,15 @@ const Dashboard = () => {
                 {selectedName ? (
                   selectedName
                 ) : (
-                  <h1 className="w-5 h-5 relative -left-12 rounded-md bg-gray-200"></h1>
+                  <h1 className="w-5 h-5 relative -left-12 rounded-md  bg-gray-200"></h1>
                 )}
               </h1>
             </div>
 
-            <div className="flex justify-center">
-              <ul className=" flex -mb-1 flex-wrap cursor-pointer sm:flex-row">
+            <div className="flex items-center text-center justify-center">
+              <ul className="grid -mb-1 max-sm:grid-cols-2 cursor-pointer grid-cols-4">
                 <li
-                  className={`p-3 px-5 ${
+                  className={`p-3 px-4 ${
                     activeTab === "performance"
                       ? "atas text-sky-500 cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors"
                       : "text-gray-500"
