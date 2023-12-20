@@ -61,7 +61,7 @@ const handleDelete = async (_id) => {
       try {
         const token = localStorage.getItem('jwtToken');
         const response = await axios.delete(
-          `${umaxUrl}/campaign-delete/?campaign_id=${_id}`,
+          `${umaxUrl}/campaign-delete?campaign_id=${_id}`,
           {
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -69,7 +69,8 @@ const handleDelete = async (_id) => {
             },
           }
         );
-
+        console.log('Delete response:', response);
+        
         if (response.status === 200) {
           fetchData();
           Swal.fire({

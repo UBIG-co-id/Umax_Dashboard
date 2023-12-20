@@ -86,10 +86,6 @@ export default function Chart({ chartUrl }) {
       ) : (
         <div className="w-full font font-medium h-80 flex items-center justify-center">
           <span className="flex items-center justify-between">
-            <span>
-              {/* <h1>PLEASE !!!</h1>
-            <h2>select campaign data first</h2> */}
-            </span>
             <img className="h-72" src={Notfound} />
           </span>
         </div>
