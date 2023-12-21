@@ -703,38 +703,61 @@ const Dashboard = () => {
                     </Card>
                     </div>
 
-
-                  <Card color="yellow">
-                    <div className="w-full">
-                      <div className="flex gap-3">
-                        <div>
-                          <FiAlertTriangle
-                            size={25}
-                            className="text-yellow-500"
-                          />
-                        </div>
-                        {suggestionData.length > 0 && (
+                  <div>
+                    <Card color="red">
+                      <div className="w-full">
+                        <div className="flex gap-3">
                           <div>
-                            {suggestionData.map((suggestion, index) => (
-                              <div key={index}>
-                                <h2>{suggestion.error4}</h2>
-                                <p>{suggestion.message4}</p>
-                              </div>
-                            ))}
+                            <AiOutlineCloseCircle
+                              size={25}
+                              className="text-red-500"
+                            />
                           </div>
-                        )}
-                      </div>
-                      <a
-                        href="https://chat.openai.com/share/cb290ced-08a9-4153-93dc-470a1e0fd126"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <div className="mt-2 hover:underline  text-end text-sm">
-                          {translations["Learn More"]}
+                          {suggestionData
+                        .filter((suggestion) => suggestion.oclp && suggestion.oclp.id === 2)
+                        .map((suggestion, index) => (
+                          <div key={index}>
+                            <h2 className="font-medium text-gray-900 max-sm:hidden">{suggestion.oclp.title}</h2>
+                            <p className="leading-5 max-sm:hidden">{suggestion.oclp.msg}</p>
+                            <hr className="border border-gray-500/30 w-full mt-3 max-sm:hidden"/>
+                        
+                         <div className="flex gap-10 mt-3">
+                         <span className="flex gap-2">
+                            <h1 className="font-medium font-sans max-sm:hidden "> Nilai:</h1> 
+                            <p className="font-sans text-red-600 max-sm:hidden">{suggestion.oclp.value}</p>
+                          </span>
+                          <span className="flex gap-2">
+                            <h1 className="font-medium font-sans max-sm:hidden"> Target:</h1> 
+                            <p className="font-sans text-green-600 max-sm:hidden">{suggestion.oclp.target}</p>
+                          </span>
+                         </div>
+
+                         <span className="flex relative top-3 gap-3">
+                          <h1 className="font-medium font-sans max-sm:hidden">Pesan:</h1>
+                          <p className="max-sm:hidden">{suggestion.oclp.massage}</p>
+                         </span>
+                        
+ 
+                          </div>
+                        ))}
+                         
                         </div>
-                      </a>
+                        <a
+                          href="https://chat.openai.com/share/3bb35f6a-4b3b-4182-b6f9-c880722b3c72"
+                          target="_blank"
+                        >
+                          <div className="mt-0">
+                            <p className=" text-end hover:underline text-sm">
+                            {translations["Learn More"]}
+                            </p>
+                          </div>
+                        </a>
+                      </div>
+                    </Card>
                     </div>
-                  </Card>
+
+
+               
                 </div>
               </div>
             </div>
