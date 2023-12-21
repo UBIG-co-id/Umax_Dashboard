@@ -172,7 +172,7 @@ const Dashboard = () => {
 
         // pakai value dari selectedTimeFrame agar lebih dinamis
         // default value dari selectedTimeFrame: last-week
-        const apiUrl = `https://umaxxnew-1-d6861606.deta.app/${selectedTimeframe}?campaign_id=${id}`;
+        const apiUrl = `https://umaxxnew-1-d6861606.deta.app/metrics-7?campaign_id=${id}`;
 
         const response = await fetch(apiUrl, {
           headers: {
