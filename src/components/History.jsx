@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useTable, useGlobalFilter, usePagination } from "react-table";
+import { useTable, useGlobalFilter, usePagination, useSortBy } from "react-table";
 // import data from "./CampaignData";
 import { BsTrash3, BsPlus } from "react-icons/bs";
 import { IoIosArrowForward } from "react-icons/io";
+import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import { AiOutlineEdit, AiOutlineFilePdf } from "react-icons/ai";
 import { RiFileExcel2Line } from "react-icons/ri";
@@ -23,10 +24,17 @@ const History = ({ campaign_id }) => {
 
   // state buat sort history
   const [sortHistory, setSortHistory] = useState("terbaru");
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const dropdownRef = useRef(null);
 
   const [data, setData] = useState([]);
   const [selectedData, setSelectedData] = useState([]);
   const [error, setError] = useState(null);
+
+   const handleSortChange = (selectedSort) => {
+    setSortHistory(selectedSort);
+    setIsDropdownVisible(false);
+  };
 
   useEffect(() => {
     const fetchCampaignData = async () => {
@@ -51,13 +59,19 @@ const History = ({ campaign_id }) => {
         console.error("Terjadi kesalahan:", error);
       }
     };
-
+    
     fetchCampaignData();
   }, [setData, campaign_id]);
 
   const handleRowSelection = (selectedRowData) => {
     setSelectedData(selectedRowData);
   };
+
+  const toggleDropdown = () => {
+    setIsDropdownVisible(!isDropdownVisible);
+  };
+
+  
 
   // PAGINATION
   const paginationStyle = {
@@ -146,14 +160,36 @@ const History = ({ campaign_id }) => {
         return "Consideration";
       default:
         return "Unknown";
-    }
-  };
-
-  const columns = React.useMemo(
+      }
+    };
+    
+    const columns = React.useMemo(
     () => [
       {
         Header: "Last Update",
         accessor: "timestamp_update",
+        selector: (row)=>row.timestamp_update,
+        sortable: true,
+        // Header: () => (
+        //   <div className="flex items-center">
+        //     <span className="mr-2" onClick={toggleDropdown}>
+        //       Last Update
+        //     </span>
+        //     {isDropdownVisible && (
+        //       <select
+        //         value={sortHistory}
+        //         onChange={(e) => handleSortChange(e.target.value)}
+        //         ref={dropdownRef}
+        //       >
+        //         <option value="terbaru">Terbaru</option>
+        //         <option value="terlama">Terlama</option>
+        //       </select>
+        //     )}
+        //     <button onClick={() => handleSortChange(sortHistory === "terbaru" ? "terlama" : "terbaru")}>
+        //       {sortHistory === "terbaru" ? <FaArrowUp /> : <FaArrowDown />}
+        //     </button>
+        //   </div>
+        // ),
         // Cell: ({ value }) => {
         //   const date = new Date(value);
         //   const formattedTime = date.toLocaleTimeString("id-ID", {
@@ -215,7 +251,7 @@ const History = ({ campaign_id }) => {
         accessor: "realroas",
       },
     ],
-    []
+    [setSortHistory, sortHistory, isDropdownVisible]
   );
 
   const {
@@ -237,9 +273,10 @@ const History = ({ campaign_id }) => {
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize: 5 }, // Initial page settings
+      initialState: { pageIndex: 0, pageSize: 5,sortBy: [{ id: "timestamp_update", desc: true }] }, // Initial page settings
     },
-    useGlobalFilter,
+    // useGlobalFilter,
+    useSortBy,
     usePagination
   );
 
@@ -247,18 +284,22 @@ const History = ({ campaign_id }) => {
   const sortedHistory = page.sort((a, b) => {
     if (sortHistory === "terbaru") {
       return (
-        new Date(a.values["perubahan.TglUpdate"]).getTime() -
-        new Date(b.values["perubahan.TglUpdate"]).getTime()
+        new Date(a.values["timestamp_update"]).getTime() -
+        new Date(b.values["timestamp_update"]).getTime()
       );
     }
 
     if (sortHistory === "terlama") {
       return (
-        new Date(b.values["perubahan.TglUpdate"]).getTime() -
-        new Date(a.values["perubahan.TglUpdate"]).getTime()
+        new Date(b.values["timestamp_update"]).getTime() -
+        new Date(a.values["timestamp_update"]).getTime()
       );
     }
   });
+
+
+  // ...
+
 
   const tableRef = useRef(null);
 
@@ -303,10 +344,10 @@ const History = ({ campaign_id }) => {
     <div>
       <div className="border-2 border-slate-200  p-0 m-2 lg:m-10 mt-8 rounded-lg relative">
         <div className="container mx-auto p-4">
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <button onClick={() => setSortHistory("terbaru")}>terbaru</button>
             <button onClick={() => setSortHistory("terlama")}>terlama</button>
-          </div>
+          </div> */}
           <div className="grid grid-cols-12 gap-3 px-2 md:px-0 mb-2">
             {/* div kosong untuk memberi jarak */}
             <div className="hidden lg:flex col-span-11 "></div>
@@ -342,20 +383,23 @@ const History = ({ campaign_id }) => {
             className=" w-full table-container outline-none shadow-lg shadow-slate-900/10 border-none "
             ref={componentPDF}
           >
-          <table {...getTableProps()} ref={tableRef} className="table-auto w-full">
-              <thead>
+            <table {...getTableProps()} ref={tableRef} className="table-auto w-full">
+            <thead>
                 {headerGroups.map((headerGroup) => (
                   <tr {...headerGroup.getHeaderGroupProps()}>
                     {headerGroup.headers.map((column) => (
                       <th
-                        {...column.getHeaderProps()}
+                        {...column.getHeaderProps(column.getSortByToggleProps())}
                         className={`p-2 text-white bg-sky-500 font-medium border-t-0 border-slate-300 ${column.id === "status" || column.id === "id"
                           ? "place-items-center"
-                          : "text-left"
+                          : "text-left" 
                           }`}
                         style={{ width: "50px" }} // Set the width to 20px
                       >
                         {column.render("Header")}
+                        <span>
+                          {column.isSorted ? (column.isSortedDesc ?  '  ⬇' : '  ⬆') : ''}
+                        </span>
                       </th>
                     ))}
                   </tr>
@@ -382,8 +426,8 @@ const History = ({ campaign_id }) => {
                             cell.column.id === "perubahan.roas"
                             ? "text-center"
                             : cell.column.id === "perubahan.TglUpdate"
-                            ? "text-left"
-                            : "text-right"; // Assuming amount spent, reach, impressions, cpc, and cpr should be right-aligned.
+                              ? "text-left"
+                              : "text-right"; // Assuming amount spent, reach, impressions, cpc, and cpr should be right-aligned.
                         return (
                           <td
                             {...cell.getCellProps()}

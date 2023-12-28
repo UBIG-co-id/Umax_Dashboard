@@ -40,7 +40,7 @@
     "react-apexcharts": "^1.4.1",
     "react-chartjs-2": "^5.2.0",
     "react-csv": "^2.2.2",
-    "react-datepicker": "^4.23.0",
+    "react-datepicker": "^4.25.0",
     "react-dom": "^18.2.0",
     "react-export-excel": "^0.5.3",
     "react-export-table-to-excel": "^1.0.6",

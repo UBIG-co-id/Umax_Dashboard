@@ -21,7 +21,7 @@ export default function Chart({ chartUrl }) {
 
         if (response.status === 200) {
           const data = response.data.Data;
-          setChartData(data);
+          setChartData(data.reverse());
         } else {
           console.error("Failed to fetch data from API");
         }

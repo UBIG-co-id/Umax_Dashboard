@@ -8,7 +8,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 const UpdateClient = () => {
     // const [data,setData] =useState([])
     // url base
-    const umaxUrl = 'https://umaxx-1-v8834930.deta.app';
+    const umaxUrl = 'https://umaxxnew-1-d6861606.deta.app';
 
     const {client_id} =useParams();
     const {_id} =useParams();
@@ -29,32 +29,31 @@ const UpdateClient = () => {
     const navigate = useNavigate();
     
    useEffect(()=> {
-    axios.get(`${umaxUrl}/client-by-id?`+client_id,{
-      headers:headers,
-    })
-    .then(res => 
-        setValues({...values, 
-            name:res.data.name, 
-            address:res.data.address, 
-            contact:res.data.contact, 
-            status:res.data.status,
-            notes:res.data.notes }))
-    .catch(err => console.log(err))
-   },[])
+      axios.get(`${umaxUrl}/client-by-id?client_id=${_id}`, {
+        headers: headers,
+      })
+      .then(res => 
+        setValues({
+          ...values,
+          name: res.data.Data[0].name,
+          address: res.data.Data[0].address,
+          contact: res.data.Data[0].contact,
+          status: res.data.Data[0].status,
+          notes: res.data.Data[0].notes
+        }))
+      .catch(err => console.log(err))
+  }, [_id])
 
    const handleSubmit = (e) => {
     e.preventDefault();
   
-    axios.put(`${umaxUrl}/client-by-id?client_id=${_id}`, values, { headers })
+    axios.put(`https://umaxxnew-1-d6861606.deta.app/client-edit?client_id=${_id}`, values, { headers })
       .then((res) => {
         navigate('/Clients');
       })
       .catch((err) => console.log(err));
   };
   
-    
-
-    
   // close menggunakan esc
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -114,7 +113,7 @@ const UpdateClient = () => {
                     <div className="flex flex-col">
                       <label className='pb-2 text-sm ' htmlFor="contact">Contact</label>
                       <input
-                        type="number"
+                        type="text"
                         id="contact"
                         name='contact'
                         value={values.contact}
