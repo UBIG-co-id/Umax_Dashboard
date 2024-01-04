@@ -536,6 +536,43 @@ const Dashboard = () => {
     updateChartUrl(selectedTimeframe); 
   };
 
+  // const getSuggestion = (suggestion) => {
+  //   let suggestionStyle = {}; // Objek gaya status
+
+  //   // CASE UNTUK STATUS
+  //   switch (suggestion) {
+  //     case succes:
+  //         suggestionStyle = {
+  //         backgroundColor: "#DFFFDF",
+  //         color: '#00A600',
+  //         border: '0.3px solid #00CA0090',
+  //         padding: '5px 13px',
+  //         fontSize: "12px",
+  //         borderRadius: '6px',
+  //         fontWeight: '500', 
+  //       };
+  //       return (
+  //         <span style={statusStyle}>Active</span>
+  //       );
+  //     case 2:
+  //       statusStyle = {
+  //         backgroundColor: "#FFF2E8",
+  //         color: '#D4380D', 
+  //         border: '0.3px solid #FF0000',
+  //         padding: '5px 15px',
+  //         fontSize: "12px",
+  //         borderRadius: '6px',
+  //         fontWeight: '500', 
+  //       };
+  //       return (
+  //         <span style={statusStyle}>Deactive</span>
+  //       );
+
+  //     default:
+  //       return "Unknown";
+  //   }
+  // }
+  
   const renderContent = () => {
     switch (activeTab) {
       case "performance":
@@ -817,7 +854,15 @@ const Dashboard = () => {
           </div>
         );
       case "setting":
-        return <Setting />;
+        return (
+          <div>
+            {campaign_id ?(
+              <Setting campaign_id={campaign_id} />
+              ): (
+                <p>Select a valid item</p>
+              )}
+          </div>
+        )
       default:
         return null;
     }

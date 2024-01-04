@@ -81,7 +81,7 @@ const UpdateClient = () => {
             <div className="fixed z-50 inset-0 flex items-center justify-center">
             <div className="fixed -z-10 inset-0 bg-black bg-opacity-50"></div>
             <form
-             onSubmit={handleSubmit}
+              onSubmit={handleSubmit}
               className="bg-white p-5 rounded-lg shadow-lg max-h-[80vh] overflow-y-auto"
             >
               <h2 className="text-xl font-semibold mb-4">Edit Client</h2>
