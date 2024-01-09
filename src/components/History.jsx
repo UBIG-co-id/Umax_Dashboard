@@ -30,8 +30,9 @@ const History = ({ campaign_id }) => {
   const [data, setData] = useState([]);
   const [selectedData, setSelectedData] = useState([]);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-   const handleSortChange = (selectedSort) => {
+  const handleSortChange = (selectedSort) => {
     setSortHistory(selectedSort);
     setIsDropdownVisible(false);
   };
@@ -39,6 +40,7 @@ const History = ({ campaign_id }) => {
   useEffect(() => {
     const fetchCampaignData = async () => {
       try {
+        setLoading(true);
         const token = localStorage.getItem("jwtToken");
         const response = await fetch(
           `https://umaxxnew-1-d6861606.deta.app/history?campaign_id=${campaign_id}`,
@@ -55,11 +57,13 @@ const History = ({ campaign_id }) => {
         } else {
           console.error("Gagal mengambil data");
         }
+        setLoading(false);
       } catch (error) {
         console.error("Terjadi kesalahan:", error);
+        setLoading(false);
       }
     };
-    
+
     fetchCampaignData();
   }, [setData, campaign_id]);
 
@@ -71,7 +75,7 @@ const History = ({ campaign_id }) => {
     setIsDropdownVisible(!isDropdownVisible);
   };
 
-  
+
 
   // PAGINATION
   const paginationStyle = {
@@ -160,15 +164,15 @@ const History = ({ campaign_id }) => {
         return "Consideration";
       default:
         return "Unknown";
-      }
-    };
-    
-    const columns = React.useMemo(
+    }
+  };
+
+  const columns = React.useMemo(
     () => [
       {
         Header: "Last Update",
         accessor: "timestamp_update",
-        selector: (row)=>row.timestamp_update,
+        selector: (row) => row.timestamp_update,
         sortable: true,
         // Header: () => (
         //   <div className="flex items-center">
@@ -273,7 +277,7 @@ const History = ({ campaign_id }) => {
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize: 5,sortBy: [{ id: "timestamp_update", desc: true }] }, // Initial page settings
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: "timestamp_update", desc: true }] }, // Initial page settings
     },
     // useGlobalFilter,
     useSortBy,
@@ -384,7 +388,7 @@ const History = ({ campaign_id }) => {
             ref={componentPDF}
           >
             <table {...getTableProps()} ref={tableRef} className="table-auto w-full">
-            <thead>
+              <thead>
                 {headerGroups.map((headerGroup) => (
                   <tr {...headerGroup.getHeaderGroupProps()}>
                     {headerGroup.headers.map((column) => (
@@ -392,13 +396,13 @@ const History = ({ campaign_id }) => {
                         {...column.getHeaderProps(column.getSortByToggleProps())}
                         className={`p-2 text-white bg-sky-500 font-medium border-t-0 border-slate-300 ${column.id === "status" || column.id === "id"
                           ? "place-items-center"
-                          : "text-left" 
+                          : "text-left"
                           }`}
                         style={{ width: "50px" }} // Set the width to 20px
                       >
                         {column.render("Header")}
                         <span>
-                          {column.isSorted ? (column.isSortedDesc ?  '  ⬇' : '  ⬆') : ''}
+                          {column.isSorted ? (column.isSortedDesc ? '  ⬇' : '  ⬆') : ''}
                         </span>
                       </th>
                     ))}
@@ -494,6 +498,15 @@ const History = ({ campaign_id }) => {
           </button>{" "}
         </div>
         {/* End Pagination */}
+        {/* <div className="px-5 py-5 flex flex-col ">
+          {loading ? (
+            // Render a loading spinner or message while loading
+            <div className="text-center">Loading...</div>
+          ) : (
+
+            renderContent()
+          )}
+        </div> */}
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import { CSSTransition } from 'react-transition-group';
 import '../styles.css';
 import { silang } from "../assets";
 
-export default function CardInfo({ title, value, color = "text-gray-500", popupContent, className = "" }) {
+export default function CardInfo({ title, value, color, popupContent}) {
     const [activePopup, setActivePopup] = useState(false);
     const popupRef = useRef(null);
 
@@ -23,21 +23,45 @@ export default function CardInfo({ title, value, color = "text-gray-500", popupC
                 closePopup();
             }
         }
-
+    
+        function handleEscapeKey(event) {
+            if (event.key === "Escape") {
+                closePopup();
+            }
+        }
+    
         if (activePopup) {
             document.addEventListener("mousedown", handleClickOutside);
+            document.addEventListener("keydown", handleEscapeKey);
         } else {
             document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("keydown", handleEscapeKey);
         }
-
+    
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("keydown", handleEscapeKey);
         };
     }, [activePopup]);
+    
+    const renderColor = (colorFromSwagger) => {
+        switch (colorFromSwagger) {
+            case 'danger':
+                return { bgColor: 'bg-red-100', border: 'border border-red-500' };
+            case 'warning':
+                return { bgColor: 'bg-yellow-100', border: 'border border-yellow-500'};
+            case 'success':
+                return { bgColor: 'bg-green-100', border: 'border border-green-500'};
+            default:
+                return { bgColor: 'bg-sky-100', border: 'border border-sky-500'};
+        }
+    };
 
+    const { bgColor, border } = renderColor(color);
+   
 
     return (
-        <div className={`p-4 relative rounded-lg bg-slate-100 border border-gray-300 ${className}`}>
+        <div className={`p-4 relative rounded-lg bg-slate-100 border border-gray-300 ${bgColor} ${border} ${color}`}>
             <div className='flex justify-between items-center'>
                 <div className={`text-sm font-medium ${color}`}>{title}</div>
                 <div className='text-gray-500 cursor-pointer'>

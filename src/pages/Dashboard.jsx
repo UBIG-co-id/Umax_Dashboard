@@ -12,6 +12,8 @@ import History from "../components/History";
 import { FiAlertTriangle } from "react-icons/fi";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import { FaRegCheckCircle } from "react-icons/fa";
+import { AiOutlineWarning } from "react-icons/ai";
 import { NotFound, google, meta, tiktok } from "../assets";
 import "../styles.css";
 import { setActiveItem, updateSelectedName } from "../components/Sidebar";
@@ -19,7 +21,8 @@ import { useLanguage } from "../LanguageContext"; // Import the useLanguage hook
 import Translation from "../translation/Translation.json";
 import axios from "axios";
 import { formattedKoma1 } from "../helpers/formattedKoma1";
-import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+// import { getColorBySwaggerData } from "../Component/CardInfo";
 
 const Dashboard = () => {
   const { selectedLanguage } = useLanguage(); // Get selectedLanguage from context
@@ -36,13 +39,26 @@ const Dashboard = () => {
   const [data, setData] = useState([]);
   const [barr, setBarr] = useState([]);
 
-  // const [campaignId, setCampaignId] = useState("");
+  const [campaignId, setCampaignId] = useState("");
   const [metrics, setMetrics] = useState([]);
   const [campaign_id, setMetricId] = useState("");
   const [error, setError] = useState(null);
   const [selectedTimeframe, setSelectedTimeframe] = useState("last-week");
   const [chartUrl, setChartUrl] = useState("");
   const [suggestionData, setSuggestionData] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const getColorBySwaggerData = (swaggerColor) => {
+    switch (swaggerColor) {
+      case 'Success':
+        return 'text-green-500';
+      case 'Danger':
+        return 'text-red-500';
+      // Tambahkan lebih banyak kasus sesuai kebutuhan
+      default:
+        return 'text-gray-500';
+    }
+  };
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -50,6 +66,7 @@ const Dashboard = () => {
       console.log("ID CAMPAIGN", id);
 
       try {
+        
         const token = localStorage.getItem("jwtToken");
         const response = await axios.get(
           `https://umaxxnew-1-d6861606.deta.app/suggestions?campaign_id=${id}`,
@@ -167,6 +184,7 @@ const Dashboard = () => {
   useEffect(() => {
     const metricsChart = async () => {
       try {
+        setLoading(true);
         const id = campaign_id;
         const token = localStorage.getItem("jwtToken");
 
@@ -195,8 +213,11 @@ const Dashboard = () => {
         } else {
           console.error("Gagal mengambil metrics");
         }
+        setLoading(false);
+        
       } catch (error) {
         console.error("Terjadi kesalahan:", error);
+        setLoading(false);
       }
     };
 
@@ -249,12 +270,12 @@ const Dashboard = () => {
     {
       title: translations["Frequency"],
       value: selectedData
-      ? selectedData.frequency
-      : barr.map((dayData) => dayData.frequency), // Ambil semua frequency dari barr
-    chart: barr.map((dayData) => ({ 
-      name: dayData.TglUpdate,
-      value: parseFloat(dayData.frequency.replace(/\D/g, "")),
-    })),
+        ? selectedData.frequency
+        : barr.map((dayData) => dayData.frequency), // Ambil semua frequency dari barr
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.frequency.replace(/\D/g, "")),
+      })),
       persen: -2.0,
       description: "Total Impression compared to last 7 day",
       descModal:
@@ -263,12 +284,12 @@ const Dashboard = () => {
     {
       title: translations["Reach Amount Spent Ratio"],
       value: selectedData
-      ? selectedData.rar
-      : barr.map((dayData) => dayData.rar), // Ambil semua rar dari barr
-    chart: barr.map((dayData) => ({
-      name: dayData.TglUpdate,
-      value: parseFloat(dayData.rar.replace(/\D/g, "")),
-    })),
+        ? selectedData.rar && selectedData.rar.value // Check if selectedData.rar is defined
+        : barr.map((dayData) => dayData.rar && dayData.rar.value), // Check if dayData.rar is defined
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.rar && dayData.rar.value), // No need for .replace here
+      })),
       persen: 2.0,
       description: "Total Reach Amount Spent ratio compared to last 7 day",
       descModal:
@@ -277,12 +298,12 @@ const Dashboard = () => {
     {
       title: translations["Cost Per Click"],
       value: selectedData
-      ? selectedData.cpr
-      : barr.map((dayData) => dayData.cpr), // Ambil semua cpr dari barr
-    chart: barr.map((dayData) => ({
-      name: dayData.TglUpdate,
-      value: parseFloat(dayData.cpr.replace(/\D/g, "")),
-    })),
+        ? selectedData.cpc && selectedData.cpc.value // Check if selectedData.cpc is defined
+        : barr.map((dayData) => dayData.cpc && dayData.cpc.value), // Check if dayData.cpc is defined
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.cpc && dayData.cpc.value), // No need for .replace here
+      })),
       persen: 2.0,
       description: "Total Cost per Click compared to last 7 day",
       descModal:
@@ -291,12 +312,12 @@ const Dashboard = () => {
     {
       title: translations["Click Through Rate"],
       value: selectedData
-      ? selectedData.ctr
-      : barr.map((dayData) => dayData.ctr), // Ambil semua ctr dari barr
-    chart: barr.map((dayData) => ({
-      name: dayData.TglUpdate,
-      value: parseFloat(dayData.ctr.replace(/\D/g, "")),
-    })),
+        ? selectedData.ctr && selectedData.ctr.value // Check if selectedData.ctr is defined
+        : barr.map((dayData) => dayData.ctr && dayData.ctr.value), // Check if dayData.ctr is defined
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.ctr && dayData.ctr.value), // No need for .replace here
+      })),
       persen: 2.0,
       description: "Total Click Through Rate compared to last 7 day",
       descModal:
@@ -305,12 +326,12 @@ const Dashboard = () => {
     {
       title: translations["Outbont Click Landing Page"],
       value: selectedData
-      ? selectedData.oclp
-      : barr.map((dayData) => dayData.oclp), // Ambil semua oclp dari barr
-    chart: barr.map((dayData) => ({
-      name: dayData.TglUpdate,
-      value: parseFloat(dayData.oclp.replace(/\D/g, "")),
-    })),
+        ? selectedData.oclp && selectedData.oclp.value // Check if selectedData.oclp is defined
+        : barr.map((dayData) => dayData.oclp && dayData.oclp.value), // Check if dayData.oclp is defined
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.oclp && dayData.oclp.value), // No need for .replace here
+      })),
       persen: -2.0,
       description: "Total OCLP compared to last 7 day",
       descModal:
@@ -319,12 +340,12 @@ const Dashboard = () => {
     {
       title: translations["Cost Per Result"],
       value: selectedData
-      ? selectedData.cpr
-      : barr.map((dayData) => dayData.cpr), // Ambil semua cpr dari barr
-    chart: barr.map((dayData) => ({
-      name: dayData.TglUpdate,
-      value: parseFloat(dayData.cpr.replace(/\D/g, "")),
-    })),
+        ? selectedData.cpr && selectedData.cpr.value // Check if selectedData.cpr is defined
+        : barr.map((dayData) => dayData.cpr && dayData.cpr.value), // Check if dayData.cpr is defined
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.cpr && dayData.cpr.value), // No need for .replace here
+      })),
       persen: 2.0,
       description: "Total Cost per Result compared to last 7 day",
       descModal:
@@ -333,12 +354,12 @@ const Dashboard = () => {
     {
       title: translations["Add To Cart"],
       value: selectedData
-      ? selectedData.atc
-      : barr.map((dayData) => dayData.atc), // Ambil semua atc dari barr
-    chart: barr.map((dayData) => ({
-      name: dayData.TglUpdate,
-      value: parseFloat(dayData.atc.replace(/\D/g, "")),
-    })),
+        ? selectedData.atc
+        : barr.map((dayData) => dayData.atc), // Ambil semua atc dari barr
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.atc.replace(/\D/g, "")),
+      })),
       persen: 2.0,
       description: "Total Add to Cart compared to last 7 day",
       descModal:
@@ -347,12 +368,12 @@ const Dashboard = () => {
     {
       title: translations["Return on Ad Spent"],
       value: selectedData
-      ? selectedData.roas
-      : barr.map((dayData) => dayData.roas), // Ambil semua roas dari barr
-    chart: barr.map((dayData) => ({
-      name: dayData.TglUpdate,
-      value: parseFloat(dayData.roas.replace(/\D/g, "")),
-    })),
+        ? selectedData.roas && selectedData.roas.value // Check if selectedData.roas is defined
+        : barr.map((dayData) => dayData.roas && dayData.roas.value), // Check if dayData.roas is defined
+      chart: barr.map((dayData) => ({
+        name: dayData.TglUpdate,
+        value: parseFloat(dayData.roas && dayData.roas.value), // No need for .replace here
+      })),
       persen: 2.0,
       description: "Total ROAS to last 7 day",
       descModal:
@@ -360,12 +381,12 @@ const Dashboard = () => {
     },
     {
       title: translations["Real ROAS"],
-         value: selectedData
-        ? selectedData.realroas
-        : barr.map((dayData) => dayData.realroas), // Ambil semua realroas dari barr
+      value: selectedData
+        ? selectedData.real_roas && selectedData.real_roas.value // Check if selectedData.real_roas is defined
+        : barr.map((dayData) => dayData.real_roas && dayData.real_roas.value), // Check if dayData.real_roas is defined
       chart: barr.map((dayData) => ({
         name: dayData.TglUpdate,
-        value: parseFloat(dayData.realroas.replace(/\D/g, "")),
+        value: parseFloat(dayData.real_roas && dayData.real_roas.value), // No need for .replace here
       })),
       persen: 2.0,
       description: "Total Real ROAS to last 7 day",
@@ -431,19 +452,19 @@ const Dashboard = () => {
   //format style description
   const formatDescMetrix = (metrixData) => {
     const formatMap = {
-      "Amount Spent": 
-      (description) => (
-        <p
-          style={{
-            fontSize: "10.5px",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {description}
-        </p>
-      ),
+      "Amount Spent":
+        (description) => (
+          <p
+            style={{
+              fontSize: "10.5px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {description}
+          </p>
+        ),
       "Frequency": (description) => (
         <p
           style={{
@@ -456,45 +477,45 @@ const Dashboard = () => {
           {description}
         </p>
       ),
-      "Reach Amount Spent Ratio": 
-      (description) => (
-        <p
-          style={{
-            fontSize: "9.5px",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {description}
-        </p>
-      ),
+      "Reach Amount Spent Ratio":
+        (description) => (
+          <p
+            style={{
+              fontSize: "9.5px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {description}
+          </p>
+        ),
       "Cost per Click":
-       (description) => (
-        <p
-          style={{
-            fontSize: "10.4px",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {description}
-        </p>
-      ),
-      "Click Through Rate": 
-      (description) => (
-        <p
-          style={{
-            fontSize: "9.5px",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {description}
-        </p>
-      ),
+        (description) => (
+          <p
+            style={{
+              fontSize: "10.4px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {description}
+          </p>
+        ),
+      "Click Through Rate":
+        (description) => (
+          <p
+            style={{
+              fontSize: "9.5px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {description}
+          </p>
+        ),
       "Outbont Click Landing Page": (description) => (
         <p
           style={{
@@ -533,7 +554,7 @@ const Dashboard = () => {
   const handleTimeframeChange = (event) => {
     const selectedTimeframe = event.target.value;
     setSelectedTimeframe(selectedTimeframe);
-    updateChartUrl(selectedTimeframe); 
+    updateChartUrl(selectedTimeframe);
   };
 
   // const getSuggestion = (suggestion) => {
@@ -572,7 +593,30 @@ const Dashboard = () => {
   //       return "Unknown";
   //   }
   // }
-  
+  // const getColorFromSwagger = (swaggerColor) => {
+  //   switch (swaggerColor) {
+  //     case "Danger":
+  //       return "red";
+  //     case "Warning":
+  //       return "yellow";
+  //     case "Success":
+  //       return "green";
+  //     default:
+  //       return "white"; // Default color if not matched
+  //   }
+  // };
+
+  // const getColor = (value) => {
+  //   if (value && value.includes("danger")) {
+  //     return "text-red-500"; // Warna merah untuk "danger"
+  //   } else if (value && value.includes("warning")) {
+  //   } else if (value && value.includes("success")) {
+  //     return "text-green-500"; // Warna hijau untuk "success"
+  //   } else {
+  //     return "text-gray-500"; // Warna default jika tidak ada kategori yang sesuai
+  //   }
+  // };
+
   const renderContent = () => {
     switch (activeTab) {
       case "performance":
@@ -607,21 +651,22 @@ const Dashboard = () => {
             {/* end */}
 
             {/* bagian content */}
+
             <div>
               <div className="flex flex-col md:flex-row mt-5 md:gap-5">
-                {/* Card Info */}
-
                 <div className="md:w-8/12 w-full flex flex-col flex-wrap h-full gap-5">
+                  {/* Card Info */}
                   <CardInfo
                     title={translations["Amount Spent"]}
-                    value={selectedData ? selectedData.amountspent : "Rp.-"}
-                    color="text-sky-500"
+                    value={selectedData ? selectedData.amountspent : "-%"}
+                    color="text-sky-500"// Sesuaikan dengan properti yang sesuai
                     popupContent="Jumlah total biaya yang kita keluarkan untuk pemasangan iklan"
                   />
                   <CardInfo
                     title={translations["Reach Amount Spent Ratio"]}
                     value={selectedData ? selectedData.rar : "-%"}
                     color="text-yellow-500"
+                    // color={getColorBySwaggerData(selectedData ? selectedData.rar.color : '')} // Sesuaikan dengan properti yang sesuai
                     popupContent="Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut"
                   />
                   <CardInfo
@@ -633,6 +678,7 @@ const Dashboard = () => {
                   <CardInfo
                     title="OCLP"
                     value={selectedData ? selectedData.oclp : "-%"}
+                    // color="text-sky-500"
                     popupContent="Mendorong pengunjung untuk mengklik tautan atau tombol yang mengarahkan mereka ke halaman atau situs web eksternal yang relevan"
                   />
                 </div>
@@ -649,6 +695,7 @@ const Dashboard = () => {
                         <CardInfo
                           title="CPR"
                           value={selectedData.cpr}
+                          // color="text-sky-500"
                           popupContent="Perhitungan biaya yang kita keluarkan untuk setiap hasil yang kita dapatkan"
                         />
                       </div>
@@ -663,6 +710,7 @@ const Dashboard = () => {
                         <CardInfo
                           title="ROAS"
                           value={selectedData.roas}
+                          // color="text-sky-500"
                           popupContent="Mengukur seberapa banyak pendapatan atau hasil yang dihasilkan dari setiap unit pengeluaran iklan"
                         />
                       </div>
@@ -678,6 +726,7 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
+
             {/* end */}
 
             {/* bagian sugesti */}
@@ -687,114 +736,353 @@ const Dashboard = () => {
                   {translations["Suggestion"]}
                 </h1>
                 <div className="flex flex-col mt-5 gap-5 ">
-                  <div>
-                    <Card color="red">
-                      <div className="w-full">
-                        <div className="flex gap-3">
-                          <div>
-                            <AiOutlineCloseCircle
+                  {["Danger", "Warning", "Success"].map((color) =>
+                    suggestionData
+                      .filter((suggestion) => suggestion.rar.color === color)
+                      .map((suggestion, index) => (
+                        <div key={index}>
+                          <Card color={suggestion.rar.color}>
+                            <div className="w-full">
+                              <div className="flex gap-3">
+                                <div>
+
+                                </div>
+                                {suggestionData
+                                  .filter((suggestion) => suggestion.rar && suggestion.rar.id === 1)
+                                  .map((suggestion, index) => (
+                                    <div key={index} className="w-full max-sm:w-full">
+                                      <h2 className="font-medium text-gray-900 ">{suggestion.rar.title}</h2>
+                                      <p className="leading-5 ">{suggestion.rar.msg}</p>
+                                      <hr className="border border-gray-500/30 w-full mt-3 " />
+
+                                      <div className="flex gap-10 mt-3">
+                                        <span className="flex gap-2">
+                                          <h1 className="font-medium font-sans  "> Nilai:</h1>
+                                          <p className="font-sans text-red-600 ">{suggestion.rar.value}</p>
+                                        </span>
+                                        <span className="flex gap-2">
+                                          <h1 className="font-medium font-sans "> Target:</h1>
+                                          <p className="font-sans text-green-600 ">{suggestion.rar.target}</p>
+                                        </span>
+                                      </div>
+
+                                      <span className="flex relative top-3 gap-3">
+                                        <h1 className="font-medium font-sans ">Pesan:</h1>
+                                        <p className="">{suggestion.rar.massage}</p>
+                                      </span>
+
+
+                                    </div>
+                                  ))}
+
+                              </div>
+                              <a
+                                href="https://chat.openai.com/share/3bb35f6a-4b3b-4182-b6f9-c880722b3c72"
+                                target="_blank"
+                              >
+                                <div className="mt-flex justify-end items-end mt-3">
+                                  <p className=" text-end hover:underline text-sm">
+                                    {translations["Learn More"]}
+                                  </p>
+                                </div>
+                              </a>
+                            </div>
+                          </Card>
+                        </div>
+                      ))
+                  )}
+
+                  {["Danger", "Warning", "Success"].map((color) =>
+                    suggestionData
+                      .filter((suggestion) => suggestion.oclp.color === color)
+                      .map((suggestion, index) => (
+                        <div key={index}>
+                          <Card color={suggestion.oclp.color}>
+                            <div className="w-full">
+                              <div className="flex gap-3">
+                                <div>
+                                  <div>
+
+
+                                  </div>
+                                </div>
+                                {suggestionData
+                                  .filter((suggestion) => suggestion.cpc && suggestion.cpc.id === 6)
+                                  .map((suggestion, index) => (
+                                    <div key={index}>
+                                      <h2 className="font-medium text-gray-900 ">{suggestion.oclp.title}</h2>
+                                      <p className="leading-5 ">{suggestion.oclp.msg}</p>
+                                      <hr className="border border-gray-500/30 w-full mt-3 " />
+
+                                      <div className="flex gap-10 mt-3">
+                                        <span className="flex gap-2">
+                                          <h1 className="font-medium font-sans  "> Nilai:</h1>
+                                          <p className="font-sans text-red-600 ">{suggestion.oclp.value}</p>
+                                        </span>
+                                        <span className="flex gap-2">
+                                          <h1 className="font-medium font-sans "> Target:</h1>
+                                          <p className="font-sans text-green-600 ">{suggestion.oclp.target}</p>
+                                        </span>
+                                      </div>
+
+                                      <span className="flex relative top-3 gap-3">
+                                        <h1 className="font-medium font-sans ">Pesan:</h1>
+                                        <p className="">{suggestion.oclp.massage}</p>
+                                      </span>
+
+
+                                    </div>
+                                  ))}
+
+                              </div>
+                              <a
+                                href="https://chat.openai.com/share/3bb35f6a-4b3b-4182-b6f9-c880722b3c72"
+                                target="_blank"
+                              >
+                                <div className="flex justify-end items-end mt-3">
+                                  <p className=" text-end hover:underline text-sm">
+                                    {translations["Learn More"]}
+                                  </p>
+                                </div>
+                              </a>
+                            </div>
+                          </Card>
+                        </div>
+                      ))
+                  )}
+
+                  {["Danger", "Warning", "Success"].map((color) =>
+                    suggestionData
+                      .filter((suggestion) => suggestion.cpc.color === color)
+                      .map((suggestion, index) => (
+                        <div key={index}>
+                          <Card color={suggestion.cpc.color}>
+                            <div className="w-full">
+                              <div className="flex gap-3">
+                                <div>
+                                  {/* <AiOutlineCloseCircle
                               size={25}
                               className="text-red-500"
-                            />
-                          </div>
-                          {suggestionData
-                        .filter((suggestion) => suggestion.rar && suggestion.rar.id === 1)
-                        .map((suggestion, index) => (
-                          <div key={index}>
-                            <h2 className="font-medium text-gray-900 max-sm:hidden">{suggestion.rar.title}</h2>
-                            <p className="leading-5 max-sm:hidden">{suggestion.rar.msg}</p>
-                            <hr className="border border-gray-500/30 w-full mt-3 max-sm:hidden"/>
-                        
-                         <div className="flex gap-10 mt-3">
-                         <span className="flex gap-2">
-                            <h1 className="font-medium font-sans max-sm:hidden "> Nilai:</h1> 
-                            <p className="font-sans text-red-600 max-sm:hidden">{suggestion.rar.value}</p>
-                          </span>
-                          <span className="flex gap-2">
-                            <h1 className="font-medium font-sans max-sm:hidden"> Target:</h1> 
-                            <p className="font-sans text-green-600 max-sm:hidden">{suggestion.rar.target}</p>
-                          </span>
-                         </div>
+                            /> */}
+                                </div>
+                                {suggestionData
+                                  .filter((suggestion) => suggestion.cpc && suggestion.cpc.id === 6)
+                                  .map((suggestion, index) => (
+                                    <div key={index}>
+                                      <h2 className="font-medium text-gray-900 ">{suggestion.cpc.title}</h2>
+                                      <p className="leading-5 ">{suggestion.cpc.msg}</p>
+                                      <hr className="border border-gray-500/30 w-full mt-3 " />
 
-                         <span className="flex relative top-3 gap-3">
-                          <h1 className="font-medium font-sans max-sm:hidden">Pesan:</h1>
-                          <p className="max-sm:hidden">{suggestion.rar.message}</p>
-                         </span>
-                        
- 
-                          </div>
-                        ))}
-                         
+                                      <div className="flex gap-10 mt-3">
+                                        <span className="flex gap-2">
+                                          <h1 className="font-medium font-sans  "> Nilai:</h1>
+                                          <p className="font-sans text-red-600 ">{suggestion.cpc.value}</p>
+                                        </span>
+                                        <span className="flex gap-2">
+                                          <h1 className="font-medium font-sans "> Target:</h1>
+                                          <p className="font-sans text-green-600 ">{suggestion.cpc.target}</p>
+                                        </span>
+                                      </div>
+
+                                      <span className="flex relative top-3 gap-3">
+                                        <h1 className="font-medium font-sans ">Pesan:</h1>
+                                        <p className="">{suggestion.cpc.message}</p>
+                                      </span>
+
+
+                                    </div>
+                                  ))}
+
+                              </div>
+                              <a
+                                href="https://chat.openai.com/share/3bb35f6a-4b3b-4182-b6f9-c880722b3c72"
+                                target="_blank"
+                              >
+                                <div className="mt-0">
+                                  <p className=" text-end hover:underline text-sm">
+                                    {translations["Learn More"]}
+                                  </p>
+                                </div>
+                              </a>
+                            </div>
+                          </Card>
                         </div>
-                        <a
-                          href="https://chat.openai.com/share/3bb35f6a-4b3b-4182-b6f9-c880722b3c72"
-                          target="_blank"
-                        >
-                          <div className="mt-0">
-                            <p className=" text-end hover:underline text-sm">
-                            {translations["Learn More"]}
-                            </p>
-                          </div>
-                        </a>
-                      </div>
-                    </Card>
-                    </div>
-
-                  <div>
-                    <Card color="red">
-                      <div className="w-full">
-                        <div className="flex gap-3">
-                          <div>
-                            <AiOutlineCloseCircle
+                      ))
+                  )}
+                  {["Danger", "Warning", "Success"].map((color) =>
+                    suggestionData
+                      .filter((suggestion) => suggestion.ctr.color === color)
+                      .map((suggestion, index) => (
+                        <div key={index}>
+                          <Card color={suggestion.ctr.color}>
+                            <div className="w-full">
+                              <div className="flex gap-3">
+                                <div>
+                                  {/* <AiOutlineCloseCircle
                               size={25}
                               className="text-red-500"
-                            />
-                          </div>
-                          {suggestionData
-                        .filter((suggestion) => suggestion.oclp && suggestion.oclp.id === 2)
-                        .map((suggestion, index) => (
-                          <div key={index}>
-                            <h2 className="font-medium text-gray-900 max-sm:hidden">{suggestion.oclp.title}</h2>
-                            <p className="leading-5 max-sm:hidden">{suggestion.oclp.msg}</p>
-                            <hr className="border border-gray-500/30 w-full mt-3 max-sm:hidden"/>
-                        
-                         <div className="flex gap-10 mt-3">
-                         <span className="flex gap-2">
-                            <h1 className="font-medium font-sans max-sm:hidden "> Nilai:</h1> 
-                            <p className="font-sans text-red-600 max-sm:hidden">{suggestion.oclp.value}</p>
-                          </span>
-                          <span className="flex gap-2">
-                            <h1 className="font-medium font-sans max-sm:hidden"> Target:</h1> 
-                            <p className="font-sans text-green-600 max-sm:hidden">{suggestion.oclp.target}</p>
-                          </span>
-                         </div>
+                            /> */}
+                                </div>
+                                {suggestionData
+                                  .filter((suggestion) => suggestion.ctr && suggestion.ctr.id === 3)
+                                  .map((suggestion, index) => (
+                                    <div key={index}>
+                                      <h2 className="font-medium text-gray-900 ">{suggestion.ctr.title}</h2>
+                                      <p className="leading-5 ">{suggestion.ctr.msg}</p>
+                                      <hr className="border border-gray-500/30 w-full mt-3 " />
 
-                         <span className="flex relative top-3 gap-3">
-                          <h1 className="font-medium font-sans max-sm:hidden">Pesan:</h1>
-                          <p className="max-sm:hidden">{suggestion.oclp.massage}</p>
-                         </span>
-                        
- 
-                          </div>
-                        ))}
-                         
+                                      <div className="flex gap-10 mt-3">
+                                        <span className="flex gap-2">
+                                          <h1 className="font-medium font-sans  "> Nilai:</h1>
+                                          <p className="font-sans text-red-600 ">{suggestion.ctr.value}</p>
+                                        </span>
+                                        <span className="flex gap-2">
+                                          <h1 className="font-medium font-sans "> Target:</h1>
+                                          <p className="font-sans text-green-600 ">{suggestion.ctr.target}</p>
+                                        </span>
+                                      </div>
+
+                                      <span className="flex relative top-3 gap-3">
+                                        <h1 className="font-medium font-sans ">Pesan:</h1>
+                                        <p className="">{suggestion.ctr.message}</p>
+                                      </span>
+
+
+                                    </div>
+                                  ))}
+
+                              </div>
+                              <a
+                                href="https://chat.openai.com/share/3bb35f6a-4b3b-4182-b6f9-c880722b3c72"
+                                target="_blank"
+                              >
+                                <div className="mt-0">
+                                  <p className=" text-end hover:underline text-sm">
+                                    {translations["Learn More"]}
+                                  </p>
+                                </div>
+                              </a>
+                            </div>
+                          </Card>
                         </div>
-                        <a
-                          href="https://chat.openai.com/share/3bb35f6a-4b3b-4182-b6f9-c880722b3c72"
-                          target="_blank"
-                        >
-                          <div className="mt-0">
-                            <p className=" text-end hover:underline text-sm">
-                            {translations["Learn More"]}
-                            </p>
-                          </div>
-                        </a>
-                      </div>
-                    </Card>
-                    </div>
+                      ))
+                  )}
+                  {["Danger", "Warning", "Success"].map((color) =>
+                    suggestionData
+                      .filter((suggestion) => suggestion.roas.color === color)
+                      .map((suggestion, index) => (
+                        <div key={index}>
+                          <Card color={suggestion.roas.color}>
+                            <div className="w-full">
+                              <div className="flex gap-3">
+                                <div>
+                                  {/* <AiOutlineCloseCircle
+                              size={25}
+                              className="text-red-500"
+                            /> */}
+                                </div>
+                                {suggestionData
+                                  .filter((suggestion) => suggestion.roas && suggestion.roas.id === 4)
+                                  .map((suggestion, index) => (
+                                    <div key={index}>
+                                      <h2 className="font-medium text-gray-900 ">{suggestion.roas.title}</h2>
+                                      <p className="leading-5 ">{suggestion.roas.msg}</p>
+                                      <hr className="border border-gray-500/30 w-full mt-3 " />
+
+                                      <div className="flex gap-10 mt-3">
+                                        <span className="flex gap-2">
+                                          <h1 className="font-medium font-sans  "> Nilai:</h1>
+                                          <p className="font-sans text-red-600 ">{suggestion.roas.value}</p>
+                                        </span>
+                                        <span className="flex gap-2">
+                                          <h1 className="font-medium font-sans "> Target:</h1>
+                                          <p className="font-sans text-green-600 ">{suggestion.roas.target}</p>
+                                        </span>
+                                      </div>
+
+                                      <span className="flex relative top-3 gap-3">
+                                        <h1 className="font-medium font-sans ">Pesan:</h1>
+                                        <p className="">{suggestion.roas.message}</p>
+                                      </span>
 
 
-               
+                                    </div>
+                                  ))}
+
+                              </div>
+                              <a
+                                href="https://chat.openai.com/share/3bb35f6a-4b3b-4182-b6f9-c880722b3c72"
+                                target="_blank"
+                              >
+                                <div className="mt-0">
+                                  <p className=" text-end hover:underline text-sm">
+                                    {translations["Learn More"]}
+                                  </p>
+                                </div>
+                              </a>
+                            </div>
+                          </Card>
+                        </div>
+                      ))
+                  )}
+                  {["Danger", "Warning", "Success"].map((color) =>
+                    suggestionData
+                      .filter((suggestion) => suggestion.cpr.color === color)
+                      .map((suggestion, index) => (
+                        <div key={index}>
+                          <Card color={suggestion.cpr.color}>
+                            <div className="w-full">
+                              <div className="flex gap-3">
+                                <div>
+                                  {/* <AiOutlineCloseCircle
+                              size={25}
+                              className="text-red-500"
+                            /> */}
+                                </div>
+                                {suggestionData
+                                  .filter((suggestion) => suggestion.cpr && suggestion.cpr.id === 5)
+                                  .map((suggestion, index) => (
+                                    <div key={index}>
+                                      <h2 className="font-medium text-gray-900 ">{suggestion.cpr.title}</h2>
+                                      <p className="leading-5 ">{suggestion.cpr.msg}</p>
+                                      <hr className="border border-gray-500/30 w-full mt-3 " />
+
+                                      <div className="flex gap-10 mt-3">
+                                        <span className="flex gap-2">
+                                          <h1 className="font-medium font-sans  "> Nilai:</h1>
+                                          <p className="font-sans text-red-600 ">{suggestion.cpr.value}</p>
+                                        </span>
+                                        <span className="flex gap-2">
+                                          <h1 className="font-medium font-sans "> Target:</h1>
+                                          <p className="font-sans text-green-600 ">{suggestion.cpr.target}</p>
+                                        </span>
+                                      </div>
+
+                                      <span className="flex relative top-3 gap-3">
+                                        <h1 className="font-medium font-sans ">Pesan:</h1>
+                                        <p className="">{suggestion.cpr.message}</p>
+                                      </span>
+
+
+                                    </div>
+                                  ))}
+
+                              </div>
+                              <a
+                                href="https://chat.openai.com/share/3bb35f6a-4b3b-4182-b6f9-c880722b3c72"
+                                target="_blank"
+                              >
+                                <div className="mt-0">
+                                  <p className=" text-end hover:underline text-sm">
+                                    {translations["Learn More"]}
+                                  </p>
+                                </div>
+                              </a>
+                            </div>
+                          </Card>
+                        </div>
+                      ))
+                  )}
                 </div>
               </div>
             </div>
@@ -856,11 +1144,11 @@ const Dashboard = () => {
       case "setting":
         return (
           <div>
-            {campaign_id ?(
+            {campaign_id ? (
               <Setting campaign_id={campaign_id} />
-              ): (
-                <p>Select a valid item</p>
-              )}
+            ) : (
+              <p>Select a valid item</p>
+            )}
           </div>
         )
       default:
@@ -959,6 +1247,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+         setLoading(true);
         const id = campaign_id;
         const token = localStorage.getItem("jwtToken");
         const response = await axios.get(
@@ -1002,8 +1291,10 @@ const Dashboard = () => {
         } else {
           console.error("Failed to fetch data from API");
         }
+        setLoading(false);
       } catch (error) {
         console.error("An error occurred", error);
+        setLoading(false);
       }
     };
 
@@ -1033,21 +1324,20 @@ const Dashboard = () => {
                     selectedData.campaign_platform === 1
                       ? meta
                       : selectedData.campaign_platform === 2
-                      ? google
-                      : selectedData.campaign_platform === 3
-                      ? tiktok
-                      : ""
+                        ? google
+                        : selectedData.campaign_platform === 3
+                          ? tiktok
+                          : ""
                   }
                   alt="icon"
                   width={30}
                 />
               )}
               <h1
-                className={`text-2xl max-sm:text-base pl-3 font-bold ${
-                  selectedName
-                    ? "text-gray-600"
-                    : "left-10 bg-gray-200 top-3 w-44 h-5 animate-pulse rounded-md relative"
-                }`}
+                className={`text-2xl max-sm:text-base pl-3 font-bold ${selectedName
+                  ? "text-gray-600"
+                  : "left-10 bg-gray-200 top-3 w-44 h-5 animate-pulse rounded-md relative"
+                  }`}
               >
                 {selectedName ? (
                   selectedName
@@ -1060,41 +1350,37 @@ const Dashboard = () => {
             <div className="flex items-center text-center justify-center">
               <ul className="grid -mb-1 max-sm:grid-cols-2 cursor-pointer grid-cols-4">
                 <li
-                  className={`p-3 px-4 ${
-                    activeTab === "performance"
-                      ? "atas text-sky-500 cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors"
-                      : "text-gray-500"
-                  }`}
+                  className={`p-3 px-4 ${activeTab === "performance"
+                    ? "atas text-sky-500 cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors"
+                    : "text-gray-500"
+                    }`}
                   onClick={() => handleTabClick("performance")}
                 >
                   {translations["Performance"]}
                 </li>
                 <li
-                  className={`p-3 px-5 ${
-                    activeTab === "metrics"
-                      ? "text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors"
-                      : "text-gray-500"
-                  }`}
+                  className={`p-3 px-5 ${activeTab === "metrics"
+                    ? "text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors"
+                    : "text-gray-500"
+                    }`}
                   onClick={() => handleTabClick("metrics")}
                 >
                   {translations["Metrics"]}
                 </li>
                 <li
-                  className={`p-3 px-5 ${
-                    activeTab === "history"
-                      ? "text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors"
-                      : "text-gray-500"
-                  }`}
+                  className={`p-3 px-5 ${activeTab === "history"
+                    ? "text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors"
+                    : "text-gray-500"
+                    }`}
                   onClick={() => handleTabClick("history")}
                 >
                   {translations["History"]}
                 </li>
                 <li
-                  className={`p-3 px-5 ${
-                    activeTab === "setting"
-                      ? "text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors"
-                      : "text-gray-500"
-                  }`}
+                  className={`p-3 px-5 ${activeTab === "setting"
+                    ? "text-sky-500 atas cursor-pointer font-semibold border-b-4 border-sky-500 transition-colors"
+                    : "text-gray-500"
+                    }`}
                   onClick={() => handleTabClick("setting")}
                 >
                   {translations["Setting"]}
@@ -1104,8 +1390,13 @@ const Dashboard = () => {
           </div>
           {/* Body */}
           <div className="px-5 py-5 flex flex-col ">
-            {/* pemanggil */}
-            {renderContent()}
+          {loading ? (
+          // Render a loading spinner or message while loading
+          <div className="text-center">Loading...</div>
+        ) : (
+            
+            renderContent()
+            )}
           </div>
         </ContainerCard>
       </div>
