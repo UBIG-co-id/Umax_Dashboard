@@ -64,7 +64,7 @@ const SignUp = () => {
               } else if (values.role === 'staff') {
                 navigate('/staff-dashboard');
               } else {
-                navigate('/login'); // Default for regular users
+                navigate('/users-table'); // Default for regular users
               }
             }
           })
@@ -75,6 +75,7 @@ const SignUp = () => {
       }
     },
   });
+
 
 
   const [showPassword, setShowPassword] = useState(false);
@@ -94,6 +95,12 @@ const SignUp = () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [navigate]);
+
+  
+  const handleSignUpClick = () => {
+    // Navigasi ke halaman UsersTable
+    navigate('/UsersTable');
+  };
 
   return (
     <div className="relative overflow-hidden min-h-screen flex flex-col items-center justify-center">
@@ -192,11 +199,12 @@ const SignUp = () => {
         <button
           type="submit"
           className="w-full h-10 rounded-full bg-[#3D5FD9] text-[#F5F7FF] hover:bg-[#2347C5] mt-5"
+          // onClick={handleSignUpClick}
         >
           SIGN UP
         </button>
         <Link
-          to="/UsersTable"
+          to="/login"
           className="block text-[#5473E3] mt-3 text-center hover:text-[#2347C5] hover:underline"
         >
           Already have an account? Sign in

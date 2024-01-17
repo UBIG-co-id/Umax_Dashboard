@@ -321,21 +321,20 @@ function UsersTable() {
 
   // FUNGSI CLOSE ESC
   useEffect(() => {
-    const closePopupOnEscape = (e) => {
+    const handleKeyDown = (e) => {
       if (e.key === "Escape") {
-        toggleAddPopup();
-
+        console.log("Esc key pressed");
+        navigate('/dashboard'); // Update this to the appropriate dashboard route
       }
     };
-
-    if (showAddPopup) {
-      window.addEventListener("keydown", closePopupOnEscape);
-    }
-
+  
+    window.addEventListener("keydown", handleKeyDown);
+  
     return () => {
-      window.removeEventListener("keydown", closePopupOnEscape);
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [showAddPopup]);
+  }, [navigate]);
+  
 
 
   //export table ke excel

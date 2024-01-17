@@ -128,7 +128,7 @@
   font-weight: 500;
 }
 .lebar-list{
-  width: 17.5rem;
+  width: 327px;
 
 }
 .bayangan{
@@ -501,4 +501,19 @@ th svg.desc{
 }
 .font{
   font-family: 'Poppins', sans-serif;
+}
+
+.loader {
+  border: 6px solid rgba(0, 0, 0, 0.1);
+  border-left: 6px solid #3498db;
+  border-radius: 50%;
+  width: 40px; /* Adjust the size as needed */
+  height: 40px; /* Adjust the size as needed */
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

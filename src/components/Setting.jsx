@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
 const Setting = ({ campaign_id }) => {
   const [data, setData] = useState([])
+  const location = useLocation();
+  const updatedData = location.state?.updatedData;
+
   // const { campaign_id } = useParams();
   const token = localStorage.getItem('jwtToken');
   const [values, setValues] = useState({
@@ -33,6 +36,7 @@ const Setting = ({ campaign_id }) => {
       [name]: value,
     }));
   };
+  
 
   useEffect(() => {
     axios.get(`${baseUrl}/metrics-settings-by?campaign_id=${campaign_id}`, {
@@ -55,7 +59,7 @@ const Setting = ({ campaign_id }) => {
  
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    
   
     // Convert string values to integers
     const convertedValues = {
@@ -86,7 +90,7 @@ const Setting = ({ campaign_id }) => {
         cpc: values.cpc,
       });
     
-      navigate('/dashboard');
+      navigate('/Dashboard', { state: { updatedData: convertedValues } });
     })
     
     .catch((err) => {
@@ -228,6 +232,7 @@ const Setting = ({ campaign_id }) => {
             <button
               type="submit"
               className='mt-20 text-white bg-blue-500  flex items-center gap-2  rounded-md py-1 px-6 justify-center transition duration-300 hover:bg-blue-600'
+              // onClick={handleSaveButtonClick}
             >
               Save
             </button>
@@ -241,4 +246,4 @@ const Setting = ({ campaign_id }) => {
   );
 };
 
-export default Setting;
+export default Setting

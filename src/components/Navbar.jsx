@@ -3,7 +3,7 @@ import { Fragment, useState, useEffect, useContext } from "react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { MdDashboard, MdOutlineCampaign } from "react-icons/md";
 import { BiSolidMegaphone, BiGroup, BiBell, BiLogOut } from "react-icons/bi";
-import { AiOutlineUser, AiOutlineSearch} from "react-icons/ai";
+import { AiOutlineUser, AiOutlineSearch } from "react-icons/ai";
 import { IoIosArrowDown, IoIosArrowBack } from "react-icons/io";
 import { FaRegBuilding } from "react-icons/fa";
 import { LuUserPlus } from "react-icons/lu";
@@ -13,15 +13,17 @@ import { FiSun, FiMoon } from "react-icons/fi";
 import { RxCross2 } from "react-icons/rx";
 import "../styles.css";
 import React from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useNavigate, useLocation, Link, useParams } from "react-router-dom";
 import { Context } from "../context";
-import Axios from "axios";
+import axios from "axios";
 import Translation from "../translation/Translation.json";
 import { useLanguage } from "../LanguageContext";
 import { us, indonesia } from "../assets";
 import jwt_decode from "jwt-decode";
 import { BiChevronDown, BiCheck } from "react-icons/bi";
 import { CiGlobe } from "react-icons/ci";
+import Select from "react-select";
+
 
 // import LazyLoad from 'react-lazyload';
 
@@ -40,6 +42,8 @@ const navigation = [
 
 const Navbar = () => {
   const [data, setData] = useState([])
+  const [tenantData, setTenantData] = useState([]);
+
   // const [selectedLanguage, setSelectedLanguage] = useState("english");
   const { selectedLanguage, toggleLanguage } = useLanguage();
 
@@ -50,6 +54,23 @@ const Navbar = () => {
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
   };
+
+  const [isTenantDropdownOpen, setTenantDropdownOpen] = useState(false);
+
+  const toggleTenantDropdown = () => {
+    setTenantDropdownOpen(!isTenantDropdownOpen);
+  };
+  const { _id } = useParams();
+  const [values, setValues] = useState({
+    _id: _id,
+    name: '',
+    id_client: '',
+    platform: '',
+    email: '',
+    password: '',
+    notes: '',
+    status: '',
+  })
 
 
   // bagian open draw
@@ -201,6 +222,35 @@ const Navbar = () => {
     setShowNotifications(!showNotifications);
   };
 
+  // const handleTenantSelect = (selectedTenantId) => {
+  //   // Lakukan sesuatu ketika tenant dipilih, misalnya menyimpan tenant ID ke state
+  //   console.log('Selected Tenant ID:', selectedTenantId);
+  // };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('jwtToken');
+        const apiUrl = `https://umaxxnew-1-d6861606.deta.app/tenant-get-all`;
+
+        const response = await axios.get(apiUrl, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'accept': 'application/json',
+          },
+        });
+
+        setTenantData(response.data.Data);
+        console.log('Response Tenant:', response.data);
+      } catch (error) {
+        console.error('Error saat mengambil data:', error.message);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
 
   // ambil data user
   const [profileData, setProfileData] = useState({
@@ -218,7 +268,7 @@ const Navbar = () => {
 
         const apiUrl = 'https://umaxxnew-1-d6861606.deta.app/user-by-id';
 
-        const response = await Axios.get(apiUrl, {
+        const response = await axios.get(apiUrl, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -284,12 +334,29 @@ const Navbar = () => {
     setIsActive(!isActive);
   };
 
+  const option = tenantData.map(item => ({
+    value: item._id,
+    label: item.company,
+  }));
+
+  const handleTenantSelect = (selectedTenantId) => {
+    // Lakukan sesuatu ketika tenant dipilih, misalnya menyimpan tenant ID ke state
+    console.log('Selected Tenant ID:', selectedTenantId);
+
+    // Construct the dynamic URL based on the selected tenant
+    const dynamicUrl = `https://umaxxnew-1-d6861606.deta.app/campaign-by-tenant?tenantId=${selectedTenantId}`;
+
+    // Now, you can use the dynamicUrl as needed in your application
+    console.log('Dynamic URL:', dynamicUrl);
+
+    // Perform any other actions based on the selected tenant
+  };
 
   return (
     <Disclosure as="nav" className="bg-white shadow-md ">
       {({ open }) => (
         <>
-          <div className={"mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 "}>
+          <div className={"mx-auto max-w-full py-2 px-2 sm:px-6 lg:px-8 "}>
             <div className="relative flex h-16 items-center justify-between">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
 
@@ -328,9 +395,9 @@ const Navbar = () => {
                         to={item.href}
                         className={classNames(
                           activePage === item.href
-                            ? "bg-cyan-100 text-blue-600"
+                            ? "bg-cyan-100 text-blue-60 "
                             : "text-gray-500 ",
-                          "rounded-md lg:px-1  py-2 text-sm font-medium"
+                          "rounded-md lg:px-2  py-2 text-sm font-medium"
                         )}
                         onClick={() => setActivePage(item.href)}
                       >
@@ -467,9 +534,9 @@ const Navbar = () => {
                       </span>
                       <hr className="mt-1 border-gray-400" />
 
-                    
-                      
-                      
+
+
+
                       <div className="relative">
                         <a
                           onClick={Users}
@@ -489,15 +556,38 @@ const Navbar = () => {
                       </div>
 
                       <div className="relative">
-                        <a
-                          onClick={TenantPage}
-                          className="text-gray-700 text-sm flex items-center gap-2 mt-4 cursor-pointer hover:text-blue-500"
-                        >
-                          <FaRegBuilding className="w-3 h-3" /> Tenant
 
-                        </a>
+                        {/* Mengganti button dengan elemen select */}
+                        <div className="text-gray-700 text-sm flex items-center gap-2 mt-4 cursor-pointer hover:text-blue-500">
+                          {/* <label className="pb-2 text-sm" htmlFor="tenant">
+                            Tenant
+                          </label> */}
+                          <FaRegBuilding className="w-2 h-3" />
+                          <select
+                            name="tenant"
+                            id="tenant"
+                            options={option}
+                            onChange={(e) => {
+                              const selectedTenantId = e.target.value;
+                              setValues({ ...values, tenant: selectedTenantId });
+                              handleTenantSelect(selectedTenantId);
+                            }}
+                            value={values.tenant}
+                          >
+                            <option value="" disabled>
+                              Tenant
+                            </option>
+                            {option.map((tenant) => (
+                              <option key={tenant.value} value={tenant.value}>
+                                {tenant.label}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
 
                       </div>
+
 
                       <hr className="relative border-gray-300 top-3" />
 

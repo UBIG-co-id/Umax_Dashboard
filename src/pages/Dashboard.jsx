@@ -60,13 +60,20 @@ const Dashboard = () => {
     }
   };
 
+  const [savedSettingData, setSavedSettingData] = useState(null);
+
+  const handleSettingSaveSuccess = (savedData) => {
+    // Update state with the saved data
+    setSavedSettingData(savedData);
+  };
+
   useEffect(() => {
     const fetchSuggestions = async () => {
       const id = campaign_id;
       console.log("ID CAMPAIGN", id);
 
       try {
-        
+
         const token = localStorage.getItem("jwtToken");
         const response = await axios.get(
           `https://umaxxnew-1-d6861606.deta.app/suggestions?campaign_id=${id}`,
@@ -100,6 +107,7 @@ const Dashboard = () => {
   const updateChartUrl = useCallback(
     (timeframe) => {
       if (selectedName && campaign_id) {
+
         const baseUrl = "https://umaxxnew-1-d6861606.deta.app/"; // URL dasar
 
         // Ganti ini sesuai kebutuhan
@@ -111,7 +119,6 @@ const Dashboard = () => {
     },
     [setChartUrl, selectedName, campaign_id]
   );
-
   /*
   const fetchHistoryData = async (campaign_id) => {
     try {
@@ -214,7 +221,7 @@ const Dashboard = () => {
           console.error("Gagal mengambil metrics");
         }
         setLoading(false);
-        
+
       } catch (error) {
         console.error("Terjadi kesalahan:", error);
         setLoading(false);
@@ -617,6 +624,7 @@ const Dashboard = () => {
   //   }
   // };
 
+
   const renderContent = () => {
     switch (activeTab) {
       case "performance":
@@ -665,20 +673,20 @@ const Dashboard = () => {
                   <CardInfo
                     title={translations["Reach Amount Spent Ratio"]}
                     value={selectedData ? selectedData.rar : "-%"}
-                    color="text-yellow-500"
-                    // color={getColorBySwaggerData(selectedData ? selectedData.rar.color : '')} // Sesuaikan dengan properti yang sesuai
+                    color={selectedData ? selectedData.rar_color : "defaultColor"} // Ganti "defaultColor" dengan nilai default yang sesuai
                     popupContent="Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut"
                   />
+
                   <CardInfo
                     title={translations["Click Through Rate"]}
                     value={selectedData ? selectedData.ctr : "-%"}
-                    color="text-green-500"
+                    color={selectedData ? selectedData.ctr_color : "defaultColor"}
                     popupContent="Rasio jumlah klik pada iklan kita dibandingkan dengan jumlah iklan ditayangkan"
                   />
                   <CardInfo
                     title="OCLP"
                     value={selectedData ? selectedData.oclp : "-%"}
-                    // color="text-sky-500"
+                    color={selectedData ? selectedData.oclp_color : "defaultColor"}
                     popupContent="Mendorong pengunjung untuk mengklik tautan atau tombol yang mengarahkan mereka ke halaman atau situs web eksternal yang relevan"
                   />
                 </div>
@@ -695,7 +703,7 @@ const Dashboard = () => {
                         <CardInfo
                           title="CPR"
                           value={selectedData.cpr}
-                          // color="text-sky-500"
+                          color={selectedData ? selectedData.cpr_color : "defaultColor"}
                           popupContent="Perhitungan biaya yang kita keluarkan untuk setiap hasil yang kita dapatkan"
                         />
                       </div>
@@ -703,6 +711,7 @@ const Dashboard = () => {
                         <CardInfo
                           title="ATC"
                           value={selectedData.atc}
+                          color="text-sky-500"
                           popupContent="Menambahkan produk atau barang ke dalam keranjang belanja saat berbelanja secara online di situs web e-commerce atau toko online"
                         />
                       </div>
@@ -710,7 +719,7 @@ const Dashboard = () => {
                         <CardInfo
                           title="ROAS"
                           value={selectedData.roas}
-                          // color="text-sky-500"
+                          color={selectedData ? selectedData.roas_color : "defaultColor"}
                           popupContent="Mengukur seberapa banyak pendapatan atau hasil yang dihasilkan dari setiap unit pengeluaran iklan"
                         />
                       </div>
@@ -718,11 +727,12 @@ const Dashboard = () => {
                         <CardInfo
                           title="Real ROAS"
                           value={selectedData.realroas}
+                          color={selectedData ? selectedData.real_roas_color : "defaultColor"}
                           popupContent="Mengukur banyak pendapatan asli yang dihasilkan tiap pengeluaran iklan"
                         />
                       </div>
                     </div>
-                  )}
+                  )} 
                 </div>
               </div>
             </div>
@@ -1089,6 +1099,7 @@ const Dashboard = () => {
             {/* end */}
           </div>
         );
+
       case "metrics":
         return (
           <div>
@@ -1155,6 +1166,7 @@ const Dashboard = () => {
         return null;
     }
   };
+
 
   const cardData = [
     {
@@ -1247,7 +1259,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-         setLoading(true);
+        //  setLoading(true);
         const id = campaign_id;
         const token = localStorage.getItem("jwtToken");
         const response = await axios.get(
@@ -1291,10 +1303,10 @@ const Dashboard = () => {
         } else {
           console.error("Failed to fetch data from API");
         }
-        setLoading(false);
+        // setLoading(false);
       } catch (error) {
         console.error("An error occurred", error);
-        setLoading(false);
+        // setLoading(false);
       }
     };
 
@@ -1390,12 +1402,14 @@ const Dashboard = () => {
           </div>
           {/* Body */}
           <div className="px-5 py-5 flex flex-col ">
-          {loading ? (
-          // Render a loading spinner or message while loading
-          <div className="text-center">Loading...</div>
-        ) : (
-            
-            renderContent()
+            {loading ? (
+              // Render a loading spinner or message while loading
+              <div className="text-center">
+                <div className="loader"></div>
+              </div>
+            ) : (
+
+              renderContent()
             )}
           </div>
         </ContainerCard>

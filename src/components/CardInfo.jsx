@@ -47,11 +47,11 @@ export default function CardInfo({ title, value, color, popupContent}) {
     const renderColor = (colorFromSwagger) => {
         switch (colorFromSwagger) {
             case 'danger':
-                return { bgColor: 'bg-red-100', border: 'border border-red-500' };
+                return { bgColor: 'text-red-500 bg-red-100', border: 'border border-red-500' };
             case 'warning':
-                return { bgColor: 'bg-yellow-100', border: 'border border-yellow-500'};
+                return { bgColor: 'text-yellow-500 bg-yellow-100', border: 'border border-yellow-500'};
             case 'success':
-                return { bgColor: 'bg-green-100', border: 'border border-green-500'};
+                return { bgColor: ' text-green-500 bg-green-100', border: 'border border-green-500'};
             default:
                 return { bgColor: 'bg-sky-100', border: 'border border-sky-500'};
         }

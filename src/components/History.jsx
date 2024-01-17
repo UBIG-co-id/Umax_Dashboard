@@ -75,8 +75,6 @@ const History = ({ campaign_id }) => {
     setIsDropdownVisible(!isDropdownVisible);
   };
 
-
-
   // PAGINATION
   const paginationStyle = {
     display: "flex",
@@ -387,6 +385,9 @@ const History = ({ campaign_id }) => {
             className=" w-full table-container outline-none shadow-lg shadow-slate-900/10 border-none "
             ref={componentPDF}
           >
+             {loading ? (
+              <div className="text-center">Loading...</div>
+            ) : (
             <table {...getTableProps()} ref={tableRef} className="table-auto w-full">
               <thead>
                 {headerGroups.map((headerGroup) => (
@@ -446,6 +447,7 @@ const History = ({ campaign_id }) => {
                 })}
               </tbody>
             </table>
+            )}
           </div>
         </div>
         {/* Pagination */}

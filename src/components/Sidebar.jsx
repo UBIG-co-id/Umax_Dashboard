@@ -187,12 +187,12 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
 
     const filteredByKeyword = Array.isArray(filtered)
       ? filtered.filter((item) =>
-          item.campaign_name
-            ? item.campaign_name
-                .toLowerCase()
-                .includes(searchText.toLowerCase())
-            : ""
-        )
+        item.campaign_name
+          ? item.campaign_name
+            .toLowerCase()
+            .includes(searchText.toLowerCase())
+          : ""
+      )
       : [];
 
     return filteredByKeyword.slice(0, itemsToShow).map((item, index) => {
@@ -213,9 +213,8 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
       }
 
       const isItemActive = activeItem === item.campaign_id; // Menggunakan 'name' alih-alih 'title'
-      const listItemClasses = `flex flex-col h-24 mb-0 -ml-2 ${
-        isItemActive ? "bg-blue-200 " : ""
-      } ${!isItemActive ? nonActiveHoverClass : ""}`;
+      const listItemClasses = `flex flex-col h-24 mb-0 -mr-7 ${isItemActive ? "bg-blue-200 " : ""
+        } ${!isItemActive ? nonActiveHoverClass : ""}`;
 
       return (
         <li
@@ -225,11 +224,10 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
         >
           {index > 0 && <hr className="border-gray-300 " />}
           <div
-            className={`${
-              activeTab === item.campaign_name.toLowerCase()
+            className={`${activeTab === item.campaign_name.toLowerCase()
                 ? "bg-blue-200"
                 : ""
-            }`}
+              }`}
           />
           <div className="relative mt-2 pl-3 flex items-center w-20">
             <div className="flex items-center">
@@ -238,19 +236,18 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
                   item.campaign_platform === 1
                     ? meta // Import meta from assets when campaign_platform is 1
                     : item.campaign_platform === 2
-                    ? google // Import google from assets when campaign_platform is 2
-                    : item.campaign_platform === 3
-                    ? tiktok // Import tiktok from assets when platform is 3
-                    : "" // Default value if platform doesn't match 1, 2, or 3
+                      ? google // Import google from assets when campaign_platform is 2
+                      : item.campaign_platform === 3
+                        ? tiktok // Import tiktok from assets when platform is 3
+                        : "" // Default value if platform doesn't match 1, 2, or 3
                 }
                 alt="icon"
                 className="w-6 mr-2"
               />
 
               <span
-                className={`truncate w-52 ${
-                  activeItem === item.campaign_name ? "text-black" : ""
-                }`}
+                className={`truncate w-52 ${activeItem === item.campaign_name ? "text-black" : ""
+                  }`}
                 title={item.campaign_name}
               >
                 {item.campaign_name}
@@ -289,15 +286,13 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
         onClick={toggleSidebar}
       >
         <div
-          className={`transition-transform duration-300 ease-in-out transform ${
-            state.toggleNavbar ? "block" : "hidden"
-          }`}
+          className={`transition-transform duration-300 ease-in-out transform ${state.toggleNavbar ? "block" : "hidden"
+            }`}
         ></div>
       </button>
       <div
-        className={`relative max-sm:absolute max-sm:bottom-0 bayangan max-w-70 w-72 min-h-full max-h-full max-sm:h-full max-sm:overflow-scroll bg-white max-sm:rounded-xl rounded-s-xl  text-slate-500 p-4 transform ${
-          state.toggleNavbar ? "block" : "hidden"
-        } transition-transform duration-300 ease-in-out`}
+        className={`relative max-sm:absolute max-sm:bottom-0 bayangan max-w-70 w-80 min-h-full max-h-full max-sm:h-full max-sm:overflow-scroll bg-white max-sm:rounded-xl rounded-s-xl  text-slate-500 p-4 transform ${state.toggleNavbar ? "block" : "hidden"
+          } transition-transform duration-300 ease-in-out`}
       >
         <div className=" bg-gray-200 mx-1 p-1 rounded-lg flex justify-center mb-4 ">
           <button
@@ -344,10 +339,9 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
           />
         </div>
 
-        <div className="relative lebar-list -left-2 border-slate-500 pt-2 overflow-y-scroll h-full max-sm:max-h-[30rem]">
+        <div className="relative lebar-list -left-4 border-slate-500 pt-2 overflow-y-scroll h-full max-sm:max-h-[30rem]">
           <ul className="cursor-pointer mt-2 ">
-            {renderItems(filteredCampaigns)}{" "}
-            {/* Menampilkan data yang sudah difilter */}
+            {renderItems(filteredCampaigns)}
           </ul>
         </div>
       </div>
