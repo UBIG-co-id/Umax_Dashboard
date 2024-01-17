@@ -689,12 +689,11 @@ const Dashboard = () => {
                     <Chart chartUrl={chartUrl} />
                   </div>
 
-                  {selectedData && (
                     <div className="grid grid-cols-1 grid-rows-1 w-full xl:grid-cols-4 lg:grid-cols-2 gap-4 justify-center mx-auto xl:-mt-[13px]">
                       <div className="card-container ">
                         <CardInfo
                           title="CPR"
-                          value={selectedData.cpr}
+                          value={selectedData ? selectedData.cpr : "-%"}
                           // color="text-sky-500"
                           popupContent="Perhitungan biaya yang kita keluarkan untuk setiap hasil yang kita dapatkan"
                         />
@@ -702,14 +701,14 @@ const Dashboard = () => {
                       <div className="card-container">
                         <CardInfo
                           title="ATC"
-                          value={selectedData.atc}
+                          value={selectedData ? selectedData.atc : "-%"}
                           popupContent="Menambahkan produk atau barang ke dalam keranjang belanja saat berbelanja secara online di situs web e-commerce atau toko online"
                         />
                       </div>
                       <div className="card-container">
                         <CardInfo
                           title="ROAS"
-                          value={selectedData.roas}
+                          value={selectedData ? selectedData.roas : "-%"}
                           // color="text-sky-500"
                           popupContent="Mengukur seberapa banyak pendapatan atau hasil yang dihasilkan dari setiap unit pengeluaran iklan"
                         />
@@ -717,12 +716,11 @@ const Dashboard = () => {
                       <div className="card-container">
                         <CardInfo
                           title="Real ROAS"
-                          value={selectedData.realroas}
+                          value={selectedData ? selectedData.realroas : "-%"}
                           popupContent="Mengukur banyak pendapatan asli yang dihasilkan tiap pengeluaran iklan"
                         />
                       </div>
                     </div>
-                  )}
                 </div>
               </div>
             </div>
