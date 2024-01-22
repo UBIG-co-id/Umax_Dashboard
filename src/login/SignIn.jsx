@@ -37,7 +37,9 @@ const SignIn = () => {
           console.log(data);
           localStorage.setItem('jwtToken', Token);
 
-          navigate('/Dashboard');
+            // Arahkan ke Dashboard untuk pengguna non-staff
+            navigate('/Dashboard');
+        
         })
         .catch(error => {
           // Handle errors, e.g., network errors

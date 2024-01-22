@@ -352,11 +352,13 @@ const Navbar = () => {
     // Perform any other actions based on the selected tenant
   };
 
+
+
   return (
     <Disclosure as="nav" className="bg-white shadow-md ">
       {({ open }) => (
         <>
-          <div className={"mx-auto max-w-full py-2 px-2 sm:px-6 lg:px-8 "}>
+          <div className={"mx-auto max-w-full py-3 px-3 sm:px-6 lg:px-8 "}>
             <div className="relative flex h-16 items-center justify-between">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
 
@@ -556,12 +558,8 @@ const Navbar = () => {
                       </div>
 
                       <div className="relative">
-
-                        {/* Mengganti button dengan elemen select */}
-                        <div className="text-gray-700 text-sm flex items-center gap-2 mt-4 cursor-pointer hover:text-blue-500">
-                          {/* <label className="pb-2 text-sm" htmlFor="tenant">
-                            Tenant
-                          </label> */}
+                        {/* Mengganti tombol dengan elemen select */}
+                        {/* <div className="text-gray-700 text-sm flex items-center gap-2 mt-4 cursor-pointer hover:text-blue-500">
                           <FaRegBuilding className="w-2 h-3" />
                           <select
                             name="tenant"
@@ -574,19 +572,28 @@ const Navbar = () => {
                             }}
                             value={values.tenant}
                           >
+                            Menampilkan "Tenant" sebagai opsi default
                             <option value="" disabled>
                               Tenant
                             </option>
+                            Opsi yang dihasilkan dari data
                             {option.map((tenant) => (
                               <option key={tenant.value} value={tenant.value}>
                                 {tenant.label}
                               </option>
                             ))}
                           </select>
-                        </div>
-
-
+                        </div> */}
+                        <a
+                          onClick={TenantPage}
+                          className="text-gray-700 text-sm flex items-center gap-2 mt-4 cursor-pointer hover:text-blue-500"
+                        >
+                          <FaRegBuilding className="w-3 h-3" />  Tenant
+                        </a>
                       </div>
+
+
+
 
 
                       <hr className="relative border-gray-300 top-3" />

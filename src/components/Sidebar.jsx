@@ -136,8 +136,9 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
   };
 
   const handleSearchChange = (event) => {
-    setSearchKeyword(event.target.value);
+    setSearchText(event.target.value);
   };
+
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -172,9 +173,10 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
     }
 
     return items.filter((item) =>
-      item.title.toLowerCase().includes(searchText.toLowerCase())
+      item.campaign_name.toLowerCase().includes(searchText.toLowerCase())
     );
   };
+
 
   const nonActiveHoverClass = "hoverable";
 
@@ -225,8 +227,8 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
           {index > 0 && <hr className="border-gray-300 " />}
           <div
             className={`${activeTab === item.campaign_name.toLowerCase()
-                ? "bg-blue-200"
-                : ""
+              ? "bg-blue-200"
+              : ""
               }`}
           />
           <div className="relative mt-2 pl-3 flex items-center w-20">
@@ -334,9 +336,10 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
             type="text"
             placeholder={translations["Search"]}
             className="w-full pl-8 px-2 py-1 bg-white border-searc border focus:outline-none focus:border-gray-500 text-slate-600 rounded-lg"
-            value={searchKeyword}
+            value={searchText}  // Menggunakan searchText bukan searchKeyword
             onChange={handleSearchChange}
           />
+
         </div>
 
         <div className="relative lebar-list -left-4 border-slate-500 pt-2 overflow-y-scroll h-full max-sm:max-h-[30rem]">

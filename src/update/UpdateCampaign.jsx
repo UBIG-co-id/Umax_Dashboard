@@ -206,6 +206,8 @@ const UpdateCampaign = () => {
     };
   }, [navigate]);
 
+  
+
   return (
     <main className="bg-slate-100 min-h-screen">
       <div>
@@ -324,7 +326,7 @@ const UpdateCampaign = () => {
                   Start Date
                 </label>
                 <input
-                  type="datetime-local"
+                  type="date"
                   name='start_date'
                   id="start_date"
                   value={values.start_date}
@@ -342,7 +344,7 @@ const UpdateCampaign = () => {
                   End Date
                 </label>
                 <input
-                  type="datetime-local"
+                  type="date"
                   name='end_date'
                   id="end_date"
                   value={values.end_date}

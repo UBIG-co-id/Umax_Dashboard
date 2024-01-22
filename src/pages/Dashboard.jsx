@@ -21,7 +21,7 @@ import { useLanguage } from "../LanguageContext"; // Import the useLanguage hook
 import Translation from "../translation/Translation.json";
 import axios from "axios";
 import { formattedKoma1 } from "../helpers/formattedKoma1";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 // import { getColorBySwaggerData } from "../Component/CardInfo";
 
 const Dashboard = () => {
@@ -62,10 +62,12 @@ const Dashboard = () => {
 
   const [savedSettingData, setSavedSettingData] = useState(null);
 
-  const handleSettingSaveSuccess = (savedData) => {
+  const handleSettingSave = (settingData) => {
     // Update state with the saved data
-    setSavedSettingData(savedData);
+    setSavedSettingData(settingData);
   };
+
+
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -666,7 +668,7 @@ const Dashboard = () => {
                   {/* Card Info */}
                   <CardInfo
                     title={translations["Amount Spent"]}
-                    value={selectedData ? selectedData.amountspent : "-%"}
+                    value={selectedData ? selectedData.amountspent : "Rp-"}
                     color="text-sky-500"// Sesuaikan dengan properti yang sesuai
                     popupContent="Jumlah total biaya yang kita keluarkan untuk pemasangan iklan"
                   />
@@ -697,12 +699,12 @@ const Dashboard = () => {
                     <Chart chartUrl={chartUrl} />
                   </div>
 
-                  {selectedData && (
+                  {/* {selectedData && (
                     <div className="grid grid-cols-1 grid-rows-1 w-full xl:grid-cols-4 lg:grid-cols-2 gap-4 justify-center mx-auto xl:-mt-[13px]">
                       <div className="card-container ">
                         <CardInfo
                           title="CPR"
-                          value={selectedData.cpr}
+                          value={selectedData ? selectedData.cpr : "Rp-"}
                           color={selectedData ? selectedData.cpr_color : "defaultColor"}
                           popupContent="Perhitungan biaya yang kita keluarkan untuk setiap hasil yang kita dapatkan"
                         />
@@ -710,7 +712,7 @@ const Dashboard = () => {
                       <div className="card-container">
                         <CardInfo
                           title="ATC"
-                          value={selectedData.atc}
+                          value={selectedData ? selectedData.atc : "-%"}
                           color="text-sky-500"
                           popupContent="Menambahkan produk atau barang ke dalam keranjang belanja saat berbelanja secara online di situs web e-commerce atau toko online"
                         />
@@ -718,7 +720,7 @@ const Dashboard = () => {
                       <div className="card-container">
                         <CardInfo
                           title="ROAS"
-                          value={selectedData.roas}
+                          value={selectedData ? selectedData.roas : "-X"}
                           color={selectedData ? selectedData.roas_color : "defaultColor"}
                           popupContent="Mengukur seberapa banyak pendapatan atau hasil yang dihasilkan dari setiap unit pengeluaran iklan"
                         />
@@ -726,7 +728,49 @@ const Dashboard = () => {
                       <div className="card-container">
                         <CardInfo
                           title="Real ROAS"
-                          value={selectedData.realroas}
+                          value={selectedData ? selectedData.real_roas : "-X"}
+                          color={selectedData ? selectedData.real_roas_color : "defaultColor"}
+                          popupContent="Mengukur banyak pendapatan asli yang dihasilkan tiap pengeluaran iklan"
+                        />
+                      </div>
+                    </div>
+                  )} */}
+                  {selectedData && (
+                    <div className="grid grid-cols-1 grid-rows-1 w-full xl:grid-cols-4 lg:grid-cols-2 gap-4 justify-center mx-auto xl:-mt-[13px]">
+                      <div className="card-container ">
+                        <CardInfo
+                          title="CPR"
+                          // value={selectedData.cpr}
+                          value={selectedData ? selectedData.cpr : "-%"}
+                          color={selectedData ? selectedData.cpr_color : "defaultColor"}
+                          // color="text-sky-500"
+                          popupContent="Perhitungan biaya yang kita keluarkan untuk setiap hasil yang kita dapatkan"
+                        />
+                      </div>
+                      <div className="card-container">
+                        <CardInfo
+                          title="ATC"
+                          // value={selectedData.atc}
+                          value={selectedData ? selectedData.atc : "-%"}
+                          color="text-sky-500"
+                          popupContent="Menambahkan produk atau barang ke dalam keranjang belanja saat berbelanja secara online di situs web e-commerce atau toko online"
+                        />
+                      </div>
+                      <div className="card-container">
+                        <CardInfo
+                          title="ROAS"
+                          // value={selectedData.roas}
+                          value={selectedData ? selectedData.roas : "-%"}
+                          color={selectedData ? selectedData.roas_color : "defaultColor"}
+                          // color="text-sky-500"
+                          popupContent="Mengukur seberapa banyak pendapatan atau hasil yang dihasilkan dari setiap unit pengeluaran iklan"
+                        />
+                      </div>
+                      <div className="card-container">
+                        <CardInfo
+                          title="Real ROAS"
+                          // value={selectedData.realroas}
+                          value={selectedData ? selectedData.realroas : "-%"}
                           color={selectedData ? selectedData.real_roas_color : "defaultColor"}
                           popupContent="Mengukur banyak pendapatan asli yang dihasilkan tiap pengeluaran iklan"
                         />
@@ -745,62 +789,60 @@ const Dashboard = () => {
                 <h1 className="text-xl font-bold text-gray-700">
                   {translations["Suggestion"]}
                 </h1>
-                <div className="flex flex-col mt-5 gap-5 ">
-                  {["Danger", "Warning", "Success"].map((color) =>
-                    suggestionData
-                      .filter((suggestion) => suggestion.rar.color === color)
-                      .map((suggestion, index) => (
-                        <div key={index}>
-                          <Card color={suggestion.rar.color}>
-                            <div className="w-full">
-                              <div className="flex gap-3">
-                                <div>
+                <div className="flex flex-col mt-5 gap-5">
+                  {["Danger", "Warning", "Success"].map((color) => {
+                    const filteredSuggestions = suggestionData.filter(
+                      (suggestion) => suggestion.rar.color === color
+                    );
 
-                                </div>
-                                {suggestionData
-                                  .filter((suggestion) => suggestion.rar && suggestion.rar.id === 1)
-                                  .map((suggestion, index) => (
-                                    <div key={index} className="w-full max-sm:w-full">
-                                      <h2 className="font-medium text-gray-900 ">{suggestion.rar.title}</h2>
-                                      <p className="leading-5 ">{suggestion.rar.msg}</p>
-                                      <hr className="border border-gray-500/30 w-full mt-3 " />
+                    return filteredSuggestions.map((suggestion, index) => (
+                      <div key={index}>
+                        <Card color={suggestion.rar.color}>
+                          <div className="w-full">
+                            <div className="flex gap-3">
+                              <div></div>
+                              {filteredSuggestions
+                                .filter((suggestion) => suggestion.rar && suggestion.rar.id === 1)
+                                .map((suggestion, index) => (
+                                  <div key={index} className="w-full max-sm:w-full">
+                                    <h2 className="font-medium text-gray-900 ">{suggestion.rar.title}</h2>
+                                    <p className="leading-5 ">{suggestion.rar.msg}</p>
+                                    <hr className="border border-gray-500/30 w-full mt-3 " />
 
-                                      <div className="flex gap-10 mt-3">
-                                        <span className="flex gap-2">
-                                          <h1 className="font-medium font-sans  "> Nilai:</h1>
-                                          <p className="font-sans text-red-600 ">{suggestion.rar.value}</p>
-                                        </span>
-                                        <span className="flex gap-2">
-                                          <h1 className="font-medium font-sans "> Target:</h1>
-                                          <p className="font-sans text-green-600 ">{suggestion.rar.target}</p>
-                                        </span>
-                                      </div>
-
-                                      <span className="flex relative top-3 gap-3">
-                                        <h1 className="font-medium font-sans ">Pesan:</h1>
-                                        <p className="">{suggestion.rar.massage}</p>
+                                    <div className="flex gap-10 mt-3">
+                                      <span className="flex gap-2">
+                                        <h1 className="font-medium font-sans  "> Nilai:</h1>
+                                        <p className="font-sans text-red-600 ">{suggestion.rar.value}</p>
                                       </span>
-
-
+                                      <span className="flex gap-2">
+                                        <h1 className="font-medium font-sans "> Target:</h1>
+                                        <p className="font-sans text-green-600 ">{suggestion.rar.target}</p>
+                                      </span>
                                     </div>
-                                  ))}
 
-                              </div>
-                              <a
-                                href="https://chat.openai.com/share/3bb35f6a-4b3b-4182-b6f9-c880722b3c72"
-                                target="_blank"
-                              >
-                                <div className="mt-flex justify-end items-end mt-3">
-                                  <p className=" text-end hover:underline text-sm">
-                                    {translations["Learn More"]}
-                                  </p>
-                                </div>
-                              </a>
+                                    <span className="flex relative top-3 gap-3">
+                                      <h1 className="font-medium font-sans ">Pesan:</h1>
+                                      <p className="">{suggestion.rar.massage}</p>
+                                    </span>
+                                  </div>
+                                ))}
                             </div>
-                          </Card>
-                        </div>
-                      ))
-                  )}
+                            <a
+                              href="https://chat.openai.com/share/3bb35f6a-4b3b-4182-b6f9-c880722b3c72"
+                              target="_blank"
+                            >
+                              <div className="mt-flex justify-end items-end mt-3">
+                                <p className=" text-end hover:underline text-sm">
+                                  {translations["Learn More"]}
+                                </p>
+                              </div>
+                            </a>
+                          </div>
+                        </Card>
+                      </div>
+                    ));
+                  })}
+
 
                   {["Danger", "Warning", "Success"].map((color) =>
                     suggestionData
@@ -1156,7 +1198,7 @@ const Dashboard = () => {
         return (
           <div>
             {campaign_id ? (
-              <Setting campaign_id={campaign_id} />
+              <Setting campaign_id={campaign_id} onSave={handleSettingSave} />
             ) : (
               <p>Select a valid item</p>
             )}

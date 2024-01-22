@@ -25,17 +25,17 @@ function DataTable() {
   const [showAddPopup, setShowAddPopup] = useState(false);
   const navigate = useNavigate();
 
-    const [showSuccessAlert, setShowSuccessAlert] = useState(false); // Tambah state untuk alert
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false); // Tambah state untuk alert
 
   const [currentLocale, setCurrentLocale] = useState("en-US"); // Default to English
   const toggleLocale = () => {
     const newLocale = currentLocale === "en-US" ? "id-ID" : "en-US";
     setCurrentLocale(newLocale);
   };
-  
+
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [selectedObjective, setSelectedObjective] = useState("");
-  
+
   // url base
   const umaxUrl = 'https://umaxxnew-1-d6861606.deta.app';
 
@@ -43,111 +43,81 @@ function DataTable() {
     navigate('/AddCampaigns');
   };
 
-// Make a DELETE request to the FastAPI endpoint
-const handleDelete = async (_id) => {
-  Swal.fire({
-    title: 'Anda Yakin?',
-    text: 'Anda tidak akan dapat memulihkan data ini!',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Ya, Hapus!',
-    cancelButtonText: 'Batal',
-    customClass: {
-      confirmButton: 'custom-confirm-button-class',
-      cancelButton: 'custom-cancel-button-class',
-    },
-  }).then(async (result) => {
-    if (result.isConfirmed) {
-      try {
-        const token = localStorage.getItem('jwtToken');
-        const response = await axios.delete(
-          `${umaxUrl}/campaign-delete?campaign_id=${_id}`,
-          {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
+  // Make a DELETE request to the FastAPI endpoint
+  const handleDelete = async (_id) => {
+    Swal.fire({
+      title: 'Anda Yakin?',
+      text: 'Anda tidak akan dapat memulihkan data ini!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Ya, Hapus!',
+      cancelButtonText: 'Batal',
+      customClass: {
+        confirmButton: 'custom-confirm-button-class',
+        cancelButton: 'custom-cancel-button-class',
+      },
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const token = localStorage.getItem('jwtToken');
+          const response = await axios.delete(
+            `${umaxUrl}/campaign-delete?campaign_id=${_id}`,
+            {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+          console.log('Delete response:', response);
+
+          if (response.status === 200) {
+            fetchData();
+            Swal.fire({
+              title: 'Berhasil!',
+              text: 'Data Anda telah dihapus.',
+              icon: 'success',
+              customClass: {
+                confirmButton: 'custom-ok-button-class',
+              },
+            });
+          } else {
+            Swal.fire({
+              title: 'Error!',
+              text: 'Maaf Anda Tidak Dapat Menghapus Data.',
+              icon: 'error',
+              customClass: {
+                confirmButton: 'custom-error-button-class',
+              },
+            });
           }
-        );
-        console.log('Delete response:', response);
-        
-        if (response.status === 200) {
-          fetchData();
-          Swal.fire({
-            title: 'Berhasil!',
-            text: 'Data Anda telah dihapus.',
-            icon: 'success',
-            customClass: {
-              confirmButton: 'custom-ok-button-class',
-            },
-          });
-        } else {
-          Swal.fire({
-            title: 'Error!',
-            text: 'Terjadi kesalahan saat menghapus data.',
-            icon: 'error',
-            customClass: {
-              confirmButton: 'custom-error-button-class',
-            },
-          });
+        } catch (error) {
+          Swal.fire('Error', 'Terjadi kesalahan saat menghapus data.', 'error');
         }
-      } catch (error) {
-        Swal.fire('Error', 'Terjadi kesalahan saat menghapus data.', 'error');
       }
-    }
-  });
-};
+    });
+  };
 
-// END DELETE 
+  // END DELETE 
 
-// GET CLIENT
+  // GET CLIENT
 
-async function fetchData() {
-  try {
-    const token = localStorage.getItem('jwtToken');
-    const response = await fetch("https://umaxxnew-1-d6861606.deta.app/client-by-tenant",{
-      headers: {
-       'accept': 'application/json',
-       'Content-Type': 'application/x-www-form-urlencoded',
-       'Authorization': `Bearer ${token}`,
-     },
-   });
-   
-   if (!response.ok) {
-     throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
-    }
-    const data = await response.json();
-    console.log('response = ',data.Data);
-    setTableData(data.Data);
-  } catch (error) {
-    console.error("Error fetching data:", error.message);
-  }
-}
-
-useEffect(() => {
-  fetchData();
-}, []);
-
-// END GET DATA CLIENT
-
-
-  //GET DATA
   async function fetchData() {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch("https://umaxxnew-1-d6861606.deta.app/campaign-by-tenant",{
+      const response = await fetch("https://umaxxnew-1-d6861606.deta.app/client-by-tenant", {
         headers: {
-         'accept': 'application/json',
-         'Content-Type': 'application/x-www-form-urlencoded',
-         'Authorization': `Bearer ${token}`,
-       },
-     });
-     
-     if (!response.ok) {
-       throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
+          'accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
       }
       const data = await response.json();
-      console.log('response = ',data.Data);
+      console.log('response = ', data.Data);
       setTableData(data.Data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
@@ -157,7 +127,37 @@ useEffect(() => {
   useEffect(() => {
     fetchData();
   }, []);
-// END GET
+
+  // END GET DATA CLIENT
+
+
+  //GET DATA
+  async function fetchData() {
+    try {
+      const token = localStorage.getItem('jwtToken');
+      const response = await fetch("https://umaxxnew-1-d6861606.deta.app/campaign-by-tenant", {
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
+      }
+      const data = await response.json();
+      console.log('response = ', data.Data);
+      setTableData(data.Data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+  // END GET
 
   //post data
 
@@ -173,7 +173,7 @@ useEffect(() => {
       status: '',
       notes: '',
     },
-      onSubmit: (values) => {
+    onSubmit: (values) => {
       const token = localStorage.getItem('jwtToken');
       fetch('https://umaxxnew-1-d6861606.deta.app/campaigns', {
         method: 'POST',
@@ -184,22 +184,22 @@ useEffect(() => {
         },
         body: new URLSearchParams(values).toString(),
       })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        if (data.message === 'data berhasil ditambah') {
-          // Step 4: Set the state to show the alert
-          setShowSuccessAlert(true);
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          if (data.message === 'data berhasil ditambah') {
+            // Step 4: Set the state to show the alert
+            setShowSuccessAlert(true);
 
-          // Step 5: Set a timeout to hide the alert after a few seconds
-          setTimeout(() => {
-            setShowSuccessAlert(false);
-          }, 5000); // Hide the alert after 5 seconds (you can adjust the duration)
-        }
-      })
-      .catch(error => {
-        console.error(error);
-      });
+            // Step 5: Set a timeout to hide the alert after a few seconds
+            setTimeout(() => {
+              setShowSuccessAlert(false);
+            }, 5000); // Hide the alert after 5 seconds (you can adjust the duration)
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
     },
   });
 
@@ -259,7 +259,7 @@ useEffect(() => {
           padding: '5px 13px',
           fontSize: "12px",
           borderRadius: '6px',
-          fontWeight: '500', 
+          fontWeight: '500',
         };
         return (
           <span style={statusStyle}>Active</span>
@@ -267,12 +267,12 @@ useEffect(() => {
       case 2:
         statusStyle = {
           backgroundColor: "#DCDCDC",
-          color: '#6F6F6F', 
+          color: '#6F6F6F',
           border: '0.3px solid #868686',
           padding: '5px 15px',
           fontSize: "12px",
           borderRadius: '6px',
-          fontWeight: '500', 
+          fontWeight: '500',
         };
         return (
           <span style={statusStyle}>Draft</span>
@@ -280,12 +280,12 @@ useEffect(() => {
       case 3:
         statusStyle = {
           backgroundColor: "#FFF2D1",
-          color: '#E29117', 
+          color: '#E29117',
           border: '0.3px solid #FF6B00',
           padding: '4px 10px',
           fontSize: "12px",
           borderRadius: '7px',
-          fontWeight: '500', 
+          fontWeight: '500',
         };
         return (
           <span style={statusStyle}>Completed</span>
@@ -294,8 +294,8 @@ useEffect(() => {
         return "Unknown";
     }
   };
-  
-  
+
+
   const getPlatFormString = (platform) => {
     switch (platform) {
       case 1:
@@ -324,20 +324,20 @@ useEffect(() => {
   const filteredData = useMemo(() => {
     return tableData.filter((item) => {
       const objectiveFilter =
-      selectedObjective === "1" ? item.objective === 1 : selectedObjective === "2" ? item.objective === 2 :selectedObjective === "3" ? item.objective === 3 : true;
-  
+        selectedObjective === "1" ? item.objective === 1 : selectedObjective === "2" ? item.objective === 2 : selectedObjective === "3" ? item.objective === 3 : true;
+
       const platformFilter =
-      selectedPlatform === "1" ? item.platform === 1 : selectedPlatform === "2" ? item.platform === 2 :selectedPlatform === "3" ? item.platform === 3 : true;
-        // selectedPlatform === "" ? true : item.platform === parseInt(selectedPlatform);
-  
+        selectedPlatform === "1" ? item.platform === 1 : selectedPlatform === "2" ? item.platform === 2 : selectedPlatform === "3" ? item.platform === 3 : true;
+      // selectedPlatform === "" ? true : item.platform === parseInt(selectedPlatform);
+
       return objectiveFilter && platformFilter;
     });
-  }, [ selectedObjective, selectedPlatform, tableData]);
+  }, [selectedObjective, selectedPlatform, tableData]);
 
 
   const columns = React.useMemo(
     () => [
-      
+
       {
         Header: "Name",
         accessor: "name",
@@ -351,10 +351,10 @@ useEffect(() => {
         accessor: "platform",
         Cell: ({ row }) => (
           <div className="flex justify-center">
-          <span className="text-blue-700 underline cursor-pointer">
-            {getPlatFormString(row.original.platform)}
-          </span>
-        </div>
+            <span className="text-blue-700 underline cursor-pointer">
+              {getPlatFormString(row.original.platform)}
+            </span>
+          </div>
         ),
       },
       {
@@ -398,21 +398,21 @@ useEffect(() => {
         accessor: "id",
         Cell: ({ row }) => (
           <div className="flex space-x-2 justify-center">
-           
-           <button
-               onClick={() => handleDelete(row.original._id)}
-               className="bg-red-500 hover:bg-red-500 text-white py-1 px-1 rounded"
-               >
+
+            <button
+              onClick={() => handleDelete(row.original._id)}
+              className="bg-red-500 hover:bg-red-500 text-white py-1 px-1 rounded"
+            >
               <BsTrash3 />
             </button>
 
             <Link to={`/updatecampaigns/${row.original._id}`}>
-            <button
-              
-              className="bg-sky-500 hover:bg-blue-500 text-white py-1 px-1 rounded"
-            >
-              <AiOutlineEdit />
-            </button>
+              <button
+
+                className="bg-sky-500 hover:bg-blue-500 text-white py-1 px-1 rounded"
+              >
+                <AiOutlineEdit />
+              </button>
             </Link>
           </div>
         ),
@@ -458,9 +458,9 @@ useEffect(() => {
       setSelectedPlatform(newValue);
     }
   };
- 
 
-  
+
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -472,7 +472,7 @@ useEffect(() => {
   };
 
 
- 
+
 
   const tableRef = useRef(null);
 
@@ -514,70 +514,70 @@ useEffect(() => {
   };
 
 
-  
+
 
 
   return (
     <div className="border-2 border-slate-200  p-0 m-2 lg:m-10 mt-8 rounded-lg relative">
-    {showSuccessAlert && (
+      {showSuccessAlert && (
         <div className="bg-green-200 border-green-500 text-green-700 border rounded p-2 mt-2">
           Data berhasil ditambah!
         </div>
       )}
-        <div className="container mx-auto p-4">
+      <div className="container mx-auto p-4">
         <div className="grid grid-cols-12 gap-3 px-2 md:px-0 mb-2">
-            {/* Search bar */}
-            <div className="relative col-span-4 lg:col-span-2">
-              <input
-                type="text"
-                value={globalFilter}
-                onChange={(e) => setGlobalFilter(e.target.value)}
-                placeholder="Search"
-                className="p-2 w-full min-w-0 h-9 pl-8 text-xs border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
-                />
-              <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                <CiSearch style={{ color: "#9BA0A8" }} />
-              </span>
-            </div>
-            {/* End */}
+          {/* Search bar */}
+          <div className="relative col-span-4 lg:col-span-2">
+            <input
+              type="text"
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              placeholder="Search"
+              className="p-2 w-full min-w-0 h-9 pl-8 text-xs border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
+            />
+            <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
+              <CiSearch style={{ color: "#9BA0A8" }} />
+            </span>
+          </div>
+          {/* End */}
 
-            {/* bagian platform */}
-            <div className="relative col-span-4 lg:col-span-2">
-              <select
+          {/* bagian platform */}
+          <div className="relative col-span-4 lg:col-span-2">
+            <select
               className="w-full min-w-0 px-1 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
               value={selectedPlatform}
-                onChange={handleFilterChangePlatform}
-              >
-                <option hidden>Platform</option>
-                
-                <option value="1">Meta Ads</option>
-                <option value="2">Google Ads</option>
-                <option value="3">Tiktok Ads</option>
-              </select>
-            </div>
+              onChange={handleFilterChangePlatform}
+            >
+              <option hidden>Platform</option>
 
-            {/* bagian objective */}
-            <div className="relative col-span-4 lg:col-span-2">
-              <select
+              <option value="1">Meta Ads</option>
+              <option value="2">Google Ads</option>
+              <option value="3">Tiktok Ads</option>
+            </select>
+          </div>
+
+          {/* bagian objective */}
+          <div className="relative col-span-4 lg:col-span-2">
+            <select
               className="w-full min-w-0 px-1 h-9 text-xs font-medium border focus:border-gray-500 focus:outline-none focus:ring-0 border-slate-300 rounded-lg"
               value={selectedObjective}
-                onChange={handleFilterChangeObjective}
-              >
-                <option hidden>Objective</option>
-              
-                <option value="1">Awareness</option>
-                <option value="2">Conversion</option>
-                <option value="3">Consideration</option>
-              </select>
-            </div>
+              onChange={handleFilterChangeObjective}
+            >
+              <option hidden>Objective</option>
 
-            {/* div kosong untuk memberi jarak */}
-            <div className="hidden lg:flex col-span-5 "></div>
+              <option value="1">Awareness</option>
+              <option value="2">Conversion</option>
+              <option value="3">Consideration</option>
+            </select>
+          </div>
+
+          {/* div kosong untuk memberi jarak */}
+          <div className="hidden lg:flex col-span-5 "></div>
 
 
 
-            {/* Button add data */}
-            <div className="gap-2 flex lg:justify-end">
+          {/* Button add data */}
+          <div className="gap-2 flex lg:justify-end">
             <button
               type="button"
               data-te-ripple-init
@@ -592,7 +592,7 @@ useEffect(() => {
             </button>
             {/* menu add data */}
 
-         
+
 
             {/* Button export excel */}
             <button
@@ -613,116 +613,116 @@ useEffect(() => {
             >
               <AiOutlineFilePdf className="relative font-medium text-lg" />
             </button>
-            </div>
-            {/* End */}
           </div>
-{/*  */}
-          <div className=" w-full rounded-md overflow-hidden outline-none shadow-lg shadow-slate-900/10 border-none max-md:overflow-x-auto" ref={componentPDF}>
-            <table
-              {...getTableProps()}
-              ref={tableRef}
-              className="table-auto w-full"
-            >
-              <thead>
-                {headerGroups.map((headerGroup) => (
-                  <tr {...headerGroup.getHeaderGroupProps()}
-                  >
-                    {headerGroup.headers.map((column) => (
-                      <th
-                        {...column.getHeaderProps()}
-                        className={` p-2 text-white bg-sky-500 font-normal  border-t-0  border-gray-300 ${column.id === "status" || column.id === "id"
-                            ? "place-items-center"
-                            : "text-left"
-                          }`}
-                      >
-                        {column.render("Header")}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody {...getTableBodyProps()}>
-                {page.map((row, i) => {
-                  prepareRow(row);
-                  return (
-                    <tr
-                      {...row.getRowProps()}
-                      className={` text-gray-600 hover:bg-blue-200 hover:text-gray-700 ${i % 2 === 1 ? "bg-stone-200" : "bg-white"
-                        } `}
+          {/* End */}
+        </div>
+        {/*  */}
+        <div className=" w-full rounded-md overflow-hidden outline-none shadow-lg shadow-slate-900/10 border-none max-md:overflow-x-auto" ref={componentPDF}>
+          <table
+            {...getTableProps()}
+            ref={tableRef}
+            className="table-auto w-full"
+          >
+            <thead>
+              {headerGroups.map((headerGroup) => (
+                <tr {...headerGroup.getHeaderGroupProps()}
+                >
+                  {headerGroup.headers.map((column) => (
+                    <th
+                      {...column.getHeaderProps()}
+                      className={` p-2 text-white bg-sky-500 font-normal  border-t-0  border-gray-300 ${column.id === "status" || column.id === "id"
+                        ? "place-items-center"
+                        : "text-left"
+                        }`}
                     >
-                      {row.cells.map((cell) => {
-                        return (
-                          <td
-                            {...cell.getCellProps()}
+                      {column.render("Header")}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody {...getTableBodyProps()}>
+              {page.map((row, i) => {
+                prepareRow(row);
+                return (
+                  <tr
+                    {...row.getRowProps()}
+                    className={` text-gray-600 hover:bg-blue-200 hover:text-gray-700 ${i % 2 === 1 ? "bg-stone-200" : "bg-white"
+                      } `}
+                  >
+                    {row.cells.map((cell) => {
+                      return (
+                        <td
+                          {...cell.getCellProps()}
 
-                            className={`p-2 border-gray-300 border-b-0   ${cell.column.id === "status" ||
-                                cell.column.id === "action"
-                                ? "text-center"
-                                : "text-left"
-                              }`}
-                          >
-                            {cell.render("Cell")}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                          className={`p-2 border-gray-300 border-b-0   ${cell.column.id === "status" ||
+                            cell.column.id === "action"
+                            ? "text-center"
+                            : "text-left"
+                            }`}
+                        >
+                          {cell.render("Cell")}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
-        {/* Pagination */}
-        <div style={paginationStyle}>
-          <button
-            onClick={() => gotoPage(0)}
-            disabled={!canPreviousPage}
-            style={{
-              ...buttonStyle,
-              ...(canPreviousPage ? {} : disabledButtonStyle),
-            }}
-          >
-            {'<<'}
-          </button>{' '}
-          <button
-            onClick={() => previousPage()}
-            disabled={!canPreviousPage}
-            style={{
-              ...buttonStyle,
-              ...(canPreviousPage ? {} : disabledButtonStyle),
-            }}
-          >
-            {'<'}
-          </button>{' '}
-          <span style={pageInfoStyle}>
-            Page{' '}
-            <strong>
-              {pageIndex + 1} of {pageOptions.length}
-            </strong>{' '}
-          </span>
-          <button
-            onClick={() => nextPage()}
-            disabled={!canNextPage}
-            style={{
-              ...buttonStyle,
-              ...(canNextPage ? {} : disabledButtonStyle),
-            }}
-          >
-            {'>'}
-          </button>{' '}
-          <button
-            onClick={() => gotoPage(pageCount - 1)}
-            disabled={!canNextPage}
-            style={{
-              ...buttonStyle,
-              ...(canNextPage ? {} : disabledButtonStyle),
-            }}
-          >
-            <IoIosArrowForward/>
-          </button>{' '}
-        </div>
-        {/* End Pagination */}
       </div>
+      {/* Pagination */}
+      <div style={paginationStyle}>
+        <button
+          onClick={() => gotoPage(0)}
+          disabled={!canPreviousPage}
+          style={{
+            ...buttonStyle,
+            ...(canPreviousPage ? {} : disabledButtonStyle),
+          }}
+        >
+          {'<<'}
+        </button>{' '}
+        <button
+          onClick={() => previousPage()}
+          disabled={!canPreviousPage}
+          style={{
+            ...buttonStyle,
+            ...(canPreviousPage ? {} : disabledButtonStyle),
+          }}
+        >
+          {'<'}
+        </button>{' '}
+        <span style={pageInfoStyle}>
+          Page{' '}
+          <strong>
+            {pageIndex + 1} of {pageOptions.length}
+          </strong>{' '}
+        </span>
+        <button
+          onClick={() => nextPage()}
+          disabled={!canNextPage}
+          style={{
+            ...buttonStyle,
+            ...(canNextPage ? {} : disabledButtonStyle),
+          }}
+        >
+          {'>'}
+        </button>{' '}
+        <button
+          onClick={() => gotoPage(pageCount - 1)}
+          disabled={!canNextPage}
+          style={{
+            ...buttonStyle,
+            ...(canNextPage ? {} : disabledButtonStyle),
+          }}
+        >
+          <IoIosArrowForward />
+        </button>{' '}
+      </div>
+      {/* End Pagination */}
+    </div>
 
   );
 }

@@ -13,7 +13,7 @@ import UpdateCampaign from './update/UpdateCampaign';
 import Profile from './Profile/Profile';
 import EditProfile from './Profile/EditProfile';
 import AddClients from './add/AddClients'
-import AddAccounts from './add/AddAccounts'
+import AddAccounts from './add/AddAccounts';
 import AddCampaigns from './add/AddCampaigns'
 import useTheme from './hooks/useTheme';
 import Tenant from './tenant/tenant';
@@ -29,6 +29,7 @@ const theme = useTheme()
       <Routes>
 
         <Route path='/Staff' element={<Staff/>} />
+        {/* <Route path='/Client' element={<Client/>} />8 */}
         <Route path='/updatecampaigns/:_id' element={<UpdateCampaign/>}/>
         <Route path='/updateaccount/:_id' element={<UpdateAccount/>}/>
         <Route path='/updateclient/:_id' element={<UpdateClient/>}/>

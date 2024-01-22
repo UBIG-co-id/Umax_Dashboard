@@ -5,10 +5,12 @@ import { useFormik } from 'formik';
 import bgLogin from '../assets/bg-default.svg';
 import { toast, ToastContainer } from 'react-toastify';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import Swal from 'sweetalert2';
 
 
 const SignUp = () => {
   const [passwordMatch, setPasswordMatch] = useState(true);
+  const registrationSuccessful = useState();
 
   const toggleKonfirmasiPasswordVisibility = () => {
     setShowKonfirmasiPassword(!showKonfirmasiPassword);
@@ -99,8 +101,23 @@ const SignUp = () => {
   
   const handleSignUpClick = () => {
     // Navigasi ke halaman UsersTable
-    navigate('/UsersTable');
+    
+
+    formik.handleSubmit();
+    if (registrationSuccessful) {
+      Swal.fire({
+        title: 'Registration Successful!',
+        text: 'Your data has been successfully registered.',
+        icon: 'success',
+        confirmButtonText: 'OK',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/UsersTable');
+        }
+      });
+    }
   };
+  
 
   return (
     <div className="relative overflow-hidden min-h-screen flex flex-col items-center justify-center">
@@ -197,9 +214,9 @@ const SignUp = () => {
         </select>
 
         <button
-          type="submit"
+          // type="submit"
           className="w-full h-10 rounded-full bg-[#3D5FD9] text-[#F5F7FF] hover:bg-[#2347C5] mt-5"
-          // onClick={handleSignUpClick}
+          onClick={handleSignUpClick}
         >
           SIGN UP
         </button>

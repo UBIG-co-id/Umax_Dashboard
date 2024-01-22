@@ -72,7 +72,7 @@ function ClientsTable() {
           } else {
             Swal.fire({
               title: 'Error',
-              text: 'Terjadi kesalahan saat menghapus data',
+              text: 'Maaf Anda Tidak Dapat Menghapus Data.',
               icon: 'error',
               customClass: {
                 confirmButton: 'custom-error-button-class',
@@ -81,8 +81,8 @@ function ClientsTable() {
           }
         } catch (error) {
           Swal.fire({
-            title: 'Error',
-            text: 'Terjadi kesalahan saat menghapus data',
+            // title: 'Error',
+            text: 'Maaf Anda Tidak Dapat Menghapus Data.',
             icon: 'error',
             customClass: {
               confirmButton: 'custom-error-button-class',

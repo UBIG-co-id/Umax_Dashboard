@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
-const Setting = ({ campaign_id }) => {
+const Setting = ({ campaign_id, onSave, updateSelectedName, setMetricId }) => {
   const [data, setData] = useState([])
   const location = useLocation();
-  const updatedData = location.state?.updatedData;
+  const [settingData, setSettingData] = useState();
+  const [ selectedData, setSelectedData] = useState();
 
   // const { campaign_id } = useParams();
   const token = localStorage.getItem('jwtToken');
@@ -36,7 +38,7 @@ const Setting = ({ campaign_id }) => {
       [name]: value,
     }));
   };
-  
+
 
   useEffect(() => {
     axios.get(`${baseUrl}/metrics-settings-by?campaign_id=${campaign_id}`, {
@@ -56,48 +58,87 @@ const Setting = ({ campaign_id }) => {
   }, [campaign_id])
 
 
- 
+  //   const handleSubmit = async () => {
+  //     try {
+  //       const convertedValues = {
+  //         rar: parseInt(values.rar),
+  //         ctr: parseInt(values.ctr),
+  //         oclp: parseInt(values.oclp),
+  //         roas: parseFloat(values.roas),
+  //         cpr: parseInt(values.cpr),
+  //         cpc: parseInt(values.cpc),
+  //       };
 
-  const handleSubmit = (e) => {
-    
-  
-    // Convert string values to integers
-    const convertedValues = {
-      rar: parseInt(values.rar),
-      ctr: parseInt(values.ctr),
-      oclp: parseInt(values.oclp),
-      roas: parseFloat(values.roas), // Use parseFloat for floating-point numbers
-      cpr: parseInt(values.cpr),
-      cpc: parseInt(values.cpc),
-    };
-  
-    // axios.put(`${baseUrl}/metrics-settings?campaign_id=${campaign_id}`, convertedValues, { headers })
-    axios.put(`${baseUrl}/metrics-settings?campaign_id=${campaign_id}`, convertedValues, { 
-      headers: {
-      Authorization: `Bearer ${token}`,
-      'accept': 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded',
-  }, 
-})
-    .then((res) => {
-      // Update the local state with the edited values from the response
-      setValues({
-        rar: values.rar,
-        ctr: values.ctr,
-        oclp: values.oclp,
-        roas: values.roas,
-        cpr: values.cpr,
-        cpc: values.cpc,
+  //     // axios.put(`${baseUrl}/metrics-settings?campaign_id=${campaign_id}`, convertedValues, { headers })
+  //     await axios.put(`${baseUrl}/metrics-settings?campaign_id=${campaign_id}`, convertedValues, { 
+  //       headers: {
+  //       Authorization: `Bearer ${token}`,
+  //       'accept': 'application/json',
+  //       'Content-Type': 'application/x-www-form-urlencoded',
+  //   }, 
+
+  // })
+  //     .then((res) => {
+  //       // Update the local state with the edited values from the response
+  //       setValues({
+  //         rar: values.rar,
+  //         ctr: values.ctr,
+  //         oclp: values.oclp,
+  //         roas: values.roas,
+  //         cpr: values.cpr,
+  //         cpc: values.cpc,
+  //       });
+  //       navigate(`/Dashboard/${campaign_id}`);
+  //     })
+
+  //     .catch((err) => {
+  //       console.error('Error updating:', err);
+  //     });
+  // };
+  const handleSubmit = async () => {
+    try {
+      const convertedValues = {
+        rar: parseInt(values.rar),
+        ctr: parseInt(values.ctr),
+        oclp: parseInt(values.oclp),
+        roas: parseFloat(values.roas),
+        cpr: parseInt(values.cpr),
+        cpc: parseInt(values.cpc),
+      };
+
+      await axios.put(
+        `${baseUrl}/metrics-settings?campaign_id=${campaign_id}`,
+        convertedValues,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      );
+      // Tampilkan SweetAlert jika berhasil
+      Swal.fire({
+        icon: 'success',
+        title: 'Data Berhasil Disimpan',
+        showConfirmButton: true,
+        confirmButtonText: 'OK',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // sessionStorage.setItem('selectedData', JSON.stringify(selectedData));
+          // Navigasi ke Dashboard dengan campaign_id yang dipilih
+          navigate('/Dashboard');
+          window.location.reload();
+        }
       });
-    
-      navigate('/Dashboard', { state: { updatedData: convertedValues } });
-    })
-    
-    .catch((err) => {
-      console.error('Error updating:', err);
-    });
-};
-  
+      updateSelectedName(selectedData); 
+      setMetricId(selectedData.campaign_id);
+    } catch (error) {
+      console.error('Error updating:', error);
+      // Anda juga dapat menampilkan SweetAlert error di sini jika diperlukan
+    }
+  };
+
 
 
 
@@ -121,7 +162,7 @@ const Setting = ({ campaign_id }) => {
                   name="rar"
                   id="rar"
                   value={values.rar}
-                  onChange={e=> setValues({...values, rar: e.target.value})}
+                  onChange={e => setValues({ ...values, rar: e.target.value })}
                   className="block w-full p-2 rounded-l-md border rounded  border-r-0 border-gray-300 focus:outline-none focus:none focus:border-blue-500"
                 />
                 <button className="absolute inset-y-0 right-0 inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 bg-blue-400 text-white rounded-r-md">
@@ -230,9 +271,10 @@ const Setting = ({ campaign_id }) => {
           <div className='flex justify-end items-end gap-5 max-md:grid-cols-7 max-sm:grid-cols-7'>
             {/* button save */}
             <button
-              type="submit"
+              type="button"
+              onClick={handleSubmit}
               className='mt-20 text-white bg-blue-500  flex items-center gap-2  rounded-md py-1 px-6 justify-center transition duration-300 hover:bg-blue-600'
-              // onClick={handleSaveButtonClick}
+            // onClick={handleSaveButtonClick}
             >
               Save
             </button>
