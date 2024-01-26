@@ -46,7 +46,9 @@ const Dashboard = () => {
   const [selectedTimeframe, setSelectedTimeframe] = useState("last-week");
   const [chartUrl, setChartUrl] = useState("");
   const [suggestionData, setSuggestionData] = useState([]);
+  const [cardColor, setCardColor] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [colorCard, setColorCard] = useState([]);
 
   const getColorBySwaggerData = (swaggerColor) => {
     switch (swaggerColor) {
@@ -104,6 +106,44 @@ const Dashboard = () => {
 
     fetchSuggestions();
   }, [setSuggestionData, campaign_id]);
+
+  useEffect(() => {
+    const fetchColorCard = async () => {
+      const id = campaign_id;
+      console.log("ID CAMPAIGN", id);
+
+      try {
+
+        const token = localStorage.getItem("jwtToken");
+        const response = await axios.get(
+          `https://umaxxnew-1-d6861606.deta.app/side-chart?campaign_id=${id}`,
+          {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          const data = response.data.Data;
+          setColorCard(data);
+        } else {
+          console.error("Failed to fetch side card data from API");
+        }
+      } catch (error) {
+        console.error(
+          "An error occurred while fetching side card data",
+          error
+        );
+      }
+    };
+
+    fetchColorCard();
+  }, [setColorCard, campaign_id]);
+
+
 
   // wrap function pakai useCallback karena function ini dipakai di dalam useEffect
   const updateChartUrl = useCallback(
@@ -662,9 +702,11 @@ const Dashboard = () => {
 
             {/* bagian content */}
 
+
             <div>
               <div className="flex flex-col md:flex-row mt-5 md:gap-5">
                 <div className="md:w-8/12 w-full flex flex-col flex-wrap h-full gap-5">
+
                   {/* Card Info */}
                   <CardInfo
                     title={translations["Amount Spent"]}
@@ -672,12 +714,17 @@ const Dashboard = () => {
                     color="text-sky-500"// Sesuaikan dengan properti yang sesuai
                     popupContent="Jumlah total biaya yang kita keluarkan untuk pemasangan iklan"
                   />
-                  <CardInfo
-                    title={translations["Reach Amount Spent Ratio"]}
-                    value={selectedData ? selectedData.rar : "-%"}
-                    color={selectedData ? selectedData.rar_color : "defaultColor"} // Ganti "defaultColor" dengan nilai default yang sesuai
-                    popupContent="Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut"
-                  />
+                  {/* {colorCard.map((item, index) => (
+                    <div key={index}> */}
+                      <CardInfo
+                        title={translations["Reach Amount Spent Ratio"]}
+                        value={selectedData ? selectedData.rar : "-%"}
+                        color={selectedData ? selectedData.rar_color : "defaultColor"} // Ganti "defaultColor" dengan nilai default yang sesuai
+                        popupContent="Mengukur hubungan antara jumlah orang yang melihat iklan dengan jumlah uang yang dihabiskan untuk iklan tersebut"
+                      />
+                    {/* </div> */}
+                  {/* ))} */}
+
 
                   <CardInfo
                     title={translations["Click Through Rate"]}

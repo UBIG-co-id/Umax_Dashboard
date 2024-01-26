@@ -18,7 +18,8 @@ import AddCampaigns from './add/AddCampaigns'
 import useTheme from './hooks/useTheme';
 import Tenant from './tenant/tenant';
 import UsersTable from './components/UserTable';
-
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 
 
 const App = () => {
@@ -46,6 +47,8 @@ const theme = useTheme()
         <Route path='/EditProfile' element={<EditProfile />} />
         <Route path='/Tenant' element={<Tenant />} />
         <Route path='/UsersTable' element={<UsersTable />} />
+        <Route path='/ForgotPassword' element={<ForgotPassword />} />
+        <Route path='/ResetPassword' element={<ResetPassword/>} />
         
 
       </Routes>

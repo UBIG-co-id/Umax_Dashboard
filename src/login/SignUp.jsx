@@ -65,6 +65,8 @@ const SignUp = () => {
                 navigate('/admin-dashboard');
               } else if (values.role === 'staff') {
                 navigate('/staff-dashboard');
+              } else if (values.role === 'client') {
+                navigate('/client-dashboard');
               } else {
                 navigate('/users-table'); // Default for regular users
               }
@@ -210,6 +212,7 @@ const SignUp = () => {
           <option value="" hidden>Select Role</option>
           <option value="admin">Admin</option>
           <option value="staff">Staff</option>
+          <option value="client">Client</option>
           {/* Add more roles if needed */}
         </select>
 

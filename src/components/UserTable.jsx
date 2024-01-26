@@ -13,6 +13,7 @@ import '../styles.css';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import Swal from 'sweetalert2';
+import { FaTimes } from 'react-icons/fa';
 
 
 function UsersTable() {
@@ -29,6 +30,11 @@ function UsersTable() {
   const handleAddClick = () => {
     navigate('/register');
   };
+
+  const handleGoToDashboard = () => {
+    navigate('/Dashboard');
+  };
+
 
   // DELETE
   const handleDelete = async (_id) => {
@@ -327,14 +333,14 @@ function UsersTable() {
         navigate('/dashboard'); // Update this to the appropriate dashboard route
       }
     };
-  
+
     window.addEventListener("keydown", handleKeyDown);
-  
+
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [navigate]);
-  
+
 
 
   //export table ke excel
@@ -374,6 +380,15 @@ function UsersTable() {
 
   return (
     <div>
+      {/* <div className="flex justify-between items-center p-4 mb-2">
+        <span className='text-gray-600 font-medium text-2xl'>User</span>
+        <button
+          onClick={handleGoToDashboard}
+          className="p-2 text-red-500 hover:text-red-700 cursor-pointer text-xl"
+        >
+          <FaTimes />
+        </button>
+      </div> */}
       <span className='p-10 relative top-4 text-gray-600 font-medium text-2xl'>User</span>
       <div className="border-2 border-slate-200 bg-white p-0 m-2 lg:m-10 mt-8 rounded-lg relative">
 
@@ -421,7 +436,6 @@ function UsersTable() {
                 data-te-ripple-centered="true"
                 className="col-span-4 max-sm:col-span-4 lg:col-span-1 inline-flex flex-1 items-center border border-slate-300 h-9 rounded-md bg-white px-6 pb-2.5 pt-2 text-xs font-medium leading-normal text-gray-800 hover:bg-gray-50"
                 onClick={handleAddClick}
-
               >
 
                 <BsPlus className="font-medium text-lg" />

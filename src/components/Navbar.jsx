@@ -22,7 +22,6 @@ import { us, indonesia } from "../assets";
 import jwt_decode from "jwt-decode";
 import { BiChevronDown, BiCheck } from "react-icons/bi";
 import { CiGlobe } from "react-icons/ci";
-import Select from "react-select";
 
 
 // import LazyLoad from 'react-lazyload';
@@ -529,24 +528,23 @@ const Navbar = () => {
                   {isDropdownOpen && (
                     <div className="absolute -left-5 mt-2 z-50 w-48 max-h-[15rem] p-4  bg-white border rounded-md rounded-t-none shadow-xl">
                       <span className="relative bottom-1">
-                        <a className="truncate font-medium w-24 cursor-pointer flex text-gray-600 text-sm " title={profileData.name}>
+                        <a className="truncate font-medium w-24 cursor-pointer flex text-gray-600 text-sm" title={profileData.name}>
                           {profileData.name}
                         </a>
                         <a className="relative font-normal text-gray-500 text-sm flex truncate  w-40">{profileData.email}</a>
                       </span>
                       <hr className="mt-1 border-gray-400" />
 
-
-
-
-                      <div className="relative">
-                        <a
-                          onClick={Users}
-                          className="text-gray-700 text-sm flex items-center gap-2 mt-4 cursor-pointer hover:text-blue-500"
-                        >
-                          <LuUserPlus className="w-3 h-3" /> User
-                        </a>
-                      </div>
+                      {profileData.roles !== 'client' && (
+                        <div className="relative">
+                          <a
+                            onClick={Users}
+                            className="text-gray-700 text-sm flex items-center gap-2 mt-4 cursor-pointer hover:text-blue-500"
+                          >
+                            <LuUserPlus className="w-3 h-3" /> User
+                          </a>
+                        </div>
+                      )}
 
                       <div className="relative">
                         <a
@@ -559,24 +557,23 @@ const Navbar = () => {
 
                       <div className="relative">
                         {/* Mengganti tombol dengan elemen select */}
-                        {/* <div className="text-gray-700 text-sm flex items-center gap-2 mt-4 cursor-pointer hover:text-blue-500">
-                          <FaRegBuilding className="w-2 h-3" />
+                        {/* <FaRegBuilding className="absolute top-1 left-2 text-gray-500" />
+                        <div className="relative mt-4">
+                          
                           <select
                             name="tenant"
                             id="tenant"
-                            options={option}
                             onChange={(e) => {
                               const selectedTenantId = e.target.value;
                               setValues({ ...values, tenant: selectedTenantId });
                               handleTenantSelect(selectedTenantId);
                             }}
                             value={values.tenant}
+                            className="appearance-none w-full bg-white border border-gray-300 rounded-md py-2 pl-8 pr-4 text-sm leading-5 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                           >
-                            Menampilkan "Tenant" sebagai opsi default
-                            <option value="" disabled>
-                              Tenant
+                            <option value="" disabled hidden>
+                              Pilih Tenant
                             </option>
-                            Opsi yang dihasilkan dari data
                             {option.map((tenant) => (
                               <option key={tenant.value} value={tenant.value}>
                                 {tenant.label}
@@ -584,17 +581,16 @@ const Navbar = () => {
                             ))}
                           </select>
                         </div> */}
-                        <a
-                          onClick={TenantPage}
-                          className="text-gray-700 text-sm flex items-center gap-2 mt-4 cursor-pointer hover:text-blue-500"
-                        >
-                          <FaRegBuilding className="w-3 h-3" />  Tenant
-                        </a>
+
+                        {profileData.roles !== 'client' && (
+                          <a
+                            onClick={TenantPage}
+                            className="text-gray-700 text-sm flex items-center gap-2 mt-4 cursor-pointer hover:text-blue-500"
+                          >
+                            <FaRegBuilding className="w-3 h-3" />  Tenant
+                          </a>
+                        )}
                       </div>
-
-
-
-
 
                       <hr className="relative border-gray-300 top-3" />
 
@@ -606,9 +602,9 @@ const Navbar = () => {
                           <BiLogOut className="mr-2" /> Sign out
                         </button>
                       </div>
-
                     </div>
                   )}
+
                 </div>
                 {/* end */}
 
