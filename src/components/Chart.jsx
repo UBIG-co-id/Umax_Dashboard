@@ -6,6 +6,7 @@ import "../styles.css";
 
 export default function Chart({ chartUrl }) {
   const [chartData, setChartData] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,6 +23,18 @@ export default function Chart({ chartUrl }) {
         if (response.status === 200) {
           const data = response.data.Data;
           setChartData(data.reverse());
+          
+          // Update categories based on month if available
+          if (chartUrl.includes("last-year")) {
+            const months = data.map(item => item.month);
+            setCategories(months);
+          } else if (chartUrl.includes("last-month")) {
+            // Generate numeric categories if month data is not available
+            setCategories(data.map((_, index) => index + 1));
+          } else if (chartUrl.includes("last-week")) {
+            // Generate numeric categories if month data is not available
+            setCategories(data.map((_, index) => index + 1));
+          } 
         } else {
           console.error("Failed to fetch data from API");
         }
@@ -31,7 +44,7 @@ export default function Chart({ chartUrl }) {
     };
 
     fetchData();
-  }, [chartUrl, setChartData]);
+  }, [chartUrl]);
 
   const options = {
     chart: {
@@ -47,6 +60,15 @@ export default function Chart({ chartUrl }) {
     legend: {
       show: false,
     },
+    xaxis: {
+      type: 'date',
+      categories: categories.length > 0 ? categories : ["No Data Available"],
+    },
+    tooltip: {
+      x: {
+        format: 'dd/MM/yy'
+      },
+    }
   };
 
   let series = [];

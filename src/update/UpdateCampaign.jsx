@@ -7,6 +7,7 @@ import Navbar from "../components/Navbar";
 import CampaignTable from "../components/CampaignTable";
 import Select from "react-select";
 import { useFormik } from 'formik';
+import Swal from 'sweetalert2';
 
 const UpdateCampaign = () => {
   // url base
@@ -145,12 +146,36 @@ const UpdateCampaign = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`https://umaxxnew-1-d6861606.deta.app/campaign-edit?campaign_id=${_id}`, values, { headers })
-      .then(res => {
-        navigate('/Campaigns');
-      })
-      .catch(err => console.log(err))
+  
+    // Menampilkan alert konfirmasi menggunakan SweetAlert
+    Swal.fire({
+      title: 'Apakah Anda yakin data Anda sudah benar?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Jika diklik OK, kirim data ke server dan tampilkan alert sukses
+        axios.put(`https://umaxxnew-1-d6861606.deta.app/campaign-edit?campaign_id=${_id}`, values, { headers })
+          .then(res => {
+            Swal.fire({
+              title: 'Data berhasil diupdate!',
+              icon: 'success',
+              confirmButtonColor: '#3085d6',
+              confirmButtonText: 'OK'
+            }).then(() => {
+              // Setelah diklik OK, navigasi ke halaman Campaigns
+              navigate('/Campaigns');
+            });
+          })
+          .catch(err => console.log(err));
+      }
+    });
   }
+  
 
   const options = accountList.map(item => ({
     value: item._id,

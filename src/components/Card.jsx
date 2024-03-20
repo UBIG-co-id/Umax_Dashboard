@@ -23,7 +23,7 @@ export default function Card({ color, children }) {
     return (
         <div className={`${bgColor} ${border}rounded-lg p-4`} >
             {icon && (
-                <div className="flex items-start">
+                <div className="flex items-start rounded-lg">
                     <div className="flex-shrink-0">{icon}</div>
                     <div className="flex flex-col gap-2">{children}</div>
                 </div>

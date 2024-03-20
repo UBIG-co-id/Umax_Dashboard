@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 const SignUp = () => {
   const [passwordMatch, setPasswordMatch] = useState(true);
   const registrationSuccessful = useState();
+  const [errors, setErrors] = useState({});
 
   const toggleKonfirmasiPasswordVisibility = () => {
     setShowKonfirmasiPassword(!showKonfirmasiPassword);
@@ -32,51 +33,61 @@ const SignUp = () => {
       confirm_password: '',
       role: '',
     },
-    onSubmit: (values) => {
-      if (values.password !== values.confirm_password) {
-        setPasswordMatch(false);
-        return;
+    validate: (values) => {
+      const errors = {};
+      if (!values.name) {
+        errors.name = 'Name is required';
       }
-
-      const token = localStorage.getItem("jwtToken");
-      if (
-        values.name &&
-        values.password &&
-        values.confirm_password &&
-        values.email &&
-        values.role
-      ) {
-        // Send a POST request to your FastAPI backend with form data
-        fetch(`${umaxUrl}/register`, {
-          method: 'POST',
-          headers: {
-            'accept': 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: new URLSearchParams(values).toString(),
-        })
-          .then(response => response.json())
-          .then(data => {
-            console.log(data);
-            if (data.message === 'Registration successful') {
-              // Redirect based on user role
-              if (values.role === 'admin') {
-                navigate('/admin-dashboard');
-              } else if (values.role === 'staff') {
-                navigate('/staff-dashboard');
-              } else if (values.role === 'client') {
-                navigate('/client-dashboard');
-              } else {
-                navigate('/users-table'); // Default for regular users
-              }
+      if (!values.email) {
+        errors.email = 'Email is required';
+      }
+      if (!values.password) {
+        errors.password = 'Password is required';
+      }
+      if (!values.confirm_password) {
+        errors.confirm_password = 'Confirm password is required';
+      } else if (values.password !== values.confirm_password) {
+        errors.confirm_password = 'Passwords do not match';
+      }
+      if (!values.role) {
+        errors.role = 'Role is required';
+      }
+      return errors;
+    },
+    onSubmit: (values, { setSubmitting }) => {
+      // Proceed with form submission
+      const token = localStorage.getItem('jwtToken');
+      fetch(`${umaxUrl}/register`, {
+        method: 'POST',
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Bearer ${token}`,
+        },
+        body: new URLSearchParams(values).toString(),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          if (data.message === 'Registration successful') {
+            // Redirect based on user role
+            if (values.role === 'admin') {
+              navigate('/admin-dashboard');
+            } else if (values.role === 'staff') {
+              navigate('/staff-dashboard');
+            } else if (values.role === 'client') {
+              navigate('/client-dashboard');
+            } else {
+              navigate('/users-table'); // Default for regular users
             }
-          })
-          .catch(error => {
-            // console.error('Kesalahan Fetch:', error);
-            console.error(error);
-          });
-      }
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          setSubmitting(false);
+        });
     },
   });
 
@@ -141,6 +152,9 @@ const SignUp = () => {
           placeholder="Nama"
           className="w-full h-9 rounded-md border pl-5 border-blue mt-2 focus:outline-none focus:ring-1 text-slate-500"
         />
+        {formik.errors.name && (
+          <span className="text-red-500 text-sm">{formik.errors.name}</span>
+        )}
         <input
           type="text"
           id="email"
@@ -150,7 +164,9 @@ const SignUp = () => {
           placeholder="Email"
           className="w-full h-9 rounded-md border pl-5 border-blue mt-2 focus:outline-none focus:ring-1 text-slate-500"
         />
-
+        {formik.errors.email && (
+          <span className="text-red-500 text-sm">{formik.errors.email}</span>
+        )}
         <div className="relative flex items-center">
           <input
             type={showPassword ? 'text' : 'password'}
@@ -174,7 +190,9 @@ const SignUp = () => {
 
           </div>
         </div>
-
+        {formik.errors.password && (
+          <span className="text-red-500 text-sm">{formik.errors.password}</span>
+        )}
         <div className="relative flex items-center">
           <input
             type={showKonfirmasiPassword ? 'text' : 'password'}
@@ -197,6 +215,9 @@ const SignUp = () => {
 
           </div>
         </div>
+        {formik.errors.confirm_password && (
+          <span className="text-red-500 text-sm">{formik.errors.confirm_password}</span>
+        )}
         {!passwordMatch && (
           <span className="text-red-500 text-sm relative bottom-0 left-0 mb-2 ml-2">
             Password tidak sama!
@@ -215,11 +236,14 @@ const SignUp = () => {
           <option value="client">Client</option>
           {/* Add more roles if needed */}
         </select>
-
+        {formik.errors.role && (
+          <span className="text-red-500 text-sm">{formik.errors.role}</span>
+        )}
         <button
-          // type="submit"
-          className="w-full h-10 rounded-full bg-[#3D5FD9] text-[#F5F7FF] hover:bg-[#2347C5] mt-5"
+          type="submit"
+          disabled={formik.isSubmitting}
           onClick={handleSignUpClick}
+          className="w-full h-10 rounded-full bg-[#3D5FD9] text-[#F5F7FF] hover:bg-[#2347C5] mt-5"
         >
           SIGN UP
         </button>

@@ -238,10 +238,23 @@ function AccountTable() {
       {
         Header: 'Name',
         accessor: 'username',
+        Cell: ({ row }) => (
+          <div className="flex justify-start"> {/* Mengubah justify-center menjadi justify-start */}
+            <Link to={`/updateaccount/${row.original._id}`} className="underline">{row.original.username}</Link>
+          </div>
+        ),
       },
       {
         Header: 'Client',
         accessor: 'client_name',
+        // Cell: ({ row }) => (
+        //   <div className="flex justify-start">
+        //     {/* Link to Clients page */}
+        //     <Link to="/Clients" className="underline">
+        //       {row.original.client_name}
+        //     </Link>
+        //   </div>
+        // ),
       },
       {
         Header: 'Platform',
@@ -257,6 +270,11 @@ function AccountTable() {
       {
         Header: 'Email',
         accessor: 'email',
+        Cell: ({ row }) => (
+          <div className="flex justify-start">
+            <a href={`mailto:${row.original.email}`} className="text-blue-700 underline cursor-pointer">{row.original.email}</a>
+          </div>
+        ),
       },
       {
         Header: 'Status',
@@ -499,7 +517,7 @@ function AccountTable() {
                   {headerGroup.headers.map((column) => (
                     <th
                       {...column.getHeaderProps()}
-                      className={`p-2 text-white bg-sky-500 font-normal border-t-0  border-gray-300 border ${column.id === 'status' || column.id === 'action'
+                      className={`p-2 text-black font-semibold border-t-1  border-gray-300 border ${column.id === 'status' || column.id === 'action'
                         ? 'text-center' //  untuk rata tengah
                         : 'text-left' //  untuk kolom lainnya
                         }`}

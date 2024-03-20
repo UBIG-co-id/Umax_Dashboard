@@ -9,6 +9,18 @@ import Swal from 'sweetalert2';
 const ResetPassword = () => {
     const navigate = useNavigate();
     const [error, setError] = useState(null);
+    const [passwordMatch, setPasswordMatch] = useState(true);
+
+    const toggleKonfirmasiPasswordVisibility = () => {
+        setShowKonfirmasiPassword(!showKonfirmasiPassword);
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [showKonfirmasiPassword, setShowKonfirmasiPassword] = useState(false);
 
     const formik = useFormik({
         initialValues: {
@@ -44,7 +56,7 @@ const ResetPassword = () => {
                     }).then((result) => {
                         if (result.isConfirmed) {
                             // Arahkan ke Dashboard untuk pengguna non-staff
-                            navigate('/Login');
+                            navigate('/');
                         }
                     });
 
@@ -85,6 +97,17 @@ const ResetPassword = () => {
                         onChange={formik.handleChange}
                         value={formik.values.new_password}
                     />
+                    {/* <div
+                        className="absolute top-3 right-2  cursor-pointer"
+                        onClick={togglePasswordVisibility} irm
+                    >
+                        {showPassword ? (
+                            <AiOutlineEye size={15} />
+                        ) : (
+                            <AiOutlineEyeInvisible size={15} />
+                        )}
+
+                    </div> */}
                     <input
                         type="konfirmasi_password"
                         name="konfirmasi_password"
@@ -94,6 +117,22 @@ const ResetPassword = () => {
                         onChange={formik.handleChange}
                         value={formik.values.konfirmasi_password}
                     />
+                    {/* <div
+                        className="absolute top-3 right-2  cursor-pointer flex items-center"
+                        onClick={toggleKonfirmasiPasswordVisibility} irm
+                    >
+                        {showKonfirmasiPassword ? (
+                            <AiOutlineEye size={15} />
+                        ) : (
+                            <AiOutlineEyeInvisible size={15} />
+                        )}
+
+                    </div> */}
+                    {/* {!passwordMatch && (
+                        <span className="text-red-500 text-sm relative bottom-0 left-0 mb-2 ml-2">
+                            Password tidak sama!
+                        </span>
+                    )} */}
 
                     <button
                         type="submit"

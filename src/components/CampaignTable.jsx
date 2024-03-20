@@ -20,7 +20,7 @@ import '../styles.css';
 
 
 
-function DataTable() {
+function DataTable({ user }) {
   const [tableData, setTableData] = useState([]);
   const [showAddPopup, setShowAddPopup] = useState(false);
   const navigate = useNavigate();
@@ -35,6 +35,7 @@ function DataTable() {
 
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [selectedObjective, setSelectedObjective] = useState("");
+  const [userRole, setUserRole] = useState("");
 
   // url base
   const umaxUrl = 'https://umaxxnew-1-d6861606.deta.app';
@@ -335,12 +336,24 @@ function DataTable() {
   }, [selectedObjective, selectedPlatform, tableData]);
 
 
+  useEffect(() => {
+    // Disini, userRole diatur berdasarkan peran pengguna yang disediakan oleh sistem autentikasi
+    if (user && user.role) {
+      setUserRole(user.role);
+    }
+  }, [user]);
+
   const columns = React.useMemo(
     () => [
 
       {
         Header: "Name",
         accessor: "name",
+        Cell: ({ row }) => (
+          <div className="flex justify-start"> {/* Mengubah justify-center menjadi justify-start */}
+            <Link to={`/updatecampaigns/${row.original._id}`} className="underline">{row.original.name}</Link>
+          </div>
+        ),
       },
       {
         Header: "Client",
@@ -398,13 +411,14 @@ function DataTable() {
         accessor: "id",
         Cell: ({ row }) => (
           <div className="flex space-x-2 justify-center">
-
-            <button
-              onClick={() => handleDelete(row.original._id)}
-              className="bg-red-500 hover:bg-red-500 text-white py-1 px-1 rounded"
-            >
-              <BsTrash3 />
-            </button>
+            {/* {(userRole === "admin" || userRole === "super_admin") && ( */}
+              <button
+                onClick={() => handleDelete(row.original._id)}
+                className="bg-red-500 hover:bg-red-500 text-white py-1 px-1 rounded"
+              >
+                <BsTrash3 />
+              </button>
+            {/* )} */}
 
             <Link to={`/updatecampaigns/${row.original._id}`}>
               <button
@@ -630,7 +644,7 @@ function DataTable() {
                   {headerGroup.headers.map((column) => (
                     <th
                       {...column.getHeaderProps()}
-                      className={` p-2 text-white bg-sky-500 font-normal  border-t-0  border-gray-300 ${column.id === "status" || column.id === "id"
+                      className={` p-2 text-black font-semibold  border-t-1  border-gray-300 ${column.id === "status" || column.id === "id"
                         ? "place-items-center"
                         : "text-left"
                         }`}

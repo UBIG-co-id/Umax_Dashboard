@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar';
 import ClientsTable from '../components/ClientsTable';
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import Swal from 'sweetalert2';
 
 const UpdateClient = () => {
     // const [data,setData] =useState([])
@@ -44,15 +45,33 @@ const UpdateClient = () => {
       .catch(err => console.log(err))
   }, [_id])
 
-   const handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-  
-    axios.put(`https://umaxxnew-1-d6861606.deta.app/client-edit?client_id=${_id}`, values, { headers })
-      .then((res) => {
-        navigate('/Clients');
-      })
-      .catch((err) => console.log(err));
-  };
+
+    // Show SweetAlert confirmation
+    Swal.fire({
+        title: 'Apakah Anda yakin Data And Sudah Benar?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Cancel',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            axios.put(`${umaxUrl}/client-edit?client_id=${_id}`, values, { headers })
+            .then((res) => {
+                // Show success message
+                Swal.fire({
+                    title: 'Data Berhasil Diperbarui!',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    navigate('/Clients'); // Navigate after OK button clicked
+                });
+            })
+            .catch((err) => console.log(err));
+        }
+    });
+};
   
   // close menggunakan esc
   useEffect(() => {

@@ -46,11 +46,11 @@ export default function CardInfo({ title, value, color, popupContent}) {
     
     const renderColor = (colorFromSwagger) => {
         switch (colorFromSwagger) {
-            case 'danger':
+            case 'Danger':
                 return { bgColor: 'text-red-500 bg-red-100', border: 'border border-red-500' };
-            case 'warning':
+            case 'Warning':
                 return { bgColor: 'text-yellow-500 bg-yellow-100', border: 'border border-yellow-500'};
-            case 'success':
+            case 'Success':
                 return { bgColor: ' text-green-500 bg-green-100', border: 'border border-green-500'};
             default:
                 return { bgColor: 'bg-sky-100', border: 'border border-sky-500'};
@@ -61,7 +61,7 @@ export default function CardInfo({ title, value, color, popupContent}) {
    
 
     return (
-        <div className={`p-4 relative rounded-lg bg-slate-100 border border-gray-300 ${bgColor} ${border} ${color}`}>
+        <div className={`p-4 relative rounded-lg bg-slate-100 border border-gray-300  ${bgColor} ${border} ${color}`}>
             <div className='flex justify-between items-center'>
                 <div className={`text-sm font-medium ${color}`}>{title}</div>
                 <div className='text-gray-500 cursor-pointer'>

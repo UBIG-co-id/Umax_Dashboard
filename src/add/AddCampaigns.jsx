@@ -59,6 +59,16 @@ useEffect(() => {
 
     onSubmit: (values) => {
       const token = localStorage.getItem("jwtToken");
+      if (
+        values.name &&
+        values.account_id &&
+        values.objective &&
+        values.start_date &&
+        values.end_date &&
+        values.status &&
+        values.notes
+    ) {
+      
       fetch(`${umaxUrl}campaign-create`, {
         method: "POST",
         headers: {
@@ -68,18 +78,36 @@ useEffect(() => {
         },
         body: new URLSearchParams(values).toString(),
       })
-        .then((response) => response.json())
-        .then((data) => {
+      .then(response => response.json())
+      .then(data => {
           console.log(data);
-          if (data.message === "data berhasil ditambah") {
+          if (data && data.success) {
+            toast.success('Data added successfully!', {
+              position: toast.POSITION.TOP_CENTER,
+            });
+            navigate('/Accounts');
+          } else {
+            // Menampilkan toast ketika data berhasil ditambah
+            toast.success('Data added successfully!', {
+              position: 'top-right',
+            });
+            // navigate('/Accounts');
           }
-          navigate("/Campaigns");
-        })
-        .catch((error) => {
-          console.error(error);
+      })
+      .catch(error => {
+        console.error(error);
+        toast.error('Terjadi kesalahan. Silakan coba lagi nanti.', {
+          position: 'top-right',
         });
-    },
-  });
+      }); 
+    } else {
+      toast.warning('Silakan isi semua field yang wajib diisi.', {
+          position: 'top-right',
+      });
+    }
+  },
+});
+// 
   // END ADD DATA Campaigns
 
   // close menggunakan esc
@@ -185,6 +213,7 @@ const customStyles = {
                 </select>
               </div>
             </div>
+            
 
             <div className="flex flex-col md:flex-row gap-4 mb-4">
               <div className="flex flex-col">

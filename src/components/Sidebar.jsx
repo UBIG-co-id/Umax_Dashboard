@@ -7,8 +7,9 @@ import { useLanguage } from "../LanguageContext"; // Import the useLanguage hook
 import Translation from "../translation/Translation.json";
 import { rupiah } from "../helpers/rupiah";
 import { formattedNumber } from "../helpers/formattedNumber";
+import { BiChevronRight } from "react-icons/bi";
 
-const Sidebar = ({ updateSelectedName, setMetricId }) => {
+const Sidebar = ({ updateSelectedName, setMetricId, isOpen, handleBackButtonClick }) => {
   const [activeTab, setActiveTab] = useState("all");
   const [searchText, setSearchText] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -23,6 +24,14 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [filteredCampaigns, setFilteredCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
+  // const [toggle, setToggle] = useState(false);
+
+  // let { state, dispatch } = useContext(Context);
+  let toggle = () => {
+    dispatch({ type: "SET_TOGGLE_NAVBAR", payload: !state.toggleNavbar });
+  };
+
+
 
   useEffect(() => {
     // Fungsi ini akan dipanggil setiap kali activeTab atau campaigns berubah
@@ -114,6 +123,8 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
     // Add this part to set metric_id based on selectedData
     const metricIdFromSelectedData = item.campaign_id;
     setMetricId(metricIdFromSelectedData);
+
+    toggleSidebar();
   };
 
   // menyimpan warna array
@@ -184,7 +195,7 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
     const filtered = filteredItems(items);
 
     if (filtered.length === 0) {
-      return <li className="mb-6 text-center">Tidak ada hasil</li>;
+      return <li className="mb-6 text-center font-semibold">Tidak ada hasil</li>;
     }
 
     const filteredByKeyword = Array.isArray(filtered)
@@ -248,7 +259,7 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
               />
 
               <span
-                className={`truncate w-52 ${activeItem === item.campaign_name ? "text-black" : ""
+                className={`truncate w-52 font-semibold ${activeItem === item.campaign_name ? "text-black" : ""
                   }`}
                 title={item.campaign_name}
               >
@@ -281,74 +292,98 @@ const Sidebar = ({ updateSelectedName, setMetricId }) => {
       );
     });
   };
+
+
   return (
-    <div className="relative mt-5 z-20">
-      <button
-        className={`relative top-2 right-2 sm:hidden text-gray-600 z-10`}
-        onClick={toggleSidebar}
-      >
+    <>
+      <div className="relative mt-5 z-20">
+        <button
+          className={`relative top-2 right-2 sm:hidden text-gray-600 z-10`}
+          onClick={toggleSidebar}
+        >
+
+          <div
+            className={`transition-transform duration-300 ease-in-out transform ${state.toggleSidebar ? "block" : "hidden"
+              }`}
+          ></div>
+        </button>
+        {/* <div 
+          onClick={() => {
+            setToggle(!toggle);
+          }}
+        > */}
         <div
-          className={`transition-transform duration-300 ease-in-out transform ${state.toggleNavbar ? "block" : "hidden"
-            }`}
-        ></div>
-      </button>
-      <div
-        className={`relative max-sm:absolute max-sm:bottom-0 bayangan max-w-70 w-80 min-h-full max-h-full max-sm:h-full max-sm:overflow-scroll bg-white max-sm:rounded-xl rounded-s-xl  text-slate-500 p-4 transform ${state.toggleNavbar ? "block" : "hidden"
-          } transition-transform duration-300 ease-in-out`}
-      >
-        <div className=" bg-gray-200 mx-1 p-1 rounded-lg flex justify-center mb-4 ">
-          <button
-            style={tabStyle.all}
-            className="px-2  py-1 rounded-md"
-            onClick={() => handleTabChange("all")}
-          >
-            {translations["All"]}
-          </button>
-          <button
-            style={tabStyle.draft}
-            className="px-2 py-1 rounded-md"
-            onClick={() => handleTabChange("draft")}
-          >
-            {translations["Draft"]}
-          </button>
-          <button
-            style={tabStyle.active}
-            className="px-2 py-1 rounded-md"
-            onClick={() => handleTabChange("active")}
-          >
-            {translations["Active"]}
-          </button>
-          <button
-            style={tabStyle.completed}
-            className="px-2 py-1 rounded-md"
-            onClick={() => handleTabChange("completed")}
-          >
-            {translations["Completed"]}
-          </button>
-        </div>
+          className={`relative max-sm:absolute max-sm:bottom-0 bayangan max-w-70 w-80 min-h-full max-h-full max-sm:h-full max-sm:overflow-scroll bg-white max-sm:rounded-xl rounded-s-xl  text-slate-500 p-4 transform ${state.toggleNavbar ? "block" : "hidden"
+            } transition-transform duration-300 ease-in-out`}
+        >
 
-        {/* Search Bar */}
-        <div className="relative">
-          <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400">
-            <BiSearch />
-          </span>
-          <input
-            type="text"
-            placeholder={translations["Search"]}
-            className="w-full pl-8 px-2 py-1 bg-white border-searc border focus:outline-none focus:border-gray-500 text-slate-600 rounded-lg"
-            value={searchText}  // Menggunakan searchText bukan searchKeyword
-            onChange={handleSearchChange}
-          />
+          <div className=" bg-gray-200 mx-1 p-1 rounded-lg flex justify-center mb-4 font-semibold ">
+            <button
+              style={tabStyle.all}
+              className="px-2  py-1 rounded-md"
+              onClick={() => handleTabChange("all")}
+            >
+              {translations["All"]}
+            </button>
+            <button
+              style={tabStyle.draft}
+              className="px-2 py-1 rounded-md"
+              onClick={() => handleTabChange("draft")}
+            >
+              {translations["Draft"]}
+            </button>
+            <button
+              style={tabStyle.active}
+              className="px-2 py-1 rounded-md"
+              onClick={() => handleTabChange("active")}
+            >
+              {translations["Active"]}
+            </button>
+            <button
+              style={tabStyle.completed}
+              className="px-2 py-1 rounded-md"
+              onClick={() => handleTabChange("completed")}
+            >
+              {translations["Completed"]}
+            </button>
+          </div>
 
-        </div>
+          {/* Search Bar */}
+          <div className="relative">
+            <span className="absolute left-2 font-semibold  top-1/2 transform -translate-y-1/2 text-gray-400">
+              <BiSearch />
+            </span>
+            <input
+              type="text"
+              placeholder={translations["Search"]}
+              className="w-full pl-8 px-2 py-1 bg-white font-semibold border-searc border focus:outline-none focus:border-gray-500 text-slate-600 rounded-lg"
+              value={searchText}  // Menggunakan searchText bukan searchKeyword
+              onChange={handleSearchChange}
+            />
 
-        <div className="relative lebar-list -left-4 border-slate-500 pt-2 overflow-y-scroll h-full max-sm:max-h-[30rem]">
-          <ul className="cursor-pointer mt-2 ">
-            {renderItems(filteredCampaigns)}
-          </ul>
+          </div>
+
+
+          <div className="relative lebar-list -left-4 border-slate-500 pt-2 overflow-y-scroll h-full max-sm:max-h-[30rem]">
+            <ul className="cursor-pointer mt-2 ">
+              {renderItems(filteredCampaigns)}
+            </ul>
+          </div>
+          {/* <div className="absolute top-[7rem] flex justify-center items-center -right-5 w-10 h-10 bg-sky-300 rounded-full cursor-pointer"
+            onClick={toggle}
+          >
+            <BiChevronRight className={`${toggle ? "rotate-180" : ""} text-3xl transition-all duration-300`} />
+          </div> */}
+          {/* </div> */}
         </div>
       </div>
-    </div>
+      <div className="absolute top-[7rem] flex justify-center items-center -left-5 w-10 h-10 bg-sky-300 rounded-full cursor-pointer"
+        onClick={toggle}
+      >
+        <BiChevronRight className= "rotate-180 text-3xl transition-all duration-300" />
+      </div>
+    </>
+
   );
 };
 

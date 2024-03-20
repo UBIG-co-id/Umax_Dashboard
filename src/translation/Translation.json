@@ -13,12 +13,16 @@
         "Reach"           : "Reach",
         "Reach Amount Spent Ratio" : "Reach Amount Spent Ratio",
         "Click Through Rate" : "Click Through Rate",
+        "CTR" : "CTR",
         "Impression" : "Impression",
         "Frequency" : "Frequency",
         "Outbont Click Landing Page" : "Outbont Click Landing Page",
+        "OCLP" : "OCLP",
         "Cost Per Result" : "Cost Per Result",
+        "CPR" : "CPR",
         "Add To Cart" : "Add To Cart",
         "Return on Ad Spent" : "Return on Ad Spent",
+        "ROAS" : "ROAS",
         "Real ROAS" : "Real ROAS",
         "Cost Per Click" : "Cost Per Click",
         "Start Date"      : "Start Date",
@@ -34,7 +38,8 @@
         "Message OCLP" : "Make sure that your landing page has relevant, interesting and informative content",
         "Last Week" : "Last Week",
         "Last Month" : "Last Month",
-        "Last Year" : "Last Year"
+        "Last Year" : "Last Year",
+        "Yesterday" : "Yesterday"
         
 
         
@@ -74,7 +79,8 @@
         "Message OCLP" : "Pastikan bahwa landing page Anda memiliki konten yang relavan, menarik, dan informatif",
         "Last Week" : "Minggu Akhir",
         "Last Month" : "Bulan Akhir",
-        "Last Year" : "Tahun Akhir"
+        "Last Year" : "Tahun Akhir",
+        "Yesterday" : "Kemarin"
         
         
     }

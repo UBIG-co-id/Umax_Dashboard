@@ -517,3 +517,18 @@ th svg.desc{
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.icon-container {
+  position: absolute;
+  top: 50%;
+  left: -25px; /* Sesuaikan jarak dari sisi kiri */
+  transform: translateY(-50%);
+}
+
+.arrow-icon {
+  font-size: 24px; /* Sesuaikan ukuran ikon jika diperlukan */
+  color: #6b7280; /* Sesuaikan warna ikon jika diperlukan */
+  cursor: pointer;
+}
+
+

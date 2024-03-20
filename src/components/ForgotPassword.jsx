@@ -98,8 +98,8 @@ const ForgotPassword = () => {
                     </form>
                 </div>
             </div>
-            </div>
-            );
+        </div>
+    );
 }
 
-            export default ForgotPassword
+export default ForgotPassword

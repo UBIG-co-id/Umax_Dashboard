@@ -2,7 +2,7 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Fragment, useState, useEffect, useContext } from "react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { MdDashboard, MdOutlineCampaign } from "react-icons/md";
-import { BiSolidMegaphone, BiGroup, BiBell, BiLogOut } from "react-icons/bi";
+import { BiSolidMegaphone, BiGroup, BiBell, BiLogOut, BiChevronLeftCircle } from "react-icons/bi";
 import { AiOutlineUser, AiOutlineSearch } from "react-icons/ai";
 import { IoIosArrowDown, IoIosArrowBack } from "react-icons/io";
 import { FaRegBuilding } from "react-icons/fa";
@@ -22,6 +22,8 @@ import { us, indonesia } from "../assets";
 import jwt_decode from "jwt-decode";
 import { BiChevronDown, BiCheck } from "react-icons/bi";
 import { CiGlobe } from "react-icons/ci";
+import { MdKeyboardDoubleArrowRight } from "react-icons/md";
+
 
 
 // import LazyLoad from 'react-lazyload';
@@ -39,7 +41,7 @@ const navigation = [
   { name: "Clients", href: "/Clients" },
 ];
 
-const Navbar = () => {
+const Navbar = ({ toggleSidebar }) => {
   const [data, setData] = useState([])
   const [tenantData, setTenantData] = useState([]);
 
@@ -149,7 +151,7 @@ const Navbar = () => {
 
     localStorage.removeItem("jwtToken");
 
-    navigate("/login");
+    navigate("/");
   };
 
   const profilePage = () => {
@@ -362,6 +364,14 @@ const Navbar = () => {
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
 
                 {/* Mobile menu button */}
+                {/* <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-600">
+                  <span className="absolute -inset-0.5" />
+                  {open ? (
+                    <BiChevronLeftCircle  className="block h-6 w-6" aria-hidden="true" />
+                  ) : (
+                    <MdKeyboardDoubleArrowRight className="block h-6 w-6" aria-hidden="true" />
+                  )}
+                </Disclosure.Button> */} 
                 <div className="sm:hidden text-center">
                   <img
                     src={logo}
@@ -403,11 +413,11 @@ const Navbar = () => {
                         onClick={() => setActivePage(item.href)}
                       >
 
-                        <span className="relative top-1 lg:mr-4 md:mr-1 inline-block max-md:hidden">
+                        <span className="relative top-1 lg:mr-1 md:mr-2 inline-block max-md:hidden">
                           {translations[item.name] && (
                             <>
                               {item.name === "Dashboard" && (
-                                <MdDashboard className="h-5 w-5" />
+                                <MdDashboard className="h-5 w-4" />
                               )}
                               {item.name === "Campaigns" && (
                                 <BiSolidMegaphone className="h-5 w-5" />
@@ -559,7 +569,7 @@ const Navbar = () => {
                         {/* Mengganti tombol dengan elemen select */}
                         {/* <FaRegBuilding className="absolute top-1 left-2 text-gray-500" />
                         <div className="relative mt-4">
-                          
+                          a
                           <select
                             name="tenant"
                             id="tenant"

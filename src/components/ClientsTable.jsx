@@ -226,6 +226,11 @@ function ClientsTable() {
       {
         Header: 'Name',
         accessor: 'name',
+        Cell: ({ row }) => (
+          <div className="flex justify-start"> {/* Mengubah justify-center menjadi justify-start */}
+            <Link to={`/updateclient/${row.original._id}`} className="underline">{row.original.name}</Link>
+          </div>
+        ),
       },
       {
         Header: 'Address',
@@ -234,10 +239,20 @@ function ClientsTable() {
       {
         Header: 'Contact',
         accessor: 'contact',
+        Cell: ({ row }) => (
+          <div className="flex justify-start">
+            <a href={`tel:${row.original.contact}`} className="text-blue-700 underline cursor-pointer">{row.original.contact}</a>
+          </div>
+        ),
       },
       {
         Header: 'Email',
         accessor: 'email',
+        Cell: ({ row }) => (
+          <div className="flex justify-start">
+            <a href={`mailto:${row.original.email}`} className="text-blue-700 underline cursor-pointer">{row.original.email}</a>
+          </div>
+        ),
       },
       {
         Header: 'Status',
@@ -258,21 +273,21 @@ function ClientsTable() {
           return (
             <div className="flex space-x-2 justify-center">
               {/* {isAdmin && ( */}
-                <button
-                  onClick={() => handleDelete(row.original._id)}
-                  className="bg-red-500 hover:bg-red-500 text-white py-1 px-1 rounded"
-                >
-                  <BsTrash3 />
-                </button>
-          
+              <button
+                onClick={() => handleDelete(row.original._id)}
+                className="bg-red-500 hover:bg-red-500 text-white py-1 px-1 rounded"
+              >
+                <BsTrash3 />
+              </button>
+
               {/* {(isAdmin || userRole === "staff") && ( */}
-                <Link to={`/updateclient/${row.original._id}`}>
-                  <button
-                    className="bg-sky-500 hover:bg-blue-500 text-white py-1 px-1 rounded"
-                  >
-                    <AiOutlineEdit />
-                  </button>
-                </Link>
+              <Link to={`/updateclient/${row.original._id}`}>
+                <button
+                  className="bg-sky-500 hover:bg-blue-500 text-white py-1 px-1 rounded"
+                >
+                  <AiOutlineEdit />
+                </button>
+              </Link>
               {/* )} */}
             </div>
           );
@@ -469,7 +484,7 @@ function ClientsTable() {
                     {headerGroup.headers.map((column) => (
                       <th
                         {...column.getHeaderProps()}
-                        className={`p-2 text-white bg-sky-500 font-normal border-slate-300 border ${column.id === 'action' || column.id === 'status'
+                        className={`p-2 text-black  font-semibold border-slate-300 border ${column.id === 'action' || column.id === 'status'
                           ? 'text-center' // Untuk rata tengah
                           : 'text-left' // Untuk kolom lainnya
                           }`}

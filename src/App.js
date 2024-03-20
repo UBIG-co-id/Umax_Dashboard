@@ -38,7 +38,7 @@ const theme = useTheme()
         <Route path='/AddAccounts' element={<AddAccounts/>}/>
         <Route path='/AddCampaigns' element={<AddCampaigns/>}/>
         <Route path='/register' element={<Register/>}/>
-        <Route path='/login' element={<Login/>}/>
+        <Route path='/' element={<Login/>}/>
         <Route path='/Dashboard' element={<Dashboard/> }  />
         <Route path='/Campaigns' element={<Campaigns/> }  />
         <Route path='/Accounts' element={<Accounts/> }  />

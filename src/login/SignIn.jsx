@@ -131,7 +131,7 @@ const SignIn = () => {
               className="w-full h-12 rounded-full bg-[#3D5FD9] text-[#F5F7FF] hover:bg-[#2347C5] mt-5"
             >
               SIGN IN
-            </button>
+            </button>     
             <Link
               to="/ForgotPassword"
               className="mt-3 text-[#5473E3] hover:text-[#2347C5] hover:underline"

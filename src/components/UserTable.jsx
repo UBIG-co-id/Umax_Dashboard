@@ -389,6 +389,7 @@ function UsersTable() {
           <FaTimes />
         </button>
       </div> */}
+      
       <span className='p-10 relative top-4 text-gray-600 font-medium text-2xl'>User</span>
       <div className="border-2 border-slate-200 bg-white p-0 m-2 lg:m-10 mt-8 rounded-lg relative">
 
@@ -480,7 +481,7 @@ function UsersTable() {
                     {headerGroup.headers.map((column) => (
                       <th
                         {...column.getHeaderProps()}
-                        className={`p-2 text-white bg-sky-500 font-normal border-slate-300 border ${column.id === 'action' || column.id === 'status'
+                        className={`p-2 text-black font-semibold border-slate-300 border ${column.id === 'action' || column.id === 'status'
                           ? 'text-center' // Untuk rata tengah
                           : 'text-left' // Untuk kolom lainnya
                           }`}

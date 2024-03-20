@@ -6,6 +6,8 @@ import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { AiOutlineEdit, AiOutlineFilePdf, AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import Select from "react-select";
+import Swal from 'sweetalert2';
+
 
 const UpdateAccount = () => {
     const [data, setData] = useState([])
@@ -85,14 +87,45 @@ const UpdateAccount = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.put(`https://umaxxnew-1-d6861606.deta.app/account-edit?account_id=${_id}`, values, { headers })
-            .then((res) => {
-                navigate('/Accounts');
-            })
-            .catch((err) => {
-                console.error('Kesalahan pembaruan:', err);
-            });
+        if (values.password !== values.confirm_password) {
+            setPasswordMatch(false); // Set passwordMatch menjadi false jika password tidak cocok
+            return; // Keluar dari handleSubmit jika password tidak cocok
+        }
+    
+        // Tampilkan alert warning
+        Swal.fire({
+            title: 'Apakah Anda yakin data Anda sudah benar?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'OK',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Lanjutkan dengan pengiriman data jika user menekan OK
+                axios.put(`https://umaxxnew-1-d6861606.deta.app/account-edit?account_id=${_id}`, values, { headers })
+                    .then((res) => {
+                        // Tampilkan alert berhasil
+                        Swal.fire({
+                            title: 'Data berhasil diupdate!',
+                            icon: 'success',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Navigasi ke halaman Account jika user menekan OK
+                                navigate('/Accounts');
+                            }
+                        });
+                    })
+                    .catch((err) => {
+                        console.error('Kesalahan pembaruan:', err);
+                    });
+            }
+        });
     };
+    
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
@@ -290,6 +323,11 @@ const UpdateAccount = () => {
                                             <AiOutlineEyeInvisible size={15} />
                                         )}
                                     </div>
+                                    {/* {!passwordMatch && (
+                                        <span className="text-red-500 text-sm relative bottom-0 left-0 mb-2 ml-2">
+                                            Password tidak sama!
+                                        </span>
+                                    )} */}
                                 </div>
                                 {!passwordMatch && (
                                     <span className="text-red-500 text-sm relative bottom-0 left-0 mb-2 ml-2">
